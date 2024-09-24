@@ -1,0 +1,45 @@
+{
+    "relatorios": [
+      {
+        "id": 1,
+        "titulo": "Relatório de Vendas",
+        "nomeCliente": "João da Silva",
+        "dataEntrega": "2024-09-30",
+        "endereco": "Rua Exemplo, 123, Bairro, Cidade",
+        "itens": [
+          {
+            "produto": "Produto A",
+            "quantidade": 10,
+            "precoUnitario": 50.0
+          },
+          {
+            "produto": "Produto B",
+            "quantidade": 5,
+            "precoUnitario": 30.0
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "titulo": "Relatório de Projetos",
+        "nomeCliente": "Maria Oliveira",
+        "dataEntrega": "2024-10-05",
+        "endereco": "Avenida Exemplo, 456, Centro, Cidade",
+        "itens": [
+          {
+            "projeto": "Projeto X",
+            "status": "Concluído",
+            "dataInicio": "2024-08-01",
+            "dataFim": "2024-09-15"
+          },
+          {
+            "projeto": "Projeto Y",
+            "status": "Em andamento",
+            "dataInicio": "2024-09-01",
+            "dataFim": null
+          }
+        ]
+      }
+    ]
+  }
+  
