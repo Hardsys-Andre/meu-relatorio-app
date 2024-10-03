@@ -1,9 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import jsPDF from 'jspdf'; // Biblioteca para exportar PDF
 import { saveAs } from 'file-saver'; // Para salvar arquivos no navegador
-import { Document, Packer, Paragraph, TextRun, AlignmentType } from 'docx'; // Biblioteca para exportar DOCX
+import pdfMake from 'pdfmake/build/pdfmake'; // Biblioteca para PDF
+import pdfFonts from 'pdfmake/build/vfs_fonts'; // Fontes padrão para pdfMake
 import mockRelatorios from '../data/mockRelatorios.json'; // Importa o JSON mockado
+import htmlToPdfmake from 'html-to-pdfmake';
+import htmlDocx from 'html-docx-js/dist/html-docx';
+
+// Registra as fontes
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ReportEditor = () => {
   const [reportContent, setReportContent] = useState('');
@@ -13,12 +18,49 @@ const ReportEditor = () => {
   // Adicione sua chave de API do TinyMCE
   const tinyMCEApiKey = 'b0tl99mycwhh1o7hptou60a3w11110ox6av062w6limk184s';
 
-  // Campos dinâmicos disponíveis
-  const [dynamicFields] = useState([
-    { name: 'Nome do Cliente', placeholder: '{{Nome do Cliente}}' },
-    { name: 'Data de Entrega', placeholder: '{{Data de Entrega}}' },
-    { name: 'Endereço', placeholder: '{{Endereco}}' },
-  ]);
+  // Função para capturar todos os campos dinâmicos do JSON, incluindo arrays, sem duplicação
+const getDynamicFieldsFromRelatorios = () => {
+  const relatorio = mockRelatorios.relatorios[0]; // Pegue o primeiro relatório como exemplo para os campos
+  const fields = [];
+  const fieldSet = new Set(); // Usamos um Set para evitar duplicação
+
+  // Itera sobre as chaves do relatório
+  Object.keys(relatorio).forEach((field) => {
+    // Verifica se o campo é 'id' e o ignora
+    if (field === 'id') return;
+
+    // Se o campo for um array (como "itens"), adicione apenas os campos do primeiro elemento
+    if (Array.isArray(relatorio[field])) {
+      if (relatorio[field].length > 0) {
+        Object.keys(relatorio[field][0]).forEach((subField) => {
+          const fieldName = `${field}[].${subField}`; // Nome do campo no array sem o índice
+          if (!fieldSet.has(fieldName)) { // Verifica se o campo já foi adicionado
+            fields.push({
+              name: fieldName,
+              placeholder: `{{${fieldName}}}`, // Placeholder com referência ao campo
+            });
+            fieldSet.add(fieldName); // Marca o campo como adicionado
+          }
+        });
+      }
+    } else {
+      // Se for um campo simples, verifique se já existe e adicione à lista
+      if (!fieldSet.has(field)) {
+        fields.push({
+          name: field,
+          placeholder: `{{${field}}}`,
+        });
+        fieldSet.add(field); // Marca o campo como adicionado
+      }
+    }
+  });
+
+  return fields;
+};
+
+
+  // Captura os campos dinâmicos
+  const [dynamicFields] = useState(getDynamicFieldsFromRelatorios());
 
   const handleEditorChange = (content) => {
     setReportContent(content);
@@ -33,82 +75,55 @@ const ReportEditor = () => {
 
   // Função para substituir campos dinâmicos pelos dados mockados
   const replaceFieldsWithMockData = (content, relatorio) => {
-    return content
-      .replace(/{{Nome do Cliente}}/g, relatorio.nomeCliente)
-      .replace(/{{Data de Entrega}}/g, relatorio.dataEntrega)
-      .replace(/{{Endereco}}/g, relatorio.endereco);
+    let replacedContent = content;
+
+    dynamicFields.forEach((field) => {
+      const regex = new RegExp(`{{${field.name}}}`, 'g');
+
+      // Se o campo for um array (verificamos pelo nome), substituímos corretamente
+      if (field.name.includes('[')) {
+        const [arrayName, rest] = field.name.split('[');
+        const index = rest.split(']')[0]; // Extrai o índice do array
+        const subField = rest.split('.')[1]; // Extrai o subcampo
+
+        if (relatorio[arrayName] && relatorio[arrayName][index]) {
+          replacedContent = replacedContent.replace(
+            regex,
+            relatorio[arrayName][index][subField]
+          );
+        }
+      } else {
+        replacedContent = replacedContent.replace(regex, relatorio[field.name]);
+      }
+    });
+
+    return replacedContent;
   };
 
   const exportToPDF = () => {
     mockRelatorios.relatorios.forEach((relatorio) => {
       const content = replaceFieldsWithMockData(reportContent, relatorio);
-      
-      // Conversão de HTML para texto simples
-      const plainText = content
-        .replace(/<\/?[^>]+(>|$)/g, "") // Remove todas as tags HTML
-        .replace(/&eacute;/g, 'é')
-        .replace(/&ccedil;/g, 'ç')
-        .replace(/&atilde;/g, 'ã')
-        .replace(/&aacute;/g, 'á')
-        .replace(/&iacute;/g, 'í')
-        .replace(/&oacute;/g, 'ó')
-        .replace(/&uacute;/g, 'ú')
-        .replace(/&auml;/g, 'ä')
-        .replace(/&egrave;/g, 'è')
-        .replace(/&igrave;/g, 'ì')
-        .replace(/&ugrave;/g, 'ù')
-        .replace(/&ntilde;/g, 'ñ')
-        .replace(/&otilde;/g, 'õ')
-  
-      const pdf = new jsPDF();
-      
-      // Adicionando o texto ao PDF
-      const splitContent = pdf.splitTextToSize(plainText, 190); // Quebrar o texto em várias linhas
-      pdf.setFontSize(12); // Tamanho da fonte
-      pdf.text(splitContent, 10, 10); // Adiciona texto ao PDF
-      
-      pdf.save(`${relatorio.nomeCliente}_relatorio.pdf`);
+
+      // Converte o HTML para formato pdfMake
+      const pdfContent = htmlToPdfmake(content);
+
+      // Define o conteúdo do documento PDF
+      const docDefinition = {
+        content: [pdfContent],
+      };
+
+      // Gera o PDF e faz o download
+      pdfMake.createPdf(docDefinition).download(`${relatorio.nomeCliente}_relatorio.pdf`);
     });
   };
-  
+
   const exportAllToDocx = () => {
     mockRelatorios.relatorios.forEach((relatorio) => {
       const content = replaceFieldsWithMockData(reportContent, relatorio);
-      
-      // Conversão de HTML para texto simples
-      const plainText = content
-        .replace(/<\/?[^>]+(>|$)/g, "") // Remove todas as tags HTML
-        .replace(/&eacute;/g, 'é')
-        .replace(/&ccedil;/g, 'ç')
-        .replace(/&atilde;/g, 'ã')
-        .replace(/&aacute;/g, 'á')
-        .replace(/&iacute;/g, 'í')
-        .replace(/&oacute;/g, 'ó')
-        .replace(/&uacute;/g, 'ú')
-        .replace(/&auml;/g, 'ä')
-        .replace(/&egrave;/g, 'è')
-        .replace(/&igrave;/g, 'ì')
-        .replace(/&ugrave;/g, 'ù')
-        .replace(/&ntilde;/g, 'ñ')
-        .replace(/lim&otilde;es/g, 'limões'); // Exemplo específico
-  
-      const doc = new Document({
-        sections: [
-          {
-            properties: {},
-            children: [
-              new Paragraph({
-                text: plainText,
-                alignment: AlignmentType.LEFT,
-              }),
-            ],
-          },
-        ],
-      });
-  
-      Packer.toBlob(doc).then((blob) => {
-        saveAs(blob, `${relatorio.nomeCliente}_relatorio.docx`);
-      });
+
+      const docxContent = htmlDocx.asBlob(content); // Converte HTML para DOCX Blob
+
+      saveAs(docxContent, `${relatorio.nomeCliente}_relatorio.docx`);
     });
   };
 
@@ -138,14 +153,15 @@ const ReportEditor = () => {
             'insertdatetime media table paste code help wordcount',
             'table',
           ],
-          toolbar: 
+          toolbar:
             'table' +
-            'undo redo | formatselect | bold italic backcolor | ' +
+            'undo redo | bold italic backcolor | ' +
             'alignleft aligncenter alignright alignjustify | ' +
             'bullist numlist outdent indent | removeformat | help | ' +
             'tableinsertcolbefore tableinsertcolafter tabledeletecol',
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-          table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | ' +
+          table_toolbar:
+            'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | ' +
             'tableinsertcolbefore tableinsertcolafter tabledeletecol',
         }}
         onEditorChange={handleEditorChange}
