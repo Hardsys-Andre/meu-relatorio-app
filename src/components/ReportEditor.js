@@ -1,97 +1,75 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { saveAs } from 'file-saver'; // Para salvar arquivos no navegador
-import pdfMake from 'pdfmake/build/pdfmake'; // Biblioteca para PDF
-import pdfFonts from 'pdfmake/build/vfs_fonts'; // Fontes padrão para pdfMake
-import mockRelatorios from '../data/mockRelatorios.json'; // Importa o JSON mockado
+import { saveAs } from 'file-saver';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import mockRelatorios from '../data/mockRelatorios.json';
 import htmlToPdfmake from 'html-to-pdfmake';
 import htmlDocx from 'html-docx-js/dist/html-docx';
 
-// Registra as fontes
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ReportEditor = () => {
   const [reportContent, setReportContent] = useState('');
-  const [selectedRelatorio, setSelectedRelatorio] = useState(mockRelatorios.relatorios[0]); // Cliente selecionado
-  const editorRef = useRef(null); // Referência para o editor
+  const [selectedRelatorio, setSelectedRelatorio] = useState(mockRelatorios.relatorios[0]);
+  const editorRef = useRef(null);
+  const [imageDataUrls, setImageDataUrls] = useState({});
 
-  // Adicione sua chave de API do TinyMCE
   const tinyMCEApiKey = 'b0tl99mycwhh1o7hptou60a3w11110ox6av062w6limk184s';
 
-  // Função para capturar todos os campos dinâmicos do JSON, incluindo arrays, sem duplicação
-const getDynamicFieldsFromRelatorios = () => {
-  const relatorio = mockRelatorios.relatorios[0]; // Pegue o primeiro relatório como exemplo para os campos
-  const fields = [];
-  const fieldSet = new Set(); // Usamos um Set para evitar duplicação
-
-  // Itera sobre as chaves do relatório
-  Object.keys(relatorio).forEach((field) => {
-    // Verifica se o campo é 'id' e o ignora
-    if (field === 'id') return;
-
-    // Se o campo for um array (como "itens"), adicione apenas os campos do primeiro elemento
-    if (Array.isArray(relatorio[field])) {
-      if (relatorio[field].length > 0) {
-        Object.keys(relatorio[field][0]).forEach((subField) => {
-          const fieldName = `${field}[].${subField}`; // Nome do campo no array sem o índice
-          if (!fieldSet.has(fieldName)) { // Verifica se o campo já foi adicionado
-            fields.push({
-              name: fieldName,
-              placeholder: `{{${fieldName}}}`, // Placeholder com referência ao campo
-            });
-            fieldSet.add(fieldName); // Marca o campo como adicionado
+  useEffect(() => {
+    const loadImages = async () => {
+      const urls = {};
+      for (const relatorio of mockRelatorios.relatorios) {
+        if (relatorio.imagem) {
+          try {
+            const response = await fetch(relatorio.imagem);
+            const blob = await response.blob();
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              urls[relatorio.imagem] = reader.result;
+              setImageDataUrls(prevUrls => ({ ...prevUrls, [relatorio.imagem]: reader.result }));
+            };
+            reader.readAsDataURL(blob);
+          } catch (error) {
+            console.error('Erro ao carregar imagem:', error);
           }
-        });
+        }
       }
-    } else {
-      // Se for um campo simples, verifique se já existe e adicione à lista
-      if (!fieldSet.has(field)) {
-        fields.push({
-          name: field,
-          placeholder: `{{${field}}}`,
-        });
-        fieldSet.add(field); // Marca o campo como adicionado
-      }
-    }
-  });
+    };
 
-  return fields;
-};
+    loadImages();
+  }, []);
 
+  const getDynamicFieldsFromRelatorios = () => {
+    const relatorio = mockRelatorios.relatorios[0];
+    const fields = Object.keys(relatorio).filter((field) => field !== 'id').map((field) => ({
+      name: field,
+      placeholder: field === 'imagem' ? `<img src="${selectedRelatorio.imagem}" alt="Imagem do relatório" style="max-width: 100%; height: auto;">` : `{{${field}}}`,
+    }));
 
-  // Captura os campos dinâmicos
+    return fields;
+  };
+
   const [dynamicFields] = useState(getDynamicFieldsFromRelatorios());
 
   const handleEditorChange = (content) => {
     setReportContent(content);
   };
 
-  // Função para inserir campos dinâmicos no texto
   const handleInsertField = (placeholder) => {
     if (editorRef.current) {
       editorRef.current.execCommand('mceInsertContent', false, placeholder);
     }
   };
 
-  // Função para substituir campos dinâmicos pelos dados mockados
   const replaceFieldsWithMockData = (content, relatorio) => {
     let replacedContent = content;
 
     dynamicFields.forEach((field) => {
       const regex = new RegExp(`{{${field.name}}}`, 'g');
-
-      // Se o campo for um array (verificamos pelo nome), substituímos corretamente
-      if (field.name.includes('[')) {
-        const [arrayName, rest] = field.name.split('[');
-        const index = rest.split(']')[0]; // Extrai o índice do array
-        const subField = rest.split('.')[1]; // Extrai o subcampo
-
-        if (relatorio[arrayName] && relatorio[arrayName][index]) {
-          replacedContent = replacedContent.replace(
-            regex,
-            relatorio[arrayName][index][subField]
-          );
-        }
+      if (field.name === 'imagem') {
+        replacedContent = replacedContent.replace(regex, `<img src="${relatorio.imagem}" alt="Imagem do relatório" style="max-width: 100%; height: auto;">`);
       } else {
         replacedContent = replacedContent.replace(regex, relatorio[field.name]);
       }
@@ -101,33 +79,61 @@ const getDynamicFieldsFromRelatorios = () => {
   };
 
   const exportToPDF = () => {
-    mockRelatorios.relatorios.forEach((relatorio) => {
+    let allReportsContent = [];
+
+    mockRelatorios.relatorios.forEach((relatorio, index) => {
       const content = replaceFieldsWithMockData(reportContent, relatorio);
+      allReportsContent.push({
+        text: `Relatório de ${relatorio.nomeCliente}\n\n`,
+        style: 'header'
+      });
+      allReportsContent.push(htmlToPdfmake(content));
 
-      // Converte o HTML para formato pdfMake
-      const pdfContent = htmlToPdfmake(content);
-
-      // Define o conteúdo do documento PDF
-      const docDefinition = {
-        content: [pdfContent],
-      };
-
-      // Gera o PDF e faz o download
-      pdfMake.createPdf(docDefinition).download(`${relatorio.nomeCliente}_relatorio.pdf`);
+      if (index !== mockRelatorios.relatorios.length - 1) {
+        allReportsContent.push({ text: '', pageBreak: 'after' });
+      }
     });
+
+    const docDefinition = {
+      content: allReportsContent,
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 10, 0, 10]
+        }
+      },
+      images: imageDataUrls
+    };
+
+    pdfMake.createPdf(docDefinition).download('todos_relatorios.pdf');
   };
 
   const exportAllToDocx = () => {
-    mockRelatorios.relatorios.forEach((relatorio) => {
+    let allReportsContent = '';
+
+    mockRelatorios.relatorios.forEach((relatorio, index) => {
       const content = replaceFieldsWithMockData(reportContent, relatorio);
+      
+      // Substituir a tag de imagem por uma versão base64
+      const imgRegex = /<img[^>]+src="([^">]+)"/g;
+      const contentWithBase64Images = content.replace(imgRegex, (match, src) => {
+        const base64Image = imageDataUrls[src];
+        return `<img src="${base64Image}" style="max-width: 100%; height: auto;"`;
+      });
 
-      const docxContent = htmlDocx.asBlob(content); // Converte HTML para DOCX Blob
+      allReportsContent += `<h2>Relatório de ${relatorio.nomeCliente}</h2>${contentWithBase64Images}`;
 
-      saveAs(docxContent, `${relatorio.nomeCliente}_relatorio.docx`);
+      if (index !== mockRelatorios.relatorios.length - 1) {
+        allReportsContent += '<w:br w:type="page"/>';
+      }
     });
+
+    const docxContent = htmlDocx.asBlob(allReportsContent);
+
+    saveAs(docxContent, 'todos_relatorios.docx');
   };
 
-  // Atualiza o cliente selecionado para pré-visualização
   const handleRelatorioChange = (event) => {
     const relatorio = mockRelatorios.relatorios.find(
       (r) => r.nomeCliente === event.target.value
@@ -139,10 +145,10 @@ const getDynamicFieldsFromRelatorios = () => {
     <div>
       <h2>Crie Seu Relatório</h2>
       <Editor
-        apiKey={tinyMCEApiKey} // Configura a chave de API
+        apiKey={tinyMCEApiKey}
         value={reportContent}
         onInit={(evt, editor) => {
-          editorRef.current = editor; // Armazena a instância do editor
+          editorRef.current = editor;
         }}
         init={{
           height: 500,
@@ -152,17 +158,21 @@ const getDynamicFieldsFromRelatorios = () => {
             'searchreplace visualblocks code fullscreen',
             'insertdatetime media table paste code help wordcount',
             'table',
+            'image',
+            'imagetools',
           ],
           toolbar:
             'table' +
             'undo redo | bold italic backcolor | ' +
             'alignleft aligncenter alignright alignjustify | ' +
-            'bullist numlist outdent indent | removeformat | help | ' +
+            'bullist numlist outdent indent | removeformat | image | help | ' +
             'tableinsertcolbefore tableinsertcolafter tabledeletecol',
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
           table_toolbar:
             'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | ' +
             'tableinsertcolbefore tableinsertcolafter tabledeletecol',
+          imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage imageoptions",
+          image_advtab: true,
         }}
         onEditorChange={handleEditorChange}
       />
