@@ -6,8 +6,7 @@
         "nomeCliente": "João da Silva",
         "dataEntrega": "2024-09-30",
         "endereco": "Rua Exemplo, 123, Bairro, Cidade",
-        "imagem": "https://raw.githubusercontent.com/Hardsys-Andre/Loja-de-Roupas-Online/master/src/assets/plus-size-colorido.png"
-
+        "produto": "Produto1"
       },
       {
         "id": 2,
@@ -15,7 +14,17 @@
         "nomeCliente": "Maria Oliveira",
         "dataEntrega": "2024-10-05",
         "endereco": "Avenida Exemplo, 456, Centro, Cidade",
-        "imagem": "https://raw.githubusercontent.com/Hardsys-Andre/Loja-de-Roupas-Online/master/src/assets/plus-size-laranja.png"
+        "produto": "Produto2"
+
+      },
+      {
+        "id": 3,
+        "titulo": "Relatório de Projetos",
+        "nomeCliente": "Bless Xavier",
+        "dataEntrega": "2024-10-05",
+        "endereco": "Avenida Exemplo, 456, Centro, Cidade",
+        "produto": "Produto2"
+
       }
     ]
   }

@@ -14,6 +14,7 @@ const ReportEditor = () => {
   const [selectedRelatorio, setSelectedRelatorio] = useState(
     mockRelatorios.relatorios[0]
   );
+  const [produtoFilter, setProdutoFilter] = useState("");
   const editorRef = useRef(null);
   const [imageDataUrls, setImageDataUrls] = useState({});
 
@@ -94,7 +95,12 @@ const ReportEditor = () => {
   const exportToPDF = () => {
     let allReportsContent = [];
 
-    mockRelatorios.relatorios.forEach((relatorio, index) => {
+    const relatoriosFiltrados = mockRelatorios.relatorios.filter(
+      (relatorio) =>
+        relatorio.produto.toLowerCase().includes(produtoFilter.toLowerCase())
+    );
+
+    relatoriosFiltrados.forEach((relatorio, index) => {
       const content = replaceFieldsWithMockData(reportContent, relatorio);
       allReportsContent.push({
         text: `Relatório de ${relatorio.nomeCliente}\n\n`,
@@ -102,7 +108,7 @@ const ReportEditor = () => {
       });
       allReportsContent.push(htmlToPdfmake(content));
 
-      if (index !== mockRelatorios.relatorios.length - 1) {
+      if (index !== relatoriosFiltrados.length - 1) {
         allReportsContent.push({ text: "", pageBreak: "after" });
       }
     });
@@ -125,7 +131,12 @@ const ReportEditor = () => {
   const exportAllToDocx = () => {
     let allReportsContent = "";
 
-    mockRelatorios.relatorios.forEach((relatorio, index) => {
+    const relatoriosFiltrados = mockRelatorios.relatorios.filter(
+      (relatorio) =>
+        relatorio.produto.toLowerCase().includes(produtoFilter.toLowerCase())
+    );
+
+    relatoriosFiltrados.forEach((relatorio, index) => {
       const content = replaceFieldsWithMockData(reportContent, relatorio);
 
       // Substituir a tag de imagem por uma versão base64
@@ -140,7 +151,7 @@ const ReportEditor = () => {
 
       allReportsContent += `<h2>Relatório de ${relatorio.nomeCliente}</h2>${contentWithBase64Images}`;
 
-      if (index !== mockRelatorios.relatorios.length - 1) {
+      if (index !== relatoriosFiltrados.length - 1) {
         allReportsContent += '<w:br w:type="page"/>';
       }
     });
@@ -157,9 +168,27 @@ const ReportEditor = () => {
     setSelectedRelatorio(relatorio);
   };
 
+  const handleProdutoFilterChange = (event) => {
+    setProdutoFilter(event.target.value);
+  };
+
+  const relatoriosFiltrados = mockRelatorios.relatorios.filter(
+    (relatorio) =>
+      relatorio.produto.toLowerCase().includes(produtoFilter.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Crie Seu Relatório</h2>
+      <div style={{ marginBottom: "20px" }}>
+        <label htmlFor="produtoFilter">Filtrar por Produto:</label>
+        <input
+          type="text"
+          id="produtoFilter"
+          value={produtoFilter}
+          onChange={handleProdutoFilterChange}
+        />
+      </div>
       <Editor
         apiKey={tinyMCEApiKey}
         value={reportContent}
@@ -194,7 +223,7 @@ const ReportEditor = () => {
           imagetools_toolbar:
             "rotateleft rotateright | flipv fliph | editimage imageoptions",
           image_advtab: true,
-          automatic_uploads: false, // Desabilita uploads automáticos
+          automatic_uploads: true, // Desabilita uploads automáticos
           paste_data_images: true, // Permite colar imagens
         }}
         onEditorChange={handleEditorChange}
@@ -216,7 +245,7 @@ const ReportEditor = () => {
       <div style={{ marginTop: "20px" }}>
         <h3>Selecionar Cliente para Pré-visualização:</h3>
         <select onChange={handleRelatorioChange}>
-          {mockRelatorios.relatorios.map((relatorio) => (
+          {relatoriosFiltrados.map((relatorio) => (
             <option key={relatorio.nomeCliente} value={relatorio.nomeCliente}>
               {relatorio.nomeCliente}
             </option>
@@ -224,31 +253,25 @@ const ReportEditor = () => {
         </select>
       </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <h3>Pré-visualização:</h3>
-        <div
-          id="report-preview"
-          style={{
-            border: "1px solid #ddd",
-            padding: "10px",
-            minHeight: "200px",
-          }}
-          dangerouslySetInnerHTML={{
-            __html: replaceFieldsWithMockData(reportContent, selectedRelatorio),
-          }}
-        />
-      </div>
+      <div
+        style={{
+          marginTop: "20px",
+          border: "1px solid #ccc",
+          padding: "10px",
+          height: "200px",
+          overflow: "auto",
+        }}
+        dangerouslySetInnerHTML={{
+          __html: replaceFieldsWithMockData(reportContent, selectedRelatorio),
+        }}
+      />
 
       <div style={{ marginTop: "20px" }}>
-        <h3>Exportar Relatório</h3>
-        <button
-          onClick={exportToPDF}
-          style={{ marginRight: "10px", padding: "10px" }}
-        >
-          Exportar para PDF (Todos os Clientes)
+        <button onClick={exportToPDF} style={{ marginRight: "10px" }}>
+          Exportar para PDF
         </button>
-        <button onClick={exportAllToDocx} style={{ padding: "10px" }}>
-          Exportar para DOCX (Todos os Clientes)
+        <button onClick={exportAllToDocx}>
+          Exportar para DOCX
         </button>
       </div>
     </div>
