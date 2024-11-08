@@ -19,6 +19,7 @@ const ReportEditor = () => {
   const [imageDataUrls, setImageDataUrls] = useState({});
   const [showPreview, setShowPreview] = useState(false); // Estado para controlar a visibilidade da pré-visualização
   const [showCloseButton, setShowCloseButton] = useState(false); // Estado para controlar a visibilidade do botão fechar visualização
+  const [showVisualizarButton, setShowVisualizarButton] = useState(true);
 
   const tinyMCEApiKey = "b0tl99mycwhh1o7hptou60a3w11110ox6av062w6limk184s";
 
@@ -181,10 +182,16 @@ const ReportEditor = () => {
     const relatorio = mockRelatorios.relatorios.find(
       (r) => r.nomeCliente === event.target.value
     );
-    setSelectedRelatorio(relatorio);
-    setShowPreview(true); // Exibir a pré-visualização após a seleção do relatório
-    setShowCloseButton(true); // Exibir o botão fechar visualização após a seleção do relatório
+  
+    if (relatorio) {
+      setSelectedRelatorio(relatorio);
+      setShowPreview(true);
+      setShowCloseButton(true);
+    } else {
+      console.warn("Relatório não encontrado!");
+    }
   };
+  
 
   const handleFiltroChange = (event) => {
     setFiltro((prevFiltro) => ({
@@ -204,14 +211,23 @@ const ReportEditor = () => {
       return passFilter;
     }
   );
+  const [loading, setLoading] = useState(false);
 
   const handleVisualizar = () => {
+  setLoading(true);
+  // Simulação de uma chamada assíncrona, por exemplo, buscando dados para visualização
+  setTimeout(() => {
     setShowPreview(true);
-    setShowCloseButton(true); // Exibir o botão fechar visualização ao clicar em visualizar
-  };
+    setShowCloseButton(true);
+    setShowVisualizarButton(false);
+    setLoading(false); // Finaliza o carregamento
+  }, 1000); // Tempo simulado de carregamento
+};
+  
 
   const handleFecharVisualizacao = () => {
     setShowPreview(false);
+    setShowVisualizarButton(true);
     setShowCloseButton(false); // Ocultar o botão fechar visualização ao fechar a visualização
   };
 
@@ -297,10 +313,10 @@ const ReportEditor = () => {
             </option>
           ))}
         </select>
-        <button onClick={handleVisualizar} className="mx-6">
+        {showVisualizarButton && <button onClick={handleVisualizar} className="mx-6">
           Visualizar
-        </button>
-        {showCloseButton && <button onClick={handleFecharVisualizacao}>
+        </button>}
+        {showCloseButton && <button onClick={handleFecharVisualizacao} className="mx-6">
           Fechar Visualização
         </button>}
       </div>
