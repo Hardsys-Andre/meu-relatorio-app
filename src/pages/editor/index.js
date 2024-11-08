@@ -3,7 +3,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { saveAs } from "file-saver";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import mockRelatorios from "../data/mockRelatorios.json";
+import mockRelatorios from "../../data/mockRelatorios.json";
 import htmlToPdfmake from "html-to-pdfmake";
 import htmlDocx from "html-docx-js/dist/html-docx";
 
@@ -14,9 +14,11 @@ const ReportEditor = () => {
   const [selectedRelatorio, setSelectedRelatorio] = useState(
     mockRelatorios.relatorios[0]
   );
-  const [produtoFilter, setProdutoFilter] = useState("");
+  const [filtro, setFiltro] = useState({}); // Criado um estado para armazenar o filtro
   const editorRef = useRef(null);
   const [imageDataUrls, setImageDataUrls] = useState({});
+  const [showPreview, setShowPreview] = useState(false); // Estado para controlar a visibilidade da pré-visualização
+  const [showCloseButton, setShowCloseButton] = useState(false); // Estado para controlar a visibilidade do botão fechar visualização
 
   const tinyMCEApiKey = "b0tl99mycwhh1o7hptou60a3w11110ox6av062w6limk184s";
 
@@ -55,7 +57,7 @@ const ReportEditor = () => {
         name: field,
         placeholder:
           field === "imagem"
-            ? `<img src="${selectedRelatorio.imagem}" alt="Imagem do relatório" style="max-width: 100%; height: auto;">`
+            ? `<img src="${selectedRelatorio.imagem}" alt="Imagem do relatório" class="max-w-full h-auto">`
             : `{{${field}}}`,
       }));
 
@@ -82,7 +84,7 @@ const ReportEditor = () => {
       if (field.name === "imagem") {
         replacedContent = replacedContent.replace(
           regex,
-          `<img src="${relatorio.imagem}" alt="Imagem do relatório" style="max-width: 100%; height: auto;">`
+          `<img src="${relatorio.imagem}" alt="Imagem do relatório" class="max-w-full h-auto">`
         );
       } else {
         replacedContent = replacedContent.replace(regex, relatorio[field.name]);
@@ -96,15 +98,22 @@ const ReportEditor = () => {
     let allReportsContent = [];
 
     const relatoriosFiltrados = mockRelatorios.relatorios.filter(
-      (relatorio) =>
-        relatorio.produto.toLowerCase().includes(produtoFilter.toLowerCase())
+      (relatorio) => {
+        let passFilter = true;
+        Object.keys(filtro).forEach((key) => {
+          if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
+            passFilter = false;
+          }
+        });
+        return passFilter;
+      }
     );
 
     relatoriosFiltrados.forEach((relatorio, index) => {
       const content = replaceFieldsWithMockData(reportContent, relatorio);
       allReportsContent.push({
         text: `Relatório de ${relatorio.nomeCliente}\n\n`,
-        style: "header",
+        style: "header", // Substituir por tailwindcss
       });
       allReportsContent.push(htmlToPdfmake(content));
 
@@ -132,8 +141,15 @@ const ReportEditor = () => {
     let allReportsContent = "";
 
     const relatoriosFiltrados = mockRelatorios.relatorios.filter(
-      (relatorio) =>
-        relatorio.produto.toLowerCase().includes(produtoFilter.toLowerCase())
+      (relatorio) => {
+        let passFilter = true;
+        Object.keys(filtro).forEach((key) => {
+          if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
+            passFilter = false;
+          }
+        });
+        return passFilter;
+      }
     );
 
     relatoriosFiltrados.forEach((relatorio, index) => {
@@ -145,7 +161,7 @@ const ReportEditor = () => {
         imgRegex,
         (match, src) => {
           const base64Image = imageDataUrls[src];
-          return `<img src="${base64Image}" style="max-width: 100%; height: auto;"`;
+          return `<img src="${base64Image}" class="max-w-full h-auto">`;
         }
       );
 
@@ -166,28 +182,58 @@ const ReportEditor = () => {
       (r) => r.nomeCliente === event.target.value
     );
     setSelectedRelatorio(relatorio);
+    setShowPreview(true); // Exibir a pré-visualização após a seleção do relatório
+    setShowCloseButton(true); // Exibir o botão fechar visualização após a seleção do relatório
   };
 
-  const handleProdutoFilterChange = (event) => {
-    setProdutoFilter(event.target.value);
+  const handleFiltroChange = (event) => {
+    setFiltro((prevFiltro) => ({
+      ...prevFiltro,
+      [event.target.name]: event.target.value,
+    }));
   };
 
   const relatoriosFiltrados = mockRelatorios.relatorios.filter(
-    (relatorio) =>
-      relatorio.produto.toLowerCase().includes(produtoFilter.toLowerCase())
+    (relatorio) => {
+      let passFilter = true;
+      Object.keys(filtro).forEach((key) => {
+        if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
+          passFilter = false;
+        }
+      });
+      return passFilter;
+    }
   );
+
+  const handleVisualizar = () => {
+    setShowPreview(true);
+    setShowCloseButton(true); // Exibir o botão fechar visualização ao clicar em visualizar
+  };
+
+  const handleFecharVisualizacao = () => {
+    setShowPreview(false);
+    setShowCloseButton(false); // Ocultar o botão fechar visualização ao fechar a visualização
+  };
 
   return (
     <div>
-      <h2>Crie Seu Relatório</h2>
-      <div style={{ marginBottom: "20px" }}>
-        <label htmlFor="produtoFilter">Filtrar por Produto:</label>
-        <input
-          type="text"
-          id="produtoFilter"
-          value={produtoFilter}
-          onChange={handleProdutoFilterChange}
-        />
+      <header className="App-header">
+        <h1 className="text-[36px]">Gerador de Relatórios Dinâmicos</h1>
+      </header>
+      <h2 className="my-6 text-[30px]">Crie Seu Relatório</h2>
+      <div className="mb-10">
+        <label>Filtrar por: </label>
+        {dynamicFields.map((field) => (
+          <input
+            key={field.name}
+            type="text"
+            name={field.name}
+            value={filtro[field.name]}
+            onChange={handleFiltroChange}
+            placeholder={field.name}
+            className="mr-2.5 bg-[#42B091] text-base rounded-md text-white px-2 placeholder-black"
+          />
+        ))}
       </div>
       <Editor
         apiKey={tinyMCEApiKey}
@@ -229,45 +275,47 @@ const ReportEditor = () => {
         onEditorChange={handleEditorChange}
       />
 
-      <div style={{ marginTop: "20px" }}>
-        <h3>Inserir Campos Dinâmicos:</h3>
+      <div className="mt-10">
+        <h3 className="my-4 font-semibold text-lg">Inserir Campos Dinâmicos:</h3>
         {dynamicFields.map((field) => (
           <button
             key={field.name}
             onClick={() => handleInsertField(field.placeholder)}
-            style={{ marginRight: "10px", padding: "10px" }}
+            className="mr-4 px-4 py-2"
           >
             {field.name}
           </button>
         ))}
       </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <h3>Selecionar Cliente para Pré-visualização:</h3>
-        <select onChange={handleRelatorioChange}>
+      <div className="mt-10">
+        <h3 className="my-4 font-semibold text-lg">Selecionar Cliente para Visualização:</h3>
+        <select onChange={handleRelatorioChange} className="border-2 border-[#42B091]">
           {relatoriosFiltrados.map((relatorio) => (
             <option key={relatorio.nomeCliente} value={relatorio.nomeCliente}>
               {relatorio.nomeCliente}
             </option>
           ))}
         </select>
+        <button onClick={handleVisualizar} className="mx-6">
+          Visualizar
+        </button>
+        {showCloseButton && <button onClick={handleFecharVisualizacao}>
+          Fechar Visualização
+        </button>}
       </div>
 
-      <div
-        style={{
-          marginTop: "20px",
-          border: "1px solid #ccc",
-          padding: "10px",
-          height: "200px",
-          overflow: "auto",
-        }}
-        dangerouslySetInnerHTML={{
-          __html: replaceFieldsWithMockData(reportContent, selectedRelatorio),
-        }}
-      />
+      {showPreview && (
+        <div
+          className="mt-5 border border-gray-300 p-2.5 overflow-auto"
+          dangerouslySetInnerHTML={{
+            __html: replaceFieldsWithMockData(reportContent, selectedRelatorio),
+          }}
+        />
+      )}
 
       <div style={{ marginTop: "20px" }}>
-        <button onClick={exportToPDF} style={{ marginRight: "10px" }}>
+        <button onClick={exportToPDF} className="mr-2.5">
           Exportar para PDF
         </button>
         <button onClick={exportAllToDocx}>

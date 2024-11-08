@@ -1,3 +1,8 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .App {
   text-align: center;
   padding: 20px;
@@ -10,17 +15,22 @@
 }
 
 button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
+  background-color: #42B091;
+  color: #e2e2e2;
+  border: 1px solid #e2e2e2;
+  border-radius: 15px;
+  padding: 8px 10px;
   text-align: center;
   display: inline-block;
   font-size: 16px;
-  margin: 5px;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #31a081;
+  border: 1px solid white;
+  color: white;
+}
+.placeholder-black::placeholder {
+  color: black;
 }
