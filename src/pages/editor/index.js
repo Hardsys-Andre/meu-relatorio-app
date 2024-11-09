@@ -102,7 +102,9 @@ const ReportEditor = () => {
       (relatorio) => {
         let passFilter = true;
         Object.keys(filtro).forEach((key) => {
-          if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
+          if (
+            !relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())
+          ) {
             passFilter = false;
           }
         });
@@ -140,49 +142,48 @@ const ReportEditor = () => {
 
   const exportAllToDocx = () => {
     let allReportsContent = "";
-
-    const relatoriosFiltrados = mockRelatorios.relatorios.filter(
-      (relatorio) => {
-        let passFilter = true;
-        Object.keys(filtro).forEach((key) => {
-          if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
-            passFilter = false;
-          }
-        });
-        return passFilter;
-      }
-    );
-
+  
+    const relatoriosFiltrados = mockRelatorios.relatorios.filter((relatorio) => {
+      let passFilter = true;
+      Object.keys(filtro).forEach((key) => {
+        if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
+          passFilter = false;
+        }
+      });
+      return passFilter;
+    });
+  
     relatoriosFiltrados.forEach((relatorio, index) => {
       const content = replaceFieldsWithMockData(reportContent, relatorio);
-
+  
       // Substituir a tag de imagem por uma versão base64
       const imgRegex = /<img[^>]+src="([^">]+)"/g;
-      const contentWithBase64Images = content.replace(
-        imgRegex,
-        (match, src) => {
-          const base64Image = imageDataUrls[src];
-          return `<img src="${base64Image}" class="max-w-full h-auto">`;
-        }
-      );
-
+      const contentWithBase64Images = content.replace(imgRegex, (match, src) => {
+        const base64Image = imageDataUrls[src];
+        return `<img src="${base64Image}" class="max-w-full h-auto">`;
+      });
+  
       allReportsContent += `<h2>Relatório de ${relatorio.nomeCliente}</h2>${contentWithBase64Images}`;
-
+  
       if (index !== relatoriosFiltrados.length - 1) {
         allReportsContent += '<w:br w:type="page"/>';
       }
     });
-
-    const docxContent = htmlDocx.asBlob(allReportsContent);
-
+  
+    // Gerar o arquivo DOCX com UTF-8
+    const docxContent = htmlDocx.asBlob(allReportsContent, {
+      charset: "utf-8"
+    });
+  
     saveAs(docxContent, "todos_relatorios.docx");
   };
+  
 
   const handleRelatorioChange = (event) => {
     const relatorio = mockRelatorios.relatorios.find(
       (r) => r.nomeCliente === event.target.value
     );
-  
+
     if (relatorio) {
       setSelectedRelatorio(relatorio);
       setShowPreview(true);
@@ -191,7 +192,6 @@ const ReportEditor = () => {
       console.warn("Relatório não encontrado!");
     }
   };
-  
 
   const handleFiltroChange = (event) => {
     setFiltro((prevFiltro) => ({
@@ -200,30 +200,27 @@ const ReportEditor = () => {
     }));
   };
 
-  const relatoriosFiltrados = mockRelatorios.relatorios.filter(
-    (relatorio) => {
-      let passFilter = true;
-      Object.keys(filtro).forEach((key) => {
-        if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
-          passFilter = false;
-        }
-      });
-      return passFilter;
-    }
-  );
+  const relatoriosFiltrados = mockRelatorios.relatorios.filter((relatorio) => {
+    let passFilter = true;
+    Object.keys(filtro).forEach((key) => {
+      if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
+        passFilter = false;
+      }
+    });
+    return passFilter;
+  });
   const [loading, setLoading] = useState(false);
 
   const handleVisualizar = () => {
-  setLoading(true);
-  // Simulação de uma chamada assíncrona, por exemplo, buscando dados para visualização
-  setTimeout(() => {
-    setShowPreview(true);
-    setShowCloseButton(true);
-    setShowVisualizarButton(false);
-    setLoading(false); // Finaliza o carregamento
-  }, 1000); // Tempo simulado de carregamento
-};
-  
+    setLoading(true);
+    // Simulação de uma chamada assíncrona, por exemplo, buscando dados para visualização
+    setTimeout(() => {
+      setShowPreview(true);
+      setShowCloseButton(true);
+      setShowVisualizarButton(false);
+      setLoading(false); // Finaliza o carregamento
+    }, 1000); // Tempo simulado de carregamento
+  };
 
   const handleFecharVisualizacao = () => {
     setShowPreview(false);
@@ -232,24 +229,30 @@ const ReportEditor = () => {
   };
 
   return (
-    <div>
+    <div className="mb-20">
       <header className="App-header">
-        <h1 className="text-[36px]">Gerador de Relatórios Dinâmicos</h1>
+        <h1 className="md:text-[36px] text-[22px]">
+          Gerador de Relatórios Dinâmicos
+        </h1>
       </header>
-      <h2 className="my-6 text-[30px]">Crie Seu Relatório</h2>
-      <div className="mb-10">
-        <label>Filtrar por: </label>
-        {dynamicFields.map((field) => (
-          <input
-            key={field.name}
-            type="text"
-            name={field.name}
-            value={filtro[field.name]}
-            onChange={handleFiltroChange}
-            placeholder={field.name}
-            className="mr-2.5 bg-[#42B091] text-base rounded-md text-white px-2 placeholder-black"
-          />
-        ))}
+      <h2 className="my-6 text-[30px]">Filtre os dados</h2>
+      <div className="flex md:flex-row flex-col gap-2 justify-center items-center mb-10 border-2 border-[#42B091] rounded-lg">
+        <div>
+          <label className="text-[16px] font-bold">Filtrar por: </label>
+        </div>
+        <div className="flex flex-col md:flex-row py-3 px-2 items-center justify-center">
+          {dynamicFields.map((field) => (
+            <input
+              key={field.name}
+              type="text"
+              name={field.name}
+              value={filtro[field.name]}
+              onChange={handleFiltroChange}
+              placeholder={field.name}
+              className="mr-2.5 mb-2.5 md:mb-0 bg-[#42B091] text-base rounded-md text-white px-2 placeholder-black"
+            />
+          ))}
+        </div>
       </div>
       <Editor
         apiKey={tinyMCEApiKey}
@@ -259,7 +262,7 @@ const ReportEditor = () => {
         }}
         init={{
           height: 500,
-          language: 'pt_BR',
+          language: "pt_BR",
           menubar: true,
           plugins: [
             "advlist autolink lists link image charmap print preview anchor",
@@ -291,34 +294,50 @@ const ReportEditor = () => {
         onEditorChange={handleEditorChange}
       />
 
-      <div className="mt-10">
-        <h3 className="my-4 font-semibold text-lg">Inserir Campos Dinâmicos:</h3>
-        {dynamicFields.map((field) => (
-          <button
-            key={field.name}
-            onClick={() => handleInsertField(field.placeholder)}
-            className="mr-4 px-4 py-2"
-          >
-            {field.name}
-          </button>
-        ))}
+      <div className="mt-10 border-2 border-[#42B091] rounded-xl">
+        <h3 className="my-4 font-semibold text-lg">
+          Inserir Campos Dinâmicos:
+        </h3>
+        <div className="flex md:flex-row flex-wrap px-2 py-2 gap-2 justify-center items-center">
+          {dynamicFields.map((field) => (
+            <button
+              key={field.name}
+              onClick={() => handleInsertField(field.placeholder)}
+              className="md:mr-4 md:px-4 py-2 w-[138px]"
+            >
+              {field.name}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="mt-10">
-        <h3 className="my-4 font-semibold text-lg">Selecionar Cliente para Visualização:</h3>
-        <select onChange={handleRelatorioChange} className="border-2 border-[#42B091]">
+        <h3 className="my-4 font-semibold text-lg">
+          Selecionar Cliente para Visualização:
+        </h3>
+        <div className="flex flex-col md:flex-row gap-2 justify-center">
+        <select
+          onChange={handleRelatorioChange}
+          className="border-2 border-[#42B091]"
+        >
           {relatoriosFiltrados.map((relatorio) => (
             <option key={relatorio.nomeCliente} value={relatorio.nomeCliente}>
               {relatorio.nomeCliente}
             </option>
           ))}
         </select>
-        {showVisualizarButton && <button onClick={handleVisualizar} className="mx-6">
-          Visualizar
-        </button>}
-        {showCloseButton && <button onClick={handleFecharVisualizacao} className="mx-6">
-          Fechar Visualização
-        </button>}
+        {showVisualizarButton && (
+          <button onClick={handleVisualizar} className="mx-6">
+            Visualizar
+          </button>
+        )}
+        {showCloseButton && (
+          <button onClick={handleFecharVisualizacao} className="mx-6">
+            Fechar Visualização
+          </button>
+        )}  
+        </div>
+        
       </div>
 
       {showPreview && (
@@ -330,13 +349,11 @@ const ReportEditor = () => {
         />
       )}
 
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={exportToPDF} className="mr-2.5">
+      <div className="flex flex-row mt-10 justify-center">
+        <button onClick={exportToPDF} className="text-sm mr-2.5">
           Exportar para PDF
         </button>
-        <button onClick={exportAllToDocx}>
-          Exportar para DOCX
-        </button>
+        <button onClick={exportAllToDocx} className="text-sm">Exportar para DOCX</button>
       </div>
     </div>
   );

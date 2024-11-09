@@ -3,14 +3,25 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: Arial, sans-serif; /* Escolha uma fonte padrão ou personalizada */
+}
+
 .App {
   text-align: center;
-  padding: 20px;
+  padding: 8px;
 }
 
 .App-header {
   background-color: #282c34;
-  padding: 20px;
+  padding: 8px;
   color: white;
 }
 
