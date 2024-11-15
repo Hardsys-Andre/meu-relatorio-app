@@ -230,8 +230,11 @@ const ReportEditor = () => {
   };
 
   const handleLimparEditor = () => {
-    setReportContent("");
-    localStorage.removeItem('reportContent');
+    const confirmLimpar = window.confirm("Tem certeza que deseja limpar o editor?");
+    if (confirmLimpar) {
+      setReportContent("");
+      localStorage.removeItem('reportContent');
+    }
   };
 
   return (
