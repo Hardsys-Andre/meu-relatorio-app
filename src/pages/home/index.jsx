@@ -66,7 +66,7 @@ function Home() {
                     </div>
                     <div className="flex flex-col items-center mx-4">
                         <img src={Andre_a} alt="Criador 2" className="w-32 h-32 rounded-[64px] border-2 border-[#42B091]" />
-                        <span className="mt-2 font-semibold text-center">André Alexssander</span>
+                        <span className="mt-2 font-semibold text-center">André Alexander</span>
                         <span className="text-center text-sm">Aluno UNIVESP em Ciência da Computação</span>
                     </div>
                     <div className="flex flex-col items-center mx-4">

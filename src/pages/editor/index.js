@@ -10,7 +10,7 @@ import htmlDocx from "html-docx-js/dist/html-docx";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ReportEditor = () => {
-  const [reportContent, setReportContent] = useState("");
+  const [reportContent, setReportContent] = useState(localStorage.getItem('reportContent') || "");
   const [selectedRelatorio, setSelectedRelatorio] = useState(
     mockRelatorios.relatorios[0]
   );
@@ -69,6 +69,7 @@ const ReportEditor = () => {
 
   const handleEditorChange = (content) => {
     setReportContent(content);
+    localStorage.setItem('reportContent', content);
   };
 
   const handleInsertField = (placeholder) => {
@@ -228,6 +229,11 @@ const ReportEditor = () => {
     setShowCloseButton(false); // Ocultar o botão fechar visualização ao fechar a visualização
   };
 
+  const handleLimparEditor = () => {
+    setReportContent("");
+    localStorage.removeItem('reportContent');
+  };
+
   return (
     <div className="mb-20">
       <header className="App-header">
@@ -253,6 +259,9 @@ const ReportEditor = () => {
             />
           ))}
         </div>
+      </div>
+      <div className="my-10">
+        <button onClick={handleLimparEditor} className="text-sm">Limpar Editor</button>
       </div>
       <Editor
         apiKey={tinyMCEApiKey}
@@ -355,6 +364,8 @@ const ReportEditor = () => {
         </button>
         <button onClick={exportAllToDocx} className="text-sm">Exportar para DOCX</button>
       </div>
+
+      
     </div>
   );
 };
