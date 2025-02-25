@@ -6,14 +6,14 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import mockRelatorios from "../../data/mockRelatorios.json";
 import htmlToPdfmake from "html-to-pdfmake";
 import htmlDocx from "html-docx-js/dist/html-docx";
+import FilterBar from "../../components/FilterBar";
+import TextEditor from "../../components/TextEditor";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ReportEditor = () => {
   const [reportContent, setReportContent] = useState(localStorage.getItem('reportContent') || "");
-  const [selectedRelatorio, setSelectedRelatorio] = useState(
-    mockRelatorios.relatorios[0]
-  );
+  const [selectedRelatorio, setSelectedRelatorio] = useState(mockRelatorios.relatorios[0]);
   const [filtro, setFiltro] = useState({}); // Criado um estado para armazenar o filtro
   const editorRef = useRef(null);
   const [imageDataUrls, setImageDataUrls] = useState({});
@@ -74,7 +74,8 @@ const ReportEditor = () => {
 
   const handleInsertField = (placeholder) => {
     if (editorRef.current) {
-      editorRef.current.execCommand("mceInsertContent", false, placeholder);
+      //editorRef.current.execCommand("mceInsertContent", false, placeholder);
+      editorRef.current.insertContent(placeholder);
     }
   };
 
@@ -179,7 +180,6 @@ const ReportEditor = () => {
     saveAs(docxContent, "todos_relatorios.docx");
   };
   
-
   const handleRelatorioChange = (event) => {
     const relatorio = mockRelatorios.relatorios.find(
       (r) => r.nomeCliente === event.target.value
@@ -245,83 +245,21 @@ const ReportEditor = () => {
         </h1>
       </header>
       <h2 className="my-6 text-[30px]">Filtre os dados</h2>
-      <div className="flex md:flex-row flex-col gap-2 justify-center items-center mb-10 border-2 border-[#42B091] rounded-lg">
-        <div>
-          <label className="text-[16px] font-bold">Filtrar por: </label>
-        </div>
         <div className="flex flex-col md:flex-row py-3 px-2 items-center justify-center">
-          {dynamicFields.map((field) => (
-            <input
-              key={field.name}
-              type="text"
-              name={field.name}
-              value={filtro[field.name]}
-              onChange={handleFiltroChange}
-              placeholder={field.name}
-              className="mr-2.5 mb-2.5 md:mb-0 bg-[#42B091] text-base rounded-md text-white px-2 placeholder-black"
-            />
-          ))}
+        <FilterBar filtro={filtro} onFiltroChange={handleFiltroChange} dynamicFields={dynamicFields}/>
         </div>
-      </div>
       <div className="my-10">
         <button onClick={handleLimparEditor} className="text-sm">Limpar Editor</button>
       </div>
-      <Editor
-        apiKey={tinyMCEApiKey}
-        value={reportContent}
-        onInit={(evt, editor) => {
-          editorRef.current = editor;
-        }}
-        init={{
-          height: 500,
-          language: "pt_BR",
-          menubar: true,
-          plugins: [
-            "advlist autolink lists link image charmap print preview anchor",
-            "searchreplace visualblocks code fullscreen",
-            "insertdatetime media table paste code help wordcount",
-            "table",
-            "image",
-            "imagetools",
-            "paste",
-            "code",
-          ],
-          toolbar:
-            "table" +
-            "undo redo | bold italic backcolor | " +
-            "alignleft aligncenter alignright alignjustify | " +
-            "bullist numlist outdent indent | removeformat | image | help | " +
-            "tableinsertcolbefore tableinsertcolafter tabledeletecol",
-          content_style:
-            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-          table_toolbar:
-            "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | " +
-            "tableinsertcolbefore tableinsertcolafter tabledeletecol",
-          imagetools_toolbar:
-            "rotateleft rotateright | flipv fliph | editimage imageoptions",
-          image_advtab: true,
-          automatic_uploads: true, // Desabilita uploads automáticos
-          paste_data_images: true, // Permite colar imagens
-        }}
-        onEditorChange={handleEditorChange}
+      
+      <TextEditor 
+      value={reportContent} 
+      onChange={handleEditorChange} 
+      apiKey={tinyMCEApiKey} 
+      dynamicFields={dynamicFields} 
+      handleInsertField={handleInsertField}
+      editorRef={editorRef}
       />
-
-      <div className="mt-10 border-2 border-[#42B091] rounded-xl">
-        <h3 className="my-4 font-semibold text-lg">
-          Inserir Campos Dinâmicos:
-        </h3>
-        <div className="flex md:flex-row flex-wrap px-2 py-2 gap-2 justify-center items-center">
-          {dynamicFields.map((field) => (
-            <button
-              key={field.name}
-              onClick={() => handleInsertField(field.placeholder)}
-              className="md:mr-4 md:px-4 py-2 w-[138px]"
-            >
-              {field.name}
-            </button>
-          ))}
-        </div>
-      </div>
 
       <div className="mt-10">
         <h3 className="my-4 font-semibold text-lg">
