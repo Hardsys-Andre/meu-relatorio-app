@@ -1,68 +1,56 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Editor } from "@tinymce/tinymce-react";
-import { saveAs } from "file-saver";
+import React, { useState, useEffect, useRef } from "react";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import mockRelatorios from "../../data/mockRelatorios.json";
 import htmlToPdfmake from "html-to-pdfmake";
-import htmlDocx from "html-docx-js/dist/html-docx";
+import mockRelatorios from "../../data/mockRelatorios.json";
 import FilterBar from "../../components/FilterBar";
 import TextEditor from "../../components/TextEditor";
+import { useCSV } from "../../context/CsvContext";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ReportEditor = () => {
   const [reportContent, setReportContent] = useState(localStorage.getItem('reportContent') || "");
   const [selectedRelatorio, setSelectedRelatorio] = useState(mockRelatorios.relatorios[0]);
-  const [filtro, setFiltro] = useState({}); // Criado um estado para armazenar o filtro
+  const [filtro, setFiltro] = useState({});
   const editorRef = useRef(null);
-  const [imageDataUrls, setImageDataUrls] = useState({});
-  const [showPreview, setShowPreview] = useState(false); // Estado para controlar a visibilidade da pré-visualização
-  const [showCloseButton, setShowCloseButton] = useState(false); // Estado para controlar a visibilidade do botão fechar visualização
+  const [showPreview, setShowPreview] = useState(false);
+  const [showCloseButton, setShowCloseButton] = useState(false);
   const [showVisualizarButton, setShowVisualizarButton] = useState(true);
+  const { selectedColumns } = useCSV();
 
   const tinyMCEApiKey = "b0tl99mycwhh1o7hptou60a3w11110ox6av062w6limk184s";
 
-  useEffect(() => {
-    const loadImages = async () => {
-      const urls = {};
-      for (const relatorio of mockRelatorios.relatorios) {
-        if (relatorio.imagem) {
-          try {
-            const response = await fetch(relatorio.imagem);
-            const blob = await response.blob();
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              urls[relatorio.imagem] = reader.result;
-              setImageDataUrls((prevUrls) => ({
-                ...prevUrls,
-                [relatorio.imagem]: reader.result,
-              }));
-            };
-            reader.readAsDataURL(blob);
-          } catch (error) {
-            console.error("Erro ao carregar imagem:", error);
-          }
-        }
-      }
-    };
+  const [dynamicFieldsSelected, setDynamicFieldsSelected] = useState([]);
 
-    loadImages();
-  }, []);
+  useEffect(() => {
+    const storedColumns = localStorage.getItem('csvData');
+    if (storedColumns) {
+      setDynamicFieldsSelected(JSON.parse(storedColumns).map(column => ({
+        name: column,
+        placeholder: `{{${column}}}`,
+      })));
+    }
+  }, [selectedColumns]);
 
   const getDynamicFieldsFromRelatorios = () => {
-    const relatorio = mockRelatorios.relatorios[0];
-    const fields = Object.keys(relatorio)
-      .filter((field) => field !== "id")
-      .map((field) => ({
-        name: field,
-        placeholder:
-          field === "imagem"
-            ? `<img src="${selectedRelatorio.imagem}" alt="Imagem do relatório" class="max-w-full h-auto">`
-            : `{{${field}}}`,
-      }));
-
-    return fields;
+    const storedData = localStorage.getItem("csvData");
+    if (!storedData) return [];
+  
+    try {
+      const parsedData = JSON.parse(storedData);
+      if (!Array.isArray(parsedData) || parsedData.length === 0) return [];
+      const relatorio = parsedData[0];
+      return Object.keys(relatorio)
+        .filter((field) => field !== "id")
+        .map((field) => ({
+          name: field,
+          placeholder: `{{${field}}}`,
+        }));
+    } catch (error) {
+      console.error("Erro ao processar os dados do localStorage:", error);
+      return [];
+    }
   };
 
   const [dynamicFields] = useState(getDynamicFieldsFromRelatorios());
@@ -72,166 +60,108 @@ const ReportEditor = () => {
     localStorage.setItem('reportContent', content);
   };
 
-  const handleInsertField = (placeholder) => {
-    if (editorRef.current) {
-      //editorRef.current.execCommand("mceInsertContent", false, placeholder);
-      editorRef.current.insertContent(placeholder);
+  const handleInsertField = (fieldPlaceholder) => {
+    const editor = editorRef.current;
+    if (editor) {
+      editor.insertContent(`{{${fieldPlaceholder}}}`);
     }
   };
 
   const replaceFieldsWithMockData = (content, relatorio) => {
     let replacedContent = content;
-
-    dynamicFields.forEach((field) => {
-      const regex = new RegExp(`{{${field.name}}}`, "g");
-      if (field.name === "imagem") {
-        replacedContent = replacedContent.replace(
-          regex,
-          `<img src="${relatorio.imagem}" alt="Imagem do relatório" class="max-w-full h-auto">`
-        );
-      } else {
-        replacedContent = replacedContent.replace(regex, relatorio[field.name]);
-      }
-    });
-
+    
+    // Verificando se o dynamicFields está definido e tem itens
+    if (Array.isArray(dynamicFields) && dynamicFields.length > 0) {
+      dynamicFields.forEach((field) => {
+        // Verificando se o campo está no relatorio antes de tentar substituir
+        if (relatorio && relatorio.hasOwnProperty(field.name)) {
+          const regex = new RegExp(`{{${field.name}}}`, "g");
+          const fieldValue = relatorio[field.name] !== undefined ? relatorio[field.name] : '';
+          replacedContent = replacedContent.replace(regex, fieldValue);
+        }
+      });
+    } else {
+      console.warn("dynamicFields não está definido corretamente ou está vazio.");
+    }
+  
     return replacedContent;
   };
+  
 
   const exportToPDF = () => {
-    let allReportsContent = [];
-
-    const relatoriosFiltrados = mockRelatorios.relatorios.filter(
-      (relatorio) => {
-        let passFilter = true;
-        Object.keys(filtro).forEach((key) => {
-          if (
-            !relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())
-          ) {
-            passFilter = false;
-          }
-        });
-        return passFilter;
-      }
+    // Recuperando os dados do localStorage
+    const storedCsvData = localStorage.getItem("csvData");
+  
+    // Se não houver dados no localStorage, retorna um alerta ou mensagem de erro
+    if (!storedCsvData) {
+      alert("Nenhum dado disponível para exportar.");
+      return;
+    }
+  
+    // Converting the stored CSV data from JSON format
+    const relatorios = JSON.parse(storedCsvData);
+  
+    // Filtrando os relatórios de acordo com o filtro
+    const relatoriosFiltrados = relatorios.filter((relatorio) =>
+      Object.keys(filtro).every((key) =>
+        relatorio[key]?.toLowerCase().includes(filtro[key]?.toLowerCase())
+      )
     );
-
-    relatoriosFiltrados.forEach((relatorio, index) => {
-      const content = replaceFieldsWithMockData(reportContent, relatorio);
-      allReportsContent.push({
-        text: `Relatório de ${relatorio.nomeCliente}\n\n`,
-        style: "header", // Substituir por tailwindcss
-      });
-      allReportsContent.push(htmlToPdfmake(content));
-
-      if (index !== relatoriosFiltrados.length - 1) {
-        allReportsContent.push({ text: "", pageBreak: "after" });
-      }
-    });
-
+  
+    // Gerando o conteúdo do relatório para cada relatório filtrado
+    const allReportsContent = relatoriosFiltrados
+      .map((relatorio, index) => {
+        // Substituindo os placeholders pelos dados do CSV
+        const reportContentWithData = replaceFieldsWithMockData(reportContent, relatorio);
+  
+        return [
+          { text: `Relatório de ${relatorio.nomeCliente}\n\n`, style: "header" },
+          htmlToPdfmake(reportContentWithData), // Usando o conteúdo já substituído
+          index !== relatoriosFiltrados.length - 1
+            ? { text: "", pageBreak: "after" }
+            : null,
+        ];
+      })
+      .flat();
+  
+    // Definindo a estrutura do documento PDF
     const docDefinition = {
       content: allReportsContent,
       styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 10, 0, 10],
-        },
+        header: { fontSize: 18, bold: true, margin: [0, 10, 0, 10] },
       },
-      images: imageDataUrls,
     };
-
+  
+    // Gerando e baixando o arquivo PDF
     pdfMake.createPdf(docDefinition).download("todos_relatorios.pdf");
   };
-
-  const exportAllToDocx = () => {
-    let allReportsContent = "";
   
-    const relatoriosFiltrados = mockRelatorios.relatorios.filter((relatorio) => {
-      let passFilter = true;
-      Object.keys(filtro).forEach((key) => {
-        if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
-          passFilter = false;
-        }
-      });
-      return passFilter;
-    });
   
-    relatoriosFiltrados.forEach((relatorio, index) => {
-      const content = replaceFieldsWithMockData(reportContent, relatorio);
   
-      // Substituir a tag de imagem por uma versão base64
-      const imgRegex = /<img[^>]+src="([^">]+)"/g;
-      const contentWithBase64Images = content.replace(imgRegex, (match, src) => {
-        const base64Image = imageDataUrls[src];
-        return `<img src="${base64Image}" class="max-w-full h-auto">`;
-      });
-  
-      allReportsContent += `<h2>Relatório de ${relatorio.nomeCliente}</h2>${contentWithBase64Images}`;
-  
-      if (index !== relatoriosFiltrados.length - 1) {
-        allReportsContent += '<w:br w:type="page"/>';
-      }
-    });
-  
-    // Gerar o arquivo DOCX com UTF-8
-    const docxContent = htmlDocx.asBlob(allReportsContent, {
-      charset: "utf-8"
-    });
-  
-    saveAs(docxContent, "todos_relatorios.docx");
-  };
-  
-  const handleRelatorioChange = (event) => {
-    const relatorio = mockRelatorios.relatorios.find(
-      (r) => r.nomeCliente === event.target.value
-    );
-
-    if (relatorio) {
-      setSelectedRelatorio(relatorio);
-      setShowPreview(true);
-      setShowCloseButton(true);
-    } else {
-      console.warn("Relatório não encontrado!");
-    }
-  };
-
   const handleFiltroChange = (event) => {
-    setFiltro((prevFiltro) => ({
-      ...prevFiltro,
-      [event.target.name]: event.target.value,
-    }));
+    setFiltro(prevFiltro => ({ ...prevFiltro, [event.target.name]: event.target.value }));
   };
 
-  const relatoriosFiltrados = mockRelatorios.relatorios.filter((relatorio) => {
-    let passFilter = true;
-    Object.keys(filtro).forEach((key) => {
-      if (!relatorio[key].toLowerCase().includes(filtro[key].toLowerCase())) {
-        passFilter = false;
-      }
-    });
-    return passFilter;
-  });
   const [loading, setLoading] = useState(false);
 
   const handleVisualizar = () => {
     setLoading(true);
-    // Simulação de uma chamada assíncrona, por exemplo, buscando dados para visualização
     setTimeout(() => {
       setShowPreview(true);
       setShowCloseButton(true);
       setShowVisualizarButton(false);
-      setLoading(false); // Finaliza o carregamento
-    }, 1000); // Tempo simulado de carregamento
+      setLoading(false);
+    }, 1000);
   };
 
   const handleFecharVisualizacao = () => {
     setShowPreview(false);
     setShowVisualizarButton(true);
-    setShowCloseButton(false); // Ocultar o botão fechar visualização ao fechar a visualização
+    setShowCloseButton(false);
   };
 
   const handleLimparEditor = () => {
-    const confirmLimpar = window.confirm("Tem certeza que deseja limpar o editor?");
-    if (confirmLimpar) {
+    if (window.confirm("Tem certeza que deseja limpar o editor?")) {
       setReportContent("");
       localStorage.removeItem('reportContent');
     }
@@ -240,73 +170,38 @@ const ReportEditor = () => {
   return (
     <div className="mb-20">
       <header className="App-header">
-        <h1 className="md:text-[36px] text-[22px]">
-          Gerador de Relatórios Dinâmicos
-        </h1>
+        <h1 className="md:text-[36px] text-[22px]">Gerador de Relatórios Dinâmicos</h1>
       </header>
+
       <h2 className="my-6 text-[30px]">Filtre os dados</h2>
-        <div className="flex flex-col md:flex-row py-3 px-2 items-center justify-center">
-        <FilterBar filtro={filtro} onFiltroChange={handleFiltroChange} dynamicFields={dynamicFields}/>
-        </div>
+      <FilterBar filtro={filtro} onFiltroChange={handleFiltroChange} dynamicFields={dynamicFields} />
+
       <div className="my-10">
         <button onClick={handleLimparEditor} className="text-sm">Limpar Editor</button>
       </div>
-      
-      <TextEditor 
-      value={reportContent} 
-      onChange={handleEditorChange} 
-      apiKey={tinyMCEApiKey} 
-      dynamicFields={dynamicFields} 
-      handleInsertField={handleInsertField}
-      editorRef={editorRef}
+
+      <TextEditor
+        value={reportContent}
+        onChange={handleEditorChange}
+        apiKey={tinyMCEApiKey}
+        handleInsertField={handleInsertField}
       />
 
       <div className="mt-10">
-        <h3 className="my-4 font-semibold text-lg">
-          Selecionar Cliente para Visualização:
-        </h3>
-        <div className="flex flex-col md:flex-row gap-2 justify-center">
-        <select
-          onChange={handleRelatorioChange}
-          className="border-2 border-[#42B091]"
-        >
-          {relatoriosFiltrados.map((relatorio) => (
-            <option key={relatorio.nomeCliente} value={relatorio.nomeCliente}>
-              {relatorio.nomeCliente}
-            </option>
-          ))}
-        </select>
-        {showVisualizarButton && (
-          <button onClick={handleVisualizar} className="mx-6">
-            Visualizar
-          </button>
-        )}
-        {showCloseButton && (
-          <button onClick={handleFecharVisualizacao} className="mx-6">
-            Fechar Visualização
-          </button>
-        )}  
-        </div>
+        <h3 className="my-4 font-semibold text-lg">Selecionar Cliente para Visualização:</h3>
         
+        {showVisualizarButton && <button onClick={handleVisualizar} className="mx-6">Visualizar Modelo</button>}
+        {showCloseButton && <button onClick={handleFecharVisualizacao} className="mx-6">Fechar Visualização</button>}
+        {/* Botão de Exportar para PDF */}
+        <button onClick={exportToPDF} className="mx-6 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+          Exportar para PDF
+        </button>
       </div>
 
       {showPreview && (
-        <div
-          className="mt-5 border border-gray-300 p-2.5 overflow-auto"
-          dangerouslySetInnerHTML={{
-            __html: replaceFieldsWithMockData(reportContent, selectedRelatorio),
-          }}
-        />
+        <div className="mt-5 border border-gray-300 p-2.5 overflow-auto"
+          dangerouslySetInnerHTML={{ __html: replaceFieldsWithMockData(reportContent, selectedRelatorio) }} />
       )}
-
-      <div className="flex flex-row mt-10 justify-center">
-        <button onClick={exportToPDF} className="text-sm mr-2.5">
-          Exportar para PDF
-        </button>
-        <button onClick={exportAllToDocx} className="text-sm">Exportar para DOCX</button>
-      </div>
-
-      
     </div>
   );
 };

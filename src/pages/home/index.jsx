@@ -29,6 +29,9 @@ function Home() {
                     <Link to="/editor">
                         <button>Editor de Relatórios</button>
                     </Link>
+                    <Link to="/csvUploader">
+                        <button>CSV Uploader</button>
+                    </Link>
                     <button onClick={() => window.location.href = "#criadores"}>Criadores</button>
                     <button onClick={() => window.location.href = "#contatos"}>Contatos</button>
                 </div>

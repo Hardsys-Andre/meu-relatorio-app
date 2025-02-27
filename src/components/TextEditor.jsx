@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 
-const TextEditor = ({ value, onChange, apiKey, dynamicFields, handleInsertField, editorRef }) => {
+const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
+  const editorRef = useRef(null);
+  const [dynamicFieldsSelected, setDynamicFieldsSelected] = useState([]);
+
+  // Recuperar os nomes das colunas do localStorage
+  useEffect(() => {
+    const storedData = localStorage.getItem("csvData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+
+      // Verifica se há dados e pega os nomes das colunas do primeiro item
+      if (Array.isArray(parsedData) && parsedData.length > 0) {
+        const columnNames = Object.keys(parsedData[0]); // Obtém apenas os nomes das colunas
+        setDynamicFieldsSelected(columnNames);
+      }
+    }
+  }, []);
 
   const handleEditorChange = (content) => {
     onChange(content);
@@ -13,7 +29,7 @@ const TextEditor = ({ value, onChange, apiKey, dynamicFields, handleInsertField,
         apiKey={apiKey}
         value={value}
         onInit={(evt, editor) => {
-            editorRef.current = editor;
+          editorRef.current = editor;
         }}
         init={{
           height: 500,
@@ -51,15 +67,25 @@ const TextEditor = ({ value, onChange, apiKey, dynamicFields, handleInsertField,
       <div className="insert-fields">
         <h3 className="my-4 font-semibold text-lg">Inserir Campos Dinâmicos:</h3>
         <div className="flex md:flex-row flex-wrap px-2 py-2 gap-2 justify-center items-center">
-          {dynamicFields.map((field) => (
-            <button
-              key={field.name}
-              onClick={() => handleInsertField(field.placeholder)}
-              className="md:mr-4 md:px-4 py-2 w-[138px]"
-            >
-              {field.name}
-            </button>
-          ))}
+          {dynamicFieldsSelected.length > 0 ? (
+            dynamicFieldsSelected.map((field, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  if (editorRef.current) {
+                    const fieldContent = `{{${field}}}`; // Insere o nome do campo no editor
+                    editorRef.current.insertContent(fieldContent);
+                    handleInsertField(field); // Chama a função para armazenar os campos inseridos
+                  }
+                }}
+                className="md:mr-4 md:px-4 py-2 w-[138px]"
+              >
+                {field}
+              </button>
+            ))
+          ) : (
+            <p className="text-gray-500">Nenhum campo disponível.</p>
+          )}
         </div>
       </div>
     </div>
