@@ -15,7 +15,7 @@ html, body {
 
 .App {
   text-align: center;
-  padding: 8px;
+  padding: 0px;
 }
 
 .App-header {
@@ -28,11 +28,10 @@ button {
   background-color: #42B091;
   color: #e2e2e2;
   border: 1px solid #e2e2e2;
-  border-radius: 15px;
-  padding: 8px 10px;
+  border-radius: 10px;
+  padding: 6px 8px;
   text-align: center;
   display: inline-block;
-  font-size: 16px;
   cursor: pointer;
 }
 
