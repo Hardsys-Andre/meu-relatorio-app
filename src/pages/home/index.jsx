@@ -1,42 +1,14 @@
 import React from 'react';
-import { useState } from 'react';
 import Logo from '../../assets/logo_scl.png';
 import Robo from '../../assets/robo.png';
 import Andre_e from '../../assets/andre-e.jpg';
 import Andre_a from '../../assets/andre-a.png';
 import Jose from '../../assets/jose.png';
-import { Link } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa';
-
-
 
 function Home() {
-    const [menuOpen, setMenuOpen] = useState(false);
 
     return (
         <div className="flex flex-col w-full items-center">
-            <header className="bg-[#42B091] w-full p-2 border-[1px] border-[#e2e2e2] rounded-xl">
-            <nav className="flex md:justify-between justify-center items-center mr-10">
-                <img src={Robo} alt="Robo" className="md:h-10 md:ml-10 hidden md:block" />
-                <button
-                    className="text-white md:hidden"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                >
-                    {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-                </button>
-                <div className={`flex-col md:flex md:flex-row gap-2 md:gap-10 ${menuOpen ? 'flex' : 'hidden'} md:flex`}>
-                    <button onClick={() => window.open("https://superclient.com.br/", "_blank")}>SuperClient</button>
-                    <Link to="/editor">
-                        <button>Editor de Relatórios</button>
-                    </Link>
-                    <Link to="/csvUploader">
-                        <button>CSV Uploader</button>
-                    </Link>
-                    <button onClick={() => window.location.href = "#criadores"}>Criadores</button>
-                    <button onClick={() => window.location.href = "#contatos"}>Contatos</button>
-                </div>
-            </nav>
-        </header>
             <main className="flex flex-col w-full p-4 justify-center">
                 <div className='flex flex-row mt-10 justify-center items-center'>
                     <div className="flex flex-col lg:w-[300px] xl:w-[500px] items-center">
