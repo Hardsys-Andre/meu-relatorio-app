@@ -5,6 +5,8 @@ import Layout from './components/Layout';
 import Home from './pages/home/index';
 import Editor from './pages/editor/index';
 import CsvPage from './pages/csvUploader';
+import LoginPage from './pages/login';
+import RegisterPage from './pages/registerPage';
 
 function App() {
   return (
@@ -15,6 +17,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/editor" element={<Editor />} />
             <Route path='csvUploader' element={<CsvPage/>}/>
+            <Route path='pageLogin' element={<LoginPage/>}/>
+            <Route path='registerPage' element={<RegisterPage/>}/>
+            
           </Routes>
         </Layout>
       </div>

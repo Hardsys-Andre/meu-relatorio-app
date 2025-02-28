@@ -32,6 +32,9 @@ const Navbar = () => {
                         <button className='w-full md:w-auto text-[12px] md:text-[16px]'>CSV Uploader</button>
                     </Link>
                     <button className='w-full md:w-auto text-[12px] md:text-[16px]' onClick={() => window.open("https://superclient.com.br/", "_blank")}>SuperClient</button>
+                    <Link to="/pageLogin">
+                        <button className='w-full md:w-auto text-[12px] md:text-[16px]'>Login</button>
+                    </Link>
                 </div>
             </nav>
         </header>
