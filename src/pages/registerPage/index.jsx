@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from 'react-router-dom';
 
+
 export default function RegisterPage() {
   const [form, setForm] = useState({
     firstName: "",
@@ -9,14 +10,20 @@ export default function RegisterPage() {
     cityState: "",
     email: "",
     password: "",
+    termsAccepted: false,
   });
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!form.termsAccepted) {
+      alert("Você deve aceitar os termos para continuar!");
+      return;
+    }
     console.log("Dados do usuário:", form);
   };
 
@@ -107,9 +114,31 @@ export default function RegisterPage() {
               required
             />
           </div>
+          {/* Checkbox de termos */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="termsAccepted"
+              checked={form.termsAccepted}
+              onChange={handleChange}
+              className="h-5 w-5 text-[#42B091] focus:ring-[#42B091] rounded"
+            />
+            <label className="text-sm text-gray-700">
+              Eu aceito os{" "}
+              <a href="#" className="text-[#42B091] hover:underline">
+                Termos de Uso
+              </a>
+            </label>
+          </div>
+          {/* Botão de cadastro desativado até aceitar os termos */}
           <button
             type="submit"
-            className="w-full bg-[#42B091] text-white font-bold py-2 rounded-lg hover:bg-[#36957A] transition duration-300"
+            disabled={!form.termsAccepted}
+            className={`w-full text-white font-bold py-2 rounded-lg transition duration-300 ${
+              form.termsAccepted
+                ? "bg-[#42B091] hover:bg-[#36957A]"
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
           >
             Cadastrar
           </button>
@@ -126,3 +155,6 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+
+

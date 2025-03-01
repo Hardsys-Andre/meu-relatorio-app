@@ -19,7 +19,6 @@ function App() {
             <Route path='csvUploader' element={<CsvPage/>}/>
             <Route path='pageLogin' element={<LoginPage/>}/>
             <Route path='registerPage' element={<RegisterPage/>}/>
-            
           </Routes>
         </Layout>
       </div>
