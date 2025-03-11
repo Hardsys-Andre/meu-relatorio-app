@@ -7,6 +7,8 @@ import Editor from './pages/editor/index';
 import CsvPage from './pages/csvUploader';
 import LoginPage from './pages/login';
 import RegisterPage from './pages/registerPage';
+import PrivateRoute from './PrivateRoute';
+
 
 function App() {
   return (
@@ -15,8 +17,8 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/editor" element={<Editor />} />
-            <Route path='csvUploader' element={<CsvPage/>}/>
+            <Route path="/editor" element={<PrivateRoute><Editor /></PrivateRoute>} />
+            <Route path='/csvUploader' element={<PrivateRoute><CsvPage/></PrivateRoute>}/>
             <Route path='pageLogin' element={<LoginPage/>}/>
             <Route path='registerPage' element={<RegisterPage/>}/>
           </Routes>

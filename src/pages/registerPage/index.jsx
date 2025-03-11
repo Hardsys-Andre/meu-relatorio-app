@@ -18,14 +18,44 @@ export default function RegisterPage() {
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.termsAccepted) {
       alert("Você deve aceitar os termos para continuar!");
       return;
     }
-    console.log("Dados do usuário:", form);
+  
+    try {
+      const response = await fetch("http://localhost:5000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          phone: form.phone,
+          cityState: form.cityState,
+          email: form.email,
+          password: form.password,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        alert(`Erro: ${data.message}`);
+        return;
+      }
+  
+      alert("Cadastro realizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao cadastrar:", error);
+      alert("Erro ao cadastrar. Tente novamente.");
+    }
   };
+  
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">

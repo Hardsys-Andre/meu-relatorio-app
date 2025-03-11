@@ -9,11 +9,40 @@ export default function LoginPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Usuário:", form.username, "Senha:", form.password);
+  
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: form.username,
+          password: form.password,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        alert(`Erro: ${data.message}`);
+        return;
+      }
+  
+      // Armazenando o token no localStorage
+      localStorage.setItem("token", data.token);
+  
+      alert("Login realizado com sucesso!");
+      // Redireciona para a página principal após o login
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+      alert("Erro ao fazer login. Tente novamente.");
+    }
   };
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
