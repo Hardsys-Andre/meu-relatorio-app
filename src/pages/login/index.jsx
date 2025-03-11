@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,8 +35,15 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token);
   
       alert("Login realizado com sucesso!");
-      // Redireciona para a página principal após o login
-      window.location.href = "/";
+      
+      // Obtém a rota que o usuário tentou acessar antes do login
+      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
+      
+      // Remove a chave para não afetar futuros logins
+      localStorage.removeItem("redirectAfterLogin");
+      
+      // Redireciona para a rota pretendida ou para a home
+      navigate(redirectPath);
     } catch (error) {
       console.error("Erro ao fazer login:", error);
       alert("Erro ao fazer login. Tente novamente.");
@@ -78,7 +85,7 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-#42B091 text-white font-bold py-2 rounded-lg hover:bg-#31a081 transition duration-300"
+            className="w-full bg-[#42B091] text-white font-bold py-2 rounded-lg hover:bg-[#31a081] transition duration-300"
           >
             Acessar
           </button>
