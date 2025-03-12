@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';  // Importando o contexto de autenticação
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
   const navigate = useNavigate();
+  const { login } = useAuth();  // Importa a função de login do contexto
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -31,18 +33,16 @@ export default function LoginPage() {
         return;
       }
   
-      // Armazenando o token no localStorage
+      // Armazena o token no localStorage
       localStorage.setItem("token", data.token);
-  
-      alert("Login realizado com sucesso!");
       
-      // Obtém a rota que o usuário tentou acessar antes do login
-      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
-      
-      // Remove a chave para não afetar futuros logins
-      localStorage.removeItem("redirectAfterLogin");
+      // Chama a função de login do contexto para atualizar o estado global
+      login(data.token);  
       
       // Redireciona para a rota pretendida ou para a home
+      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
+      localStorage.removeItem("redirectAfterLogin");
+      
       navigate(redirectPath);
     } catch (error) {
       console.error("Erro ao fazer login:", error);
