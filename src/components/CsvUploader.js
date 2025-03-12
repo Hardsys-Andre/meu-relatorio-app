@@ -2,10 +2,12 @@
 import { useState, useEffect } from "react";
 import { useCSV } from "../context/CsvContext";
 import Papa from "papaparse";
+import { useNavigate } from "react-router-dom"; // Para navegação com React Router
 
 const CsvUploader = () => {
   const { headers, setHeaders, selectedColumns, setSelectedColumns, setCsvData } = useCSV();
-  const [rows, setRows] = useState([]); 
+  const [rows, setRows] = useState([]);
+  const navigate = useNavigate(); // Hook de navegação
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -45,28 +47,51 @@ const CsvUploader = () => {
     // Atualiza o estado e armazena no localStorage
     setCsvData(filteredData);
     localStorage.setItem("csvData", JSON.stringify(filteredData));
-    
+
     console.log("Dados filtrados salvos:", filteredData);
+
+    // Limpar os estados (remover os dados do CSV carregados)
+    setHeaders([]);
+    setSelectedColumns([]);
+    setRows([]);
+
+    // Redireciona para a página /editor
+    navigate("/editor");
   };
 
   return (
-    <div className="p-4 border rounded">
-      <input type="file" accept=".csv" onChange={handleFileUpload} />
+    <div className="p-6 max-w-2xl mx-auto bg-white shadow-lg rounded-lg border">
+      <h1 className="text-3xl font-semibold text-center mb-4 text-gray-700">Carregue seu arquivo CSV</h1>
+      <p className="text-center text-lg mb-6 text-gray-600">
+        Escolha um arquivo CSV para convertê-lo em campos dinâmicos. Após o upload, você poderá selecionar as colunas desejadas para continuar.
+      </p>
+
+      <input
+        type="file"
+        accept=".csv"
+        onChange={handleFileUpload}
+        className="block w-full p-2 border border-gray-300 rounded-lg mb-4"
+      />
+
       {headers.length > 0 && (
         <div className="mt-4">
-          <h3>Selecione os campos desejados:</h3>
-          {headers.map((header) => (
-            <label key={header} className="block">
-              <input
-                type="checkbox"
-                checked={selectedColumns.includes(header)}
-                onChange={() => handleSelectionChange(header)}
-              />
-              {header}
-            </label>
-          ))}
+          <h3 className="text-2xl font-medium text-gray-700 mb-3">Selecione os campos desejados:</h3>
+          <div className="space-y-3">
+            {headers.map((header) => (
+              <label key={header} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={selectedColumns.includes(header)}
+                  onChange={() => handleSelectionChange(header)}
+                  className="h-5 w-5 text-blue-500 border-gray-300 rounded"
+                />
+                <span className="text-lg text-gray-600">{header}</span>
+              </label>
+            ))}
+          </div>
+
           <button
-            className="mt-2 p-2 bg-blue-500 text-white"
+            className="mt-4 w-full py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"
             onClick={handleConfirmSelection}
           >
             Confirmar Seleção
