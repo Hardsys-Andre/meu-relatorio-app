@@ -155,7 +155,7 @@ export default function RegisterPage() {
             />
             <label className="text-sm text-gray-700">
               Eu aceito os{" "}
-              <a href="#" className="text-[#42B091] hover:underline">
+              <a href="/termsOfUse" className="text-[#42B091] hover:underline">
                 Termos de Uso
               </a>
             </label>
