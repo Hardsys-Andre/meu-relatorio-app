@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
-
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -12,6 +11,13 @@ export default function RegisterPage() {
     password: "",
     termsAccepted: false,
   });
+
+  useEffect(() => {
+    const termsAccepted = localStorage.getItem("termsAccepted") === "true";
+    if (termsAccepted) {
+      setForm(prevForm => ({ ...prevForm, termsAccepted: true }));
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -54,8 +60,6 @@ export default function RegisterPage() {
       alert("Erro ao cadastrar. Tente novamente.");
     }
   };
-  
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -66,9 +70,7 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex gap-2">
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-medium mb-1">
-                Nome
-              </label>
+              <label className="block text-gray-700 text-sm font-medium mb-1">Nome</label>
               <input
                 type="text"
                 name="firstName"
@@ -79,9 +81,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-medium mb-1">
-                Sobrenome
-              </label>
+              <label className="block text-gray-700 text-sm font-medium mb-1">Sobrenome</label>
               <input
                 type="text"
                 name="lastName"
@@ -93,9 +93,7 @@ export default function RegisterPage() {
             </div>
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
-              Telefone
-            </label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">Telefone</label>
             <input
               type="tel"
               name="phone"
@@ -106,9 +104,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
-              Cidade/Estado
-            </label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">Cidade/Estado</label>
             <input
               type="text"
               name="cityState"
@@ -119,9 +115,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
-              E-mail
-            </label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">E-mail</label>
             <input
               type="email"
               name="email"
@@ -132,9 +126,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
-              Senha
-            </label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">Senha</label>
             <input
               type="password"
               name="password"
@@ -144,7 +136,6 @@ export default function RegisterPage() {
               required
             />
           </div>
-          {/* Checkbox de termos */}
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -152,39 +143,26 @@ export default function RegisterPage() {
               checked={form.termsAccepted}
               onChange={handleChange}
               className="h-5 w-5 text-[#42B091] focus:ring-[#42B091] rounded"
+              disabled={!form.termsAccepted}
             />
             <label className="text-sm text-gray-700">
               Eu aceito os{" "}
-              <a href="/termsOfUse" className="text-[#42B091] hover:underline">
+              <Link to="/termsOfUse" className="text-[#42B091] hover:underline">
                 Termos de Uso
-              </a>
+              </Link>
             </label>
           </div>
-          {/* Botão de cadastro desativado até aceitar os termos */}
           <button
             type="submit"
             disabled={!form.termsAccepted}
             className={`w-full text-white font-bold py-2 rounded-lg transition duration-300 ${
-              form.termsAccepted
-                ? "bg-[#42B091] hover:bg-[#36957A]"
-                : "bg-gray-400 cursor-not-allowed"
+              form.termsAccepted ? "bg-[#42B091] hover:bg-[#36957A]" : "bg-gray-400 cursor-not-allowed"
             }`}
           >
             Cadastrar
           </button>
         </form>
-        <div className="text-center mt-4">
-          <p className="text-sm text-gray-600">
-            Já tem uma conta?{" "}
-            <Link to="/pageLogin" className="text-[#42B091] hover:underline">
-              Acesse aqui
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   );
 }
-
-
-
