@@ -9,10 +9,12 @@ import LoginPage from './pages/login';
 import RegisterPage from './pages/registerPage';
 import PrivateRoute from './PrivateRoute';
 import PerfilPage from './pages/perfilPage';
+import { AuthProvider } from './context/AuthContext';
 
 
 function App() {
   return (
+    <AuthProvider>
     <Router>
       <div className="App">
         <Layout>
@@ -27,6 +29,7 @@ function App() {
         </Layout>
       </div>
     </Router>
+    </AuthProvider>
   );
 }
 
