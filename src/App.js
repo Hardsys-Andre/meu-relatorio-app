@@ -10,6 +10,7 @@ import RegisterPage from './pages/registerPage';
 import PrivateRoute from './PrivateRoute';
 import PerfilPage from './pages/perfilPage';
 import { AuthProvider } from './context/AuthContext';
+import TermsOfUse from './pages/termsOfUse'
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path='/profile' element={<PerfilPage/>}/>
             <Route path='/pageLogin' element={<LoginPage/>}/>
             <Route path='registerPage' element={<RegisterPage/>}/>
+            <Route path='termsOfUse' element={<TermsOfUse/>}/>
           </Routes>
         </Layout>
       </div>
