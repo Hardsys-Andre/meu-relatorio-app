@@ -6,5 +6,10 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar-hide')
+  ],
+  corePlugins: {
+    scrollbar: false, // Desabilita a geração de classes de barra de rolagem padrão
+  },
 }
