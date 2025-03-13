@@ -45,7 +45,7 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
       <div>
         <label className="text-[16px] font-bold">Filtrar Dados: </label>
       </div>
-      <div className="flex md:flex-row flex-col gap-2 justify-center items-center mb-10 border-2 border-[#42B091] rounded-lg">
+      <div className="flex md:flex-row flex-col gap-1 justify-center items-center mb-2 border-2 border-[#42B091] rounded-lg">
         {/* Botão de rolagem à esquerda com ícone, só aparece se for necessário */}
         {showButtons && (
           <button

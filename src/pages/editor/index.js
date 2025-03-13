@@ -126,11 +126,7 @@ const ReportEditor = () => {
         );
 
         return [
-          {
-            text: `Relatório de ${relatorio.nomeCliente}\n\n`,
-            style: "header",
-          },
-          htmlToPdfmake(reportContentWithData), // Usando o conteúdo já substituído
+          htmlToPdfmake(reportContentWithData),
           index !== relatoriosFiltrados.length - 1
             ? { text: "", pageBreak: "after" }
             : null,
