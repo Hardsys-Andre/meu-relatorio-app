@@ -146,6 +146,33 @@ const ReportEditor = () => {
 
   const handleVisualizar = () => {
     setLoading(true);
+    
+    // Recuperando os dados do localStorage
+    const storedCsvData = localStorage.getItem("csvData");
+    
+    if (!storedCsvData) {
+      alert("Nenhum dado disponível para visualizar.");
+      setLoading(false);
+      return;
+    }
+  
+    // Convertendo o JSON para um array de relatórios
+    const relatorios = JSON.parse(storedCsvData);
+  
+    // Filtrando os relatórios de acordo com o filtro atual
+    const relatoriosFiltrados = relatorios.filter((relatorio) =>
+      Object.keys(filtro).every((key) =>
+        relatorio[key]?.toLowerCase().includes(filtro[key]?.toLowerCase())
+      )
+    );
+  
+    // Definindo o primeiro relatório filtrado como o relatório selecionado para visualização
+    if (relatoriosFiltrados.length > 0) {
+      setSelectedRelatorio(relatoriosFiltrados[0]);
+    } else {
+      alert("Nenhum relatório encontrado com os filtros aplicados.");
+    }
+  
     setTimeout(() => {
       setShowPreview(true);
       setShowCloseButton(true);
@@ -153,6 +180,7 @@ const ReportEditor = () => {
       setLoading(false);
     }, 1000);
   };
+  
 
   const handleFecharVisualizacao = () => {
     setShowPreview(false);
@@ -168,9 +196,11 @@ const ReportEditor = () => {
   };
 
   return (
-    <div className="mb-20">
-      <header className="App-header">
-        <h1 className="md:text-[36px] text-[22px]">Gerador de Relatórios Dinâmicos</h1>
+    <div className="flex flex-col justify-center items-center mb-20">
+      <header className="mb-6">
+        <h1 className="text-[22px] md:text-[28px] font-semibold">
+          Crie seu relatório e adicione os campos dinâmicos do seu arquivo CSV.
+        </h1>
       </header>
 
       <h2 className="my-6 text-[30px]">Filtre os dados</h2>
@@ -187,11 +217,17 @@ const ReportEditor = () => {
         handleInsertField={handleInsertField}
       />
 
-      <div className="mt-10">
-        <h3 className="my-4 font-semibold text-lg">Selecionar Cliente para Visualização:</h3>
-        
-        {showVisualizarButton && <button onClick={handleVisualizar} className="mx-6">Visualizar Modelo</button>}
-        {showCloseButton && <button onClick={handleFecharVisualizacao} className="mx-6">Fechar Visualização</button>}
+      <div className="flex justify-center w-[70vw] mt-6 border-2 border-[#42B091] rounded-lg">
+        {showVisualizarButton && (
+          <button onClick={handleVisualizar} className="mx-6">
+            Visualizar Modelo
+          </button>
+        )}
+        {showCloseButton && (
+          <button onClick={handleFecharVisualizacao} className="mx-6">
+            Fechar Visualização
+          </button>
+        )}
         {/* Botão de Exportar para PDF */}
         <button onClick={exportToPDF} className="mx-6 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
           Exportar para PDF
