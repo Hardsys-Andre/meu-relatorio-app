@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import htmlToPdfmake from "html-to-pdfmake";
+import html2pdf from "html2pdf.js"; // Importando a biblioteca html2pdf.js
 import mockRelatorios from "../../data/mockRelatorios.json";
 import FilterBar from "../../components/FilterBar";
 import TextEditor from "../../components/TextEditor";
 import { useCSV } from "../../context/CsvContext";
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ReportEditor = () => {
   const [reportContent, setReportContent] = useState(
@@ -106,7 +102,7 @@ const ReportEditor = () => {
       return;
     }
 
-    // Converting the stored CSV data from JSON format
+    // Convertendo o stored CSV data de formato JSON
     const relatorios = JSON.parse(storedCsvData);
 
     // Filtrando os relatórios de acordo com o filtro
@@ -116,34 +112,41 @@ const ReportEditor = () => {
       )
     );
 
-    // Gerando o conteúdo do relatório para cada relatório filtrado
-    const allReportsContent = relatoriosFiltrados
+    // Criando o conteúdo HTML para cada relatório filtrado
+    const content = relatoriosFiltrados
       .map((relatorio, index) => {
         // Substituindo os placeholders pelos dados do CSV
-        const reportContentWithData = replaceFieldsWithMockData(
+        const relatorioContent = replaceFieldsWithMockData(
           reportContent,
           relatorio
         );
 
-        return [
-          htmlToPdfmake(reportContentWithData),
-          index !== relatoriosFiltrados.length - 1
-            ? { text: "", pageBreak: "after" }
-            : null,
-        ];
+        // Se não for o primeiro relatório, adiciona uma quebra de página
+        if (index > 0) {
+          return `<div style="page-break-before:always;">${relatorioContent}</div>`;
+        }
+
+        // Se for o primeiro relatório, apenas retorna o conteúdo
+        return relatorioContent;
       })
-      .flat();
+      .join(""); // Concatenando todos os relatórios sem separador extra
 
-    // Definindo a estrutura do documento PDF
-    const docDefinition = {
-      content: allReportsContent,
-      styles: {
-        header: { fontSize: 18, bold: true, margin: [0, 10, 0, 10] },
-      },
-    };
+    // Criando o elemento DOM para passar para o html2pdf
+    const element = document.createElement("div");
+    element.innerHTML = content;
 
-    // Gerando e baixando o arquivo PDF
-    pdfMake.createPdf(docDefinition).download("todos_relatorios.pdf");
+    // Definindo margens para o PDF
+    const margin = [20, 25, 20, 25]; // Topo, Direita, Inferior, Esquerda
+
+    // Usando html2pdf para exportar o conteúdo para PDF
+    html2pdf()
+      .from(element)
+      .set({
+        margin: margin, // Definindo margens
+        filename: "relatorios.pdf",
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }, // Definindo formato e orientação do PDF
+      })
+      .save();
   };
 
   const handleFiltroChange = (event) => {
@@ -157,33 +160,33 @@ const ReportEditor = () => {
 
   const handleVisualizar = () => {
     setLoading(true);
-    
+
     // Recuperando os dados do localStorage
     const storedCsvData = localStorage.getItem("csvData");
-    
+
     if (!storedCsvData) {
       alert("Nenhum dado disponível para visualizar.");
       setLoading(false);
       return;
     }
-  
+
     // Convertendo o JSON para um array de relatórios
     const relatorios = JSON.parse(storedCsvData);
-  
+
     // Filtrando os relatórios de acordo com o filtro atual
     const relatoriosFiltrados = relatorios.filter((relatorio) =>
       Object.keys(filtro).every((key) =>
         relatorio[key]?.toLowerCase().includes(filtro[key]?.toLowerCase())
       )
     );
-  
+
     // Definindo o primeiro relatório filtrado como o relatório selecionado para visualização
     if (relatoriosFiltrados.length > 0) {
       setSelectedRelatorio(relatoriosFiltrados[0]);
     } else {
       alert("Nenhum relatório encontrado com os filtros aplicados.");
     }
-  
+
     setTimeout(() => {
       setShowPreview(true);
       setShowCloseButton(true);
@@ -191,7 +194,6 @@ const ReportEditor = () => {
       setLoading(false);
     }, 1000);
   };
-  
 
   const handleFecharVisualizacao = () => {
     setShowPreview(false);

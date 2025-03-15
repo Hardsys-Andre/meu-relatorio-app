@@ -24,7 +24,7 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   };
 
   return (
-    <div className="editor-container">
+    <div className="w-[90vw]">
       <Editor
         apiKey={apiKey}
         value={value}
