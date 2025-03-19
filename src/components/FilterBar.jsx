@@ -41,16 +41,16 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
   }, [dynamicFields]);
 
   return (
-    <div className="flex flex-col gap-1 justify-center items-center">
+    <div className="flex flex-col mb-4 gap-1 justify-center items-center">
       <div>
         <label className="text-[16px] font-bold">Filtrar Dados: </label>
       </div>
-      <div className="flex md:flex-row flex-col gap-1 justify-center items-center mb-2 border-2 border-[#42B091] rounded-lg">
+      <div className="flex md:flex-row flex-col md:w-[auto] md:max-w-[95vw] w-[95vw] md:gap-1 justify-center items-center mb-2 border-2 border-[#42B091] rounded-lg">
         {/* Botão de rolagem à esquerda com ícone, só aparece se for necessário */}
         {showButtons && (
           <button
             onClick={scrollLeft}
-            className="bg-[#42B091] text-white px-4 py-2 rounded-md flex items-center justify-center"
+            className="bg-[#42B091] hidden md:block text-white md:px-4 md:py-2 rounded-md items-center justify-center"
           >
             <FaArrowLeft /> {/* Ícone de seta para a esquerda */}
           </button>
@@ -58,7 +58,7 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
 
         <div
           ref={scrollContainerRef}
-          className={`flex py-2 px-2 items-center ${isOverflowing ? "justify-start" : "justify-center"} overflow-x-auto w-[90vw] scrollbar-hide`}
+          className={`flex py-2 px-2 items-center ${isOverflowing ? "justify-start" : "justify-center"} w-full overflow-x-auto scrollbar-hide`}
           style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
         >
           {dynamicFields.map((field) => (
@@ -79,7 +79,7 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
         {showButtons && (
           <button
             onClick={scrollRight}
-            className="bg-[#42B091] text-white px-4 py-2 rounded-md flex items-center justify-center"
+            className="bg-[#42B091] hidden md:block text-white md:px-4 md:py-2 rounded-md items-center justify-center"
           >
             <FaArrowRight /> {/* Ícone de seta para a direita */}
           </button>
