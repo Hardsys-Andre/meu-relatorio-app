@@ -42,17 +42,17 @@ const Navbar = () => {
   };
 
   return (
-    <header className="flex justify-center w-full fixed top-3 z-50">
+    <header className="flex justify-center w-full fixed top-2 z-50">
       <nav
-        className={`flex flex-col md:flex-row w-[97%] h-10 md:h-auto bg-[#42B091] py-1 px-4 border-[1px] border-[#e2e2e2] rounded-xl md:justify-between md:items-center items-start
+        className={`flex flex-col md:flex-row w-[97%] h-10 md:h-10 bg-[#42B091] py-1 px-4 border-[1px] border-[#e2e2e2] rounded-xl md:justify-between md:items-center items-start
                 ${menuOpen ? 'gap-2' : 'w-[97%] md:w-[97%]'}`}
         ref={menuRef} // Associando o menu à referência
       >
         <button
-          className="border-none hover:border-0 hidden md:block"
+          className="md:flex items-center justify-center h-8 border-none hover:border-0 hidden md:block"
           onClick={() => window.open('https://superclient.com.br/', '_blank')}
         >
-          <img src={Robo} alt="Robo" className="md:h-10 hidden md:block" />
+          <img src={Robo} alt="Robo" className="md:h-7 hidden md:block" />
         </button>
         <button
           ref={buttonRef} // Associando o botão à referência
@@ -71,20 +71,20 @@ const Navbar = () => {
           className={`flex-col md:flex md:flex-row gap-2 md:gap-8 ${menuOpen ? 'flex' : 'hidden'}`}
         >
           <Link to="/" onClick={handleButtonClick}>
-            <button className="w-full md:w-auto text-[12px] md:text-[16px]">Home</button>
+            <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">Home</button>
           </Link>
           <Link to="/editor" onClick={handleButtonClick}>
-            <button className="w-full md:w-auto text-[12px] md:text-[16px]">
+            <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">
               Editor de Relatórios
             </button>
           </Link>
           <Link to="/csvUploader" onClick={handleButtonClick}>
-            <button className="w-full md:w-auto text-[12px] md:text-[16px]">
+            <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">
               CSV Uploader
             </button>
           </Link>
           <button
-            className="w-full md:w-auto text-[12px] md:text-[16px]"
+            className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]"
             onClick={() => window.open('https://superclient.com.br/', '_blank')}
           >
             SuperClient
@@ -93,20 +93,20 @@ const Navbar = () => {
           {isLoggedIn ? (
             <>
               <Link to="/profile" onClick={handleButtonClick}>
-                <button className="w-full md:w-auto text-[12px] md:text-[16px]">
+                <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">
                   Perfil
                 </button>
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex justify-center w-full md:w-auto"
+                className="flex items-center justify-center h-7 w-full md:w-auto"
               >
                 <FaSignOutAlt size={20} />
               </button>
             </>
           ) : (
             <Link to="/pageLogin" onClick={handleButtonClick}>
-              <button className="w-full md:w-auto text-[12px] md:text-[16px]">
+              <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">
                 Login
               </button>
             </Link>
