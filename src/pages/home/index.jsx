@@ -1,9 +1,12 @@
 import React from "react";
 import LogoFlexi from "../../assets/logoFlexiReport.png";
-import Robo from "../../assets/robo.png";
 import Andre_e from "../../assets/andre-e.jpg";
+import Luciana from "../../assets/luciana.jpg";
+import Mariana from "../../assets/mariana.jpg";
+import Felipe from "../../assets/felipe.jpg";
+import Zenilda from "../../assets/zenilda.jpg";
 import Andre_a from "../../assets/andre-a.png";
-import Jose from "../../assets/jose.png";
+import Jose from "../../assets/jose.jpg";
 import { FaUser } from 'react-icons/fa';
 
 function Home() {
@@ -85,7 +88,7 @@ function Home() {
           <div className="flex flex-col items-center mx-4">
             <img
               src={Andre_e}
-              alt="Criador 1"
+              alt="Aluno André Eduardo"
               className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
             />
             <span className="mt-2 font-semibold text-center">
@@ -98,32 +101,31 @@ function Home() {
           <div className="flex flex-col items-center mx-4">
             <img
               src={Andre_a}
-              alt="Criador 2"
+              alt="Aluno Andre Alexander"
               className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
             />
             <span className="mt-2 font-semibold text-center">
               André Alexander
             </span>
             <span className="text-center text-sm">
-              Aluno UNIVESP em Ciência da Computação
+              Aluno UNIVESP em Ciência de Dados
             </span>
           </div>
           <div className="flex flex-col items-center mx-4">
-            {/*<img
+            <img
               src={Felipe}
-              alt="Criador 3"
+              alt="Aluno Felipe"
               className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
-            />*/}
-            <FaUser size={128} color="#3ea8c8"/>
+            />
             <span className="mt-2 font-semibold text-center">Felipe Augusto</span>
             <span className="text-center text-sm">
-              Aluno UNIVESP em Engenharia da Computação
+              Aluno UNIVESP em Ciência de Dados
             </span>
           </div>
           <div className="flex flex-col items-center mx-4">
             <img
               src={Jose}
-              alt="Criador 3"
+              alt="Aluno José"
               className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
             />
             <span className="mt-2 font-semibold text-center">José Ricardo</span>
@@ -134,12 +136,11 @@ function Home() {
         </div>
         <div className="flex flex-col gap-8 md:flex-row justify-center mt-6">
           <div className="flex flex-col items-center mx-4">
-            {/*<img
-              src={Andre_e}
-              alt="Criador 1"
+            <img
+              src={Luciana}
+              alt="Aluna Luciana"
               className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
-            />*/}
-            <FaUser size={128} color="#e4616b"/>
+            />
             <span className="mt-2 font-semibold text-center">
               Luciana Maria Rosa
             </span>
@@ -148,29 +149,27 @@ function Home() {
             </span>
           </div>
           <div className="flex flex-col items-center mx-4">
-            {/*<img
-              src={Andre_a}
-              alt="Criador 2"
+            <img
+              src={Mariana}
+              alt="Aluna Mariana"
               className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
-            />*/}
-            <FaUser size={128} color="#e4616b"/>
+            />
             <span className="mt-2 font-semibold text-center">
               Mariana Monteiro
             </span>
             <span className="text-center text-sm">
-              Aluna UNIVESP em Ciência da Computação
+              Aluna UNIVESP em Ciência de Dados
             </span>
           </div>
           <div className="flex flex-col items-center mx-4">
-            {/*<img
-              src={Jose}
-              alt="Criador 3"
+            <img
+              src={Zenilda}
+              alt="Aluna Zenilda"
               className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
-            />*/}
-            <FaUser size={128} color="#e4616b"/>
+            />
             <span className="mt-2 font-semibold text-center">Zenilda dos Santos</span>
             <span className="text-center text-sm">
-              Aluna UNIVESP em Engenharia da Computação
+              Aluna UNIVESP em Tecnologia da Informação
             </span>
           </div>
         </div>
