@@ -201,17 +201,10 @@ const ReportEditor = () => {
     setShowCloseButton(false);
   };
 
-  const handleLimparEditor = () => {
-    if (window.confirm("Tem certeza que deseja limpar o editor?")) {
-      setReportContent("");
-      localStorage.removeItem("reportContent");
-    }
-  };
-
   return (
-    <div className="flex flex-col justify-center items-center mb-20">
-      <header className="mb-6">
-        <h1 className="text-[22px] md:text-[28px] font-semibold">
+    <div className="flex flex-col justify-center items-center">
+      <header className="mb-2">
+        <h1 className="text-[22px] md:text-[24px] font-semibold">
           Crie seu relatório e adicione os campos dinâmicos do seu arquivo CSV.
         </h1>
       </header>
@@ -220,11 +213,6 @@ const ReportEditor = () => {
         onFiltroChange={handleFiltroChange}
         dynamicFields={dynamicFields}
       />
-      <div className="my-4">
-        <button onClick={handleLimparEditor} className="text-sm">
-          Limpar Editor
-        </button>
-      </div>
 
       <TextEditor
         value={reportContent}
@@ -233,7 +221,7 @@ const ReportEditor = () => {
         handleInsertField={handleInsertField}
       />
 
-      <div className="flex justify-center w-[70vw] mt-6 border-2 border-[#42B091] rounded-lg">
+      <div className="flex justify-center w-[95vw] md:w-[720px] my-8 py-2 border-2 border-[#42B091] rounded-lg">
         {showVisualizarButton && (
           <button onClick={handleVisualizar} className="mx-6">
             Visualizar Modelo
@@ -255,7 +243,7 @@ const ReportEditor = () => {
 
       {showPreview && (
         <div
-          className="mt-5 border border-gray-300 p-2.5 overflow-auto"
+          className="w-full md:w-[750px] mt-5 px-10 border border-gray-300 p-2.5 overflow-auto"
           dangerouslySetInnerHTML={{
             __html: replaceFieldsWithMockData(reportContent, selectedRelatorio),
           }}
