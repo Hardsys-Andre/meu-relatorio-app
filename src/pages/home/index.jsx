@@ -10,22 +10,21 @@ function Home() {
   return (
     <div className="flex flex-col w-full items-center">
       <main className="flex flex-col w-full p-4 justify-center items-center">
-        <div className="flex flex-row w-[60%] mt-2 justify-center items-center">
+        <div className="flex flex-col gap-4 md:gap-10 md:flex-row w-full xl:w-[60%] mt-2 justify-center items-center">
           <div className="flex flex-col lg:w-[300px] xl:w-[500px] items-center">
             <img
               src={LogoFlexi}
-              alt="Imagem Grande"
-              className="lg:w-[250px] lg:h-[250px] xl:w-[250px] xl:h-[250px]"
+              alt="Logotipo Flexireport"
+              className="w-[200px] h-[200px] xl:w-[250px] xl:h-[250px]"
             />
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-[20px] md:text-[46px] md:w-[410px] ml-10 text-[#42B091] text-left font-bold leading-tight">
+            <h1 className="text-[24px] md:text-[34px] md:w-[300px] xl:w-[410px] text-[#42B091] md:text-left font-bold leading-tight">
               Relatórios Personalizados de Forma Eficiente e Flexível!{" "}
             </h1>
-          </div>
         </div>
-        <div className="bg-white text-gray-800 p-6 rounded-lg shadow-md max-w-6xl mx-auto mt-10 space-y-6">
-          <p className="text-lg text-left leading-relaxed">
+        <div className="bg-white text-gray-800 p-6 max-w-6xl mx-auto mt-10 space-y-6">
+        <hr className="border-t-4 border-[#42B091] w-full" />
+        <p className="text-lg text-left leading-relaxed">
             O <strong>FlexiReport</strong> é uma poderosa aplicação desenvolvida
             para simplificar e aprimorar o processo de criação de relatórios
             personalizados. Com uma interface intuitiva e amigável, o aplicativo
@@ -34,7 +33,7 @@ function Home() {
             relatórios sob medida para suas necessidades.
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             <h2 className="text-2xl font-bold text-[#42B091]">
               ✅ Principais Funcionalidades:
             </h2>
@@ -75,7 +74,8 @@ function Home() {
             dados complexos em informações claras e bem estruturadas em apenas
             alguns cliques!
           </p>
-        </div>
+          <hr className="border-t-4 border-[#42B091] w-full" />
+        </div>  
       </main>
       <section id="criadores" className="mt-10">
         <h2 className="text-4xl font-bold text-center text-[#42B091]">
@@ -175,40 +175,6 @@ function Home() {
           </div>
         </div>
       </section>
-      <footer id="contatos" className="w-[auto] p-4 mt-20">
-        <div className="flex flex-col md-flex-row justify-between gap-5 items-center">
-          <div className="flex flex-col items-center">
-            <div className="flex flex-row gap-3">
-              <img
-                src={LogoFlexi}
-                alt="Logo"
-                className="h-20 px-1 border-r-2 border-[#42B091]"
-              />
-              <img src={Robo} alt="Robo" className="h-20" />
-            </div>
-            <span className="ml-2 text-2xl text-[#42B091] font-bold">
-              Parceiros
-            </span>
-          </div>
-          <div className="flex flex-col md:flex-row items-end gap-5">
-            <div className="flex flex-col">
-              <span className="text-[#42B091]">+55 12 3209-8671</span>
-              <span className="text-[#42B091]">
-                superclient@superclient.com.br
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[#42B091]">
-                Estrada Doutor Altino, Bondesan, 500
-              </span>
-              <span className="text-[#42B091]">
-                Parque de Inovações Tecnológicas - Sala 208H
-              </span>
-              <span className="text-[#42B091]">São José dos Campos</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
