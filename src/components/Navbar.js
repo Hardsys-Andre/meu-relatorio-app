@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBars, FaTimes, FaSignOutAlt } from 'react-icons/fa';
-import Robo from '../assets/robo.png';
-import { useAuth } from '../context/AuthContext'; // Importando o contexto de autenticação
+import LogoFlexi from '../assets/logoNome.png';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
-  const { isLoggedIn, logout } = useAuth(); // Acessando o estado de login
+  const { isLoggedIn, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null); // Referência para o menu
-  const buttonRef = useRef(null); // Referência para o botão de abrir/fechar menu
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    setMenuOpen(false); // Chama a função de logout do contexto
-    navigate("/"); // Redireciona para a home após o logout
+    setMenuOpen(false);
+    navigate("/");
   };
 
-  // Fechar o menu ao clicar fora dele
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -30,13 +29,11 @@ const Navbar = () => {
 
     document.addEventListener('mousedown', handleClickOutside);
 
-    // Cleanup no momento em que o componente for desmontado
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  // Fechar o menu ao clicar em qualquer botão
   const handleButtonClick = () => {
     setMenuOpen(false);
   };
@@ -44,18 +41,20 @@ const Navbar = () => {
   return (
     <header className="flex justify-center w-full fixed top-2 z-50">
       <nav
-        className={`flex flex-col md:flex-row w-[97%] h-10 md:h-10 bg-[#42B091] py-1 px-4 border-[1px] border-[#e2e2e2] rounded-xl md:justify-between md:items-center items-start
+        className={`flex flex-row-reverse md:flex-row w-[97%] h-10 md:h-10 bg-[#3ea8c8] py-1 px-2 gap-2 border-[1px] border-[#e2e2e2] rounded-xl justify-between md:items-center 
                 ${menuOpen ? 'gap-2' : 'w-[97%] md:w-[97%]'}`}
-        ref={menuRef} // Associando o menu à referência
+        ref={menuRef}
       >
+        <Link to="/" onClick={handleButtonClick}>
         <button
-          className="md:flex items-center justify-center h-8 border-none hover:border-0 hidden md:block"
-          onClick={() => window.open('https://superclient.com.br/', '_blank')}
+          className="md:flex w-[auto] mt-0.5 p-0 items-center justify-center md:h-8 rounded-[20px]"
         >
-          <img src={Robo} alt="Robo" className="md:h-7 hidden md:block" />
+          <img src={LogoFlexi} alt="Logo" className="h-6 md:h-7" />
         </button>
+        </Link>
+        <div className='flex flex-col'>
         <button
-          ref={buttonRef} // Associando o botão à referência
+          ref={buttonRef}
           className="flex gap-2 text-white md:hidden"
           onClick={() => setMenuOpen(!menuOpen)}
         >
@@ -68,7 +67,7 @@ const Navbar = () => {
           </span>
         </button>
         <div
-          className={`flex-col md:flex md:flex-row gap-2 md:gap-8 ${menuOpen ? 'flex' : 'hidden'}`}
+          className={`flex-col md:flex md:flex-row gap-2 md:gap-4 xl:gap-8 ${menuOpen ? 'flex mt-2' : 'hidden'}`}
         >
           <Link to="/" onClick={handleButtonClick}>
             <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">Home</button>
@@ -111,6 +110,7 @@ const Navbar = () => {
               </button>
             </Link>
           )}
+        </div>
         </div>
       </nav>
     </header>

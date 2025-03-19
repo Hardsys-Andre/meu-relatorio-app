@@ -45,12 +45,12 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
       <div>
         <label className="text-[16px] font-bold">Filtrar Dados: </label>
       </div>
-      <div className="flex md:flex-row flex-col md:w-[auto] md:max-w-[95vw] w-[95vw] md:gap-1 justify-center items-center mb-2 border-2 border-[#42B091] rounded-lg">
+      <div className="flex md:flex-row flex-col md:w-[auto] md:max-w-[95vw] w-[95vw] md:gap-1 justify-center items-center mb-2 border-2 border-[#3ea8c8] rounded-lg">
         {/* Botão de rolagem à esquerda com ícone, só aparece se for necessário */}
         {showButtons && (
           <button
             onClick={scrollLeft}
-            className="bg-[#42B091] hidden md:block text-white md:px-4 md:py-2 rounded-md items-center justify-center"
+            className="bg-[#3ea8c8] hidden md:block text-white md:px-4 md:py-2 rounded-md items-center justify-center"
           >
             <FaArrowLeft /> {/* Ícone de seta para a esquerda */}
           </button>
@@ -69,7 +69,7 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
                 value={filtro[field.name] || ""}
                 onChange={onFiltroChange}
                 placeholder={field.name}
-                className="bg-[#42B091] text-base rounded-md text-white px-2 placeholder-black"
+                className="bg-[#3ea8c8] text-base rounded-md text-white px-2 placeholder-black"
               />
             </div>
           ))}
@@ -79,7 +79,7 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
         {showButtons && (
           <button
             onClick={scrollRight}
-            className="bg-[#42B091] hidden md:block text-white md:px-4 md:py-2 rounded-md items-center justify-center"
+            className="bg-[#3ea8c8] hidden md:block text-white md:px-4 md:py-2 rounded-md items-center justify-center"
           >
             <FaArrowRight /> {/* Ícone de seta para a direita */}
           </button>

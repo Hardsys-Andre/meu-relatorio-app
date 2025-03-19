@@ -10,7 +10,7 @@ export default function CsvPage() {
       
       {selectedFields.length > 0 && (
         <div className="mt-4">
-          <h2 className="text-xl">Campos Selecionados:</h2>
+          <h2 className="text-xl text-[#3ea8c8]">Campos Selecionados:</h2>
           <ul>
             {selectedFields.map((field) => (
               <li key={field}>{field}</li>

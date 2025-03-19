@@ -61,7 +61,7 @@ const CsvUploader = () => {
 
   return (
     <div className="p-6 max-w-2xl mx-auto bg-white shadow-lg rounded-lg border">
-      <h1 className="text-3xl font-semibold text-center mb-4 text-gray-700">Carregue seu arquivo CSV</h1>
+      <h1 className="text-3xl font-semibold text-center mb-4 text-[#3ea8c8]">Carregue seu arquivo CSV</h1>
       <p className="text-center text-lg mb-6 text-gray-600">
         Escolha um arquivo CSV para convertê-lo em campos dinâmicos. Após o upload, você poderá selecionar as colunas desejadas para continuar.
       </p>

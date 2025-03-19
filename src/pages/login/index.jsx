@@ -66,7 +66,7 @@ export default function LoginPage() {
               name="username"
               value={form.username}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:#3488a1 outline-none"
               required
             />
           </div>
@@ -79,24 +79,24 @@ export default function LoginPage() {
               name="password"
               value={form.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-#3488a1 outline-none"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-[#42B091] text-white font-bold py-2 rounded-lg hover:bg-[#31a081] transition duration-300"
+            className="w-full bg-[#3ea8c8] text-white font-bold py-2 rounded-lg hover:bg-[#3488a1] transition duration-300"
           >
             Acessar
           </button>
         </form>
         <div className="text-center mt-4">
-          <a href="#" className="text-sm text-[#42B091] hover:underline">
+          <a href="#" className="text-sm text-[#3ea8c8] hover:underline">
             Esqueci minha senha
           </a>
           <p className="text-sm text-gray-600 mt-2">
             Não tem conta?{" "}
-            <Link to="/registerPage" className="text-[#42B091] hover:underline">
+            <Link to="/registerPage" className="text-[#3ea8c8] hover:underline">
               Cadastre-se
             </Link>
           </p>

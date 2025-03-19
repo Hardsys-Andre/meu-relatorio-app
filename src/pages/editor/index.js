@@ -221,7 +221,7 @@ const ReportEditor = () => {
         handleInsertField={handleInsertField}
       />
 
-      <div className="flex justify-center w-[95vw] md:w-[720px] my-8 py-2 border-2 border-[#42B091] rounded-lg">
+      <div className="flex justify-center w-[95vw] md:w-[720px] my-8 py-2 border-2 border-[#3ea8c8] rounded-lg">
         {showVisualizarButton && (
           <button onClick={handleVisualizar} className="mx-6">
             Visualizar Modelo
