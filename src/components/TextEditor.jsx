@@ -38,7 +38,7 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-2 rounded-lg border-[#42B091]">
+    <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-2 rounded-lg border-[#3ea8c8]">
       <div className="flex justify-center w-full md:w-[70vw]">
         <div className="w-full md:w-[90vw] xl:w-[47vw]">
           <Editor
@@ -82,11 +82,11 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
           />
         </div>
       </div>
-      <div className="w- full md:w-[20vw] xl:w-[30vw] border-2 rounded-lg border-[#42B091]">
+      <div className="w- full md:w-[20vw] xl:w-[30vw] border-2 rounded-lg border-[#3ea8c8]">
         <div className="my-4 w-full">
           <button
             onClick={handleLimparEditor}
-            className="text-md w-[95%] bg-red-600 hover:bg-red-700"
+            className="text-md w-[95%] bg-red-800 hover:bg-red-900"
           >
             Limpar Editor
           </button>

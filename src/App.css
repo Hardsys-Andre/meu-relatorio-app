@@ -19,7 +19,7 @@ html, body {
 }
 
 button {
-  background-color: #42B091;
+  background-color: #3ea8c8;
   color: #e2e2e2;
   border: 1px solid #e2e2e2;
   border-radius: 10px;
@@ -30,7 +30,7 @@ button {
 }
 
 button:hover {
-  background-color: #31a081;
+  background-color: #3488a1;
   border: 1px solid white;
   color: white;
 }

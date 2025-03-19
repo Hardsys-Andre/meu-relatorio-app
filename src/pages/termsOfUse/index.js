@@ -14,7 +14,7 @@ const TermsOfUse = () => {
         <div className="min-h-screen bg-gray-100 text-gray-800 p-6 flex justify-center items-center">
             <div className="bg-white flex flex-col justify-center items-center shadow-md rounded-lg p-8 max-w-3xl w-full">
             <img src={LogoFlexi} alt="Imagem Grande" className="lg:w-[150px] lg:h-[150px]" />
-                <header className="bg-[#42B091] text-white text-center py-4 rounded-md mb-6 mt-6 w-full">
+                <header className="bg-[#3ea8c8] text-white text-center py-4 rounded-md mb-6 mt-6 w-full">
                     <h1 className="text-2xl font-bold">Termos de Uso do FlexiReport</h1>
                 </header>
 
@@ -92,7 +92,7 @@ const TermsOfUse = () => {
                     <div className="text-center mt-8">
                         <button
                         onClick={handleAccept}
-                        className="bg-[#42B091] text-white px-6 py-2 rounded-md hover:bg-[#36957A] transition">
+                        className="bg-[#3ea8c8] text-white px-6 py-2 rounded-md hover:bg-[#3488a1] transition">
                             Aceitar
                         </button>
                     </div>

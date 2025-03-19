@@ -9,7 +9,7 @@ const Footer = () => {
       <div className="flex flex-col md:flex-row justify-between gap-8 items-center">
         <div className="flex flex-col items-center text-center">
           <div className="flex flex-row gap-1 items-center ">
-            <div className="flex justify-center items-center bg-white h-[80px] rounded-xl px-2">
+            <div className="flex justify-center items-center bg-white border-2 border-[#3ea8c8] h-[80px] rounded-[40px] px-2">
               <Link to="https://univesp.br/" target="blank">
                 <img src={Univesp} alt="Logo" className="h-6" />
               </Link>
@@ -18,11 +18,11 @@ const Footer = () => {
               <img
                 src={Robo}
                 alt="Robo"
-                className="h-20 border-l-2 border-[#42B091] px-1"
+                className="h-20 border-l-2 border-[#3ea8c8] px-1"
               />
             </Link>
           </div>
-          <span className="mt-2 text-2xl text-[#42B091] font-bold">
+          <span className="mt-2 text-2xl text-[#3ea8c8] font-bold">
             Parceiros
           </span>
         </div>
@@ -30,22 +30,22 @@ const Footer = () => {
           <h3 className="font-bold mb-2">Links Importantes</h3>
           <ul className="space-y-1">
             <li>
-              <a href="/" className="hover:text-[#42B091]">
+              <a href="/" className="hover:text-[#3ea8c8]">
                 Home
               </a>
             </li>
             <li>
-              <a href="/editor" className="hover:text-[#42B091]">
+              <a href="/editor" className="hover:text-[#3ea8c8]">
                 Editor de Relatórios
               </a>
             </li>
             <li>
-              <a href="/csvUploader" className="hover:text-[#42B091]">
+              <a href="/csvUploader" className="hover:text-[#3ea8c8]">
                 CSV Uploader
               </a>
             </li>
             <li>
-              <a href="/profile" className="hover:text-[#42B091]">
+              <a href="/profile" className="hover:text-[#3ea8c8]">
                 Perfil do Usuário
               </a>
             </li>
@@ -53,7 +53,7 @@ const Footer = () => {
               <a
                 href="https://github.com/Hardsys-Andre/meu-relatorio-app"
                 target="blank"
-                className="hover:text-[#42B091]"
+                className="hover:text-[#3ea8c8]"
               >
                 GitHub do Projeto
               </a>
@@ -69,7 +69,7 @@ const Footer = () => {
             <Link
               to="https://www.linkedin.com/in/andre-eduardo-xavier-silva-40b475217/"
               target="blank"
-              className="hover:text-[#42B091]"
+              className="hover:text-[#3ea8c8]"
             >
                 : Andre E. X. Silva
             </Link>

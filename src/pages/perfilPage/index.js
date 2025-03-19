@@ -58,7 +58,7 @@ export default function ProfilePage() {
               className="h-28"
             />
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+        <h2 className="text-2xl font-bold text-center text-[#3ea8c8] mb-6">
           Perfil do Usuário
         </h2>
         <div className="space-y-4">
@@ -99,7 +99,7 @@ export default function ProfilePage() {
         <div className="text-center mt-6">
           <button
             onClick={handleLogout}
-            className="w-full mt-4 bg-red-500 text-white font-bold py-2 rounded-lg hover:bg-red-400 transition duration-300"
+            className="w-full mt-4 bg-red-800 text-white font-bold py-2 rounded-lg hover:bg-red-900 transition duration-300"
           >
             Deslogar
           </button>
