@@ -2,15 +2,15 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 const PrivateRoute = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null); // Null para indicar carregamento
-  const location = useLocation(); // Para obter a rota atual
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     const checkToken = async () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        localStorage.setItem("redirectAfterLogin", location.pathname); // Salva a rota que o usuário tentou acessar
+        localStorage.setItem("redirectAfterLogin", location.pathname);
         setIsAuthenticated(false);
         return;
       }
@@ -26,7 +26,7 @@ const PrivateRoute = ({ children }) => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data.message); // Para ver a resposta do servidor
+          console.log(data.message);
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
@@ -38,10 +38,10 @@ const PrivateRoute = ({ children }) => {
     };
 
     checkToken();
-  }, [location.pathname]); // Dependência adicionada para verificar ao trocar de rota
+  }, [location.pathname]);
 
   if (isAuthenticated === null) {
-    return <div>Carregando...</div>; // Ou coloque um spinner se preferir
+    return <div>Carregando...</div>;
   }
 
   if (!isAuthenticated) {

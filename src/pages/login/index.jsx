@@ -7,7 +7,7 @@ export default function LoginPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({ username: "", password: "" });
   const navigate = useNavigate();
-  const { login } = useAuth();  // Importa a função de login do contexto
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,13 +35,10 @@ export default function LoginPage() {
         return;
       }
   
-      // Armazena o token no localStorage
       localStorage.setItem("token", data.token);
       
-      // Chama a função de login do contexto para atualizar o estado global
       login(data.token);  
       
-      // Redireciona para a rota pretendida ou para a home
       const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
       localStorage.removeItem("redirectAfterLogin");
       
@@ -96,8 +93,8 @@ export default function LoginPage() {
       <a 
         href="#" 
         onClick={(e) => {
-          e.preventDefault(); // Evita o comportamento padrão de redirecionamento
-          setIsModalOpen(true); // Abre o modal
+          e.preventDefault();
+          setIsModalOpen(true);
         }}
         className="text-sm text-[#3ea8c8] hover:underline"
       >

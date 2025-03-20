@@ -8,15 +8,13 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
     localStorage.getItem("reportContent") || ""
   );
 
-  // Recuperar os nomes das colunas do localStorage
   useEffect(() => {
     const storedData = localStorage.getItem("csvData");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
 
-      // Verifica se há dados e pega os nomes das colunas do primeiro item
       if (Array.isArray(parsedData) && parsedData.length > 0) {
-        const columnNames = Object.keys(parsedData[0]); // Obtém apenas os nomes das colunas
+        const columnNames = Object.keys(parsedData[0]);
         setDynamicFieldsSelected(columnNames);
       }
     }
@@ -30,9 +28,9 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
     if (window.confirm("Tem certeza que deseja limpar o editor?")) {
       setReportContent("");
       localStorage.removeItem("reportContent");
-      onChange(""); // Atualiza o conteúdo do editor para vazio
+      onChange("");
       if (editorRef.current) {
-        editorRef.current.setContent(""); // Limpa o conteúdo do editor visualmente
+        editorRef.current.setContent("");
       }
     }
   };
@@ -101,9 +99,9 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
                 key={index}
                 onClick={() => {
                   if (editorRef.current) {
-                    const fieldContent = `{{${field}}}`; // Insere o nome do campo no editor
+                    const fieldContent = `{{${field}}}`;
                     editorRef.current.insertContent(fieldContent);
-                    handleInsertField(field); // Chama a função para armazenar os campos inseridos
+                    handleInsertField(field);
                   }
                 }}
                 className="md:mr-4 md:px-4 py-2 w-[138px]"

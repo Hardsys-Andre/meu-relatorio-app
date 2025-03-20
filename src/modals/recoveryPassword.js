@@ -6,14 +6,14 @@ const RecoveryPasswordModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-96 relative">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-[95vw] md:w-96 relative">
         <button 
           onClick={onClose} 
           className="absolute top-2 right-2 bg-red-800 hover:bg-red-900"
         >
           ✖
         </button>
-        <h1 className="text-2xl font-bold text-[#3ea8c8] mb-4 text-center">Recuperação de Senha</h1>
+        <h1 className="md:text-2xl font-bold text-[#3ea8c8] mb-4 text-center">Recuperação de Senha</h1>
         <div className='flex items-center justify-center'>
             <img
               src={LogoFlexi}
