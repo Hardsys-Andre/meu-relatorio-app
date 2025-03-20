@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { toast } from 'sonner';
 import html2pdf from "html2pdf.js";
-import mockRelatorios from "../../data/mockRelatorios.json";
 import FilterBar from "../../components/FilterBar";
 import TextEditor from "../../components/TextEditor";
 import { useCSV } from "../../context/CsvContext";
@@ -9,9 +9,7 @@ const ReportEditor = () => {
   const [reportContent, setReportContent] = useState(
     localStorage.getItem("reportContent") || ""
   );
-  const [selectedRelatorio, setSelectedRelatorio] = useState(
-    mockRelatorios.relatorios[0]
-  );
+  const [selectedRelatorio, setSelectedRelatorio] = useState();
   const [filtro, setFiltro] = useState({});
   const editorRef = useRef(null);
   const [showPreview, setShowPreview] = useState(false);
@@ -37,11 +35,16 @@ const ReportEditor = () => {
 
   const getDynamicFieldsFromRelatorios = () => {
     const storedData = localStorage.getItem("csvData");
-    if (!storedData) return [];
-
+    if (!storedData) {
+      toast.error("Nenhum dado encontrado no localStorage.");
+      return [];
+  }
     try {
       const parsedData = JSON.parse(storedData);
-      if (!Array.isArray(parsedData) || parsedData.length === 0) return [];
+      if (!Array.isArray(parsedData) || parsedData.length === 0){
+        toast.warning("Nenhum relatório encontrado.");
+       return [];
+      }
       const relatorio = parsedData[0];
       return Object.keys(relatorio)
         .filter((field) => field !== "id")
@@ -50,7 +53,7 @@ const ReportEditor = () => {
           placeholder: `{{${field}}}`,
         }));
     } catch (error) {
-      console.error("Erro ao processar os dados do localStorage:", error);
+      toast.error("Erro ao processar os dados do localStorage:", error);
       return [];
     }
   };
@@ -82,7 +85,7 @@ const ReportEditor = () => {
         }
       });
     } else {
-      console.warn(
+      toast.warning(
         "dynamicFields não está definido corretamente ou está vazio."
       );
     }
@@ -94,7 +97,7 @@ const ReportEditor = () => {
     const storedCsvData = localStorage.getItem("csvData");
 
     if (!storedCsvData) {
-      alert("Nenhum dado disponível para exportar.");
+      toast.warning("Nenhum dado disponível para exportar.");
       return;
     }
 
@@ -151,7 +154,7 @@ const ReportEditor = () => {
     const storedCsvData = localStorage.getItem("csvData");
 
     if (!storedCsvData) {
-      alert("Nenhum dado disponível para visualizar.");
+      toast.warning("Nenhum dado disponível para visualizar.");
       setLoading(false);
       return;
     }
@@ -167,7 +170,7 @@ const ReportEditor = () => {
     if (relatoriosFiltrados.length > 0) {
       setSelectedRelatorio(relatoriosFiltrados[0]);
     } else {
-      alert("Nenhum relatório encontrado com os filtros aplicados.");
+      toast.warning("Nenhum relatório encontrado com os filtros aplicados.");
     }
 
     setTimeout(() => {

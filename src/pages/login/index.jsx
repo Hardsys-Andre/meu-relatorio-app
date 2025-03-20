@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from 'sonner';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import RecoveryPasswordModal from "../../modals/recoveryPassword";
@@ -31,7 +32,7 @@ export default function LoginPage() {
       const data = await response.json();
   
       if (!response.ok) {
-        alert(`Erro: ${data.message}`);
+        toast.error(`Erro: ${data.message}`);
         return;
       }
   
@@ -44,8 +45,7 @@ export default function LoginPage() {
       
       navigate(redirectPath);
     } catch (error) {
-      console.error("Erro ao fazer login:", error);
-      alert("Erro ao fazer login. Tente novamente.");
+      toast.error("Erro ao fazer login. Tente novamente.");
     }
   };
   

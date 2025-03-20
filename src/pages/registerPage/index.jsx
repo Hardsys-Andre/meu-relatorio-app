@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 
 export default function RegisterPage() {
@@ -27,7 +28,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.termsAccepted) {
-      alert("Você deve aceitar os termos para continuar!");
+      toast.warning("Você deve aceitar os termos para continuar!");
       return;
     }
   
@@ -50,14 +51,13 @@ export default function RegisterPage() {
       const data = await response.json();
   
       if (!response.ok) {
-        alert(`Erro: ${data.message}`);
+        toast.error(`Erro: ${data.message}`);
         return;
       }
   
-      alert("Cadastro realizado com sucesso!");
+      toast.success("Cadastro realizado com sucesso!");
     } catch (error) {
-      console.error("Erro ao cadastrar:", error);
-      alert("Erro ao cadastrar. Tente novamente.");
+      toast.error("Erro ao cadastrar. Tente novamente.");
     }
   };
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from 'sonner';
 import LogoFlexi from "../../assets/logoFlexiReport.png";
 
 export default function ProfilePage() {
@@ -32,8 +33,7 @@ export default function ProfilePage() {
           alert(data.message);
         }
       } catch (error) {
-        console.error("Erro ao buscar dados do usuário:", error);
-        alert("Erro ao buscar dados do usuário.");
+        toast.error("Erro ao buscar dados do usuário.");
       }
     };
 
@@ -73,8 +73,7 @@ export default function ProfilePage() {
         alert(data.message);
       }
     } catch (error) {
-      console.error("Erro ao atualizar perfil:", error);
-      alert("Erro ao atualizar perfil.");
+      toast.error("Erro ao atualizar perfil.");
     }
   };
 

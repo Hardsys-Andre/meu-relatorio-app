@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import ConfirmModal from "../modals/confirmModal";
 
 const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   const editorRef = useRef(null);
@@ -7,6 +8,7 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   const [reportContent, setReportContent] = useState(
     localStorage.getItem("reportContent") || ""
   );
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const storedData = localStorage.getItem("csvData");
@@ -25,15 +27,19 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   };
 
   const handleLimparEditor = () => {
-    if (window.confirm("Tem certeza que deseja limpar o editor?")) {
-      setReportContent("");
-      localStorage.removeItem("reportContent");
-      onChange("");
-      if (editorRef.current) {
-        editorRef.current.setContent("");
-      }
-    }
+    setShowModal(true); 
   };
+
+  const handleConfirm = () => {
+    setShowModal(false);
+
+     setReportContent("");
+     localStorage.removeItem("reportContent");
+     onChange("");
+     if (editorRef.current) {
+       editorRef.current.setContent("");
+     }
+   };
 
   return (
     <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-2 rounded-lg border-[#3ea8c8]">
@@ -114,6 +120,12 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
           )}
         </div>
       </div>
+      {showModal && (
+        <ConfirmModal
+          onConfirm={handleConfirm}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };
