@@ -12,7 +12,6 @@ import PerfilPage from './pages/perfilPage';
 import { AuthProvider } from './context/AuthContext';
 import TermsOfUse from './pages/termsOfUse'
 
-
 function App() {
   return (
     <AuthProvider>
@@ -25,8 +24,8 @@ function App() {
             <Route path='/csvUploader' element={<PrivateRoute><CsvPage/></PrivateRoute>}/>
             <Route path='/profile' element={<PerfilPage/>}/>
             <Route path='/pageLogin' element={<LoginPage/>}/>
-            <Route path='registerPage' element={<RegisterPage/>}/>
-            <Route path='termsOfUse' element={<TermsOfUse/>}/>
+            <Route path='/registerPage' element={<RegisterPage/>}/>
+            <Route path='/termsOfUse' element={<TermsOfUse/>}/>
           </Routes>
         </Layout>
       </div>

@@ -109,18 +109,18 @@ export default function ProfilePage() {
           ))}
         </div>
 
-        <div className="text-center mt-6 flex gap-4 justify-center">
+        <div className="text-center mt-6 flex gap-1 md:gap-4 justify-center">
           {isEditing ? (
             <>
               <button
                 onClick={handleSave}
-                className="bg-green-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-800 transition duration-300"
+                className="bg-green-700 text-white text-[14px] font-bold py-2 px-4 rounded-lg hover:bg-green-800 transition duration-300"
               >
                 Salvar
               </button>
               <button
                 onClick={() => setIsEditing(false)}
-                className="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
+                className="bg-gray-500 text-white text-[14px] font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
               >
                 Cancelar
               </button>
@@ -128,14 +128,14 @@ export default function ProfilePage() {
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-blue-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-800 transition duration-300"
+              className="bg-blue-700 text-white text-[14px] font-bold py-2 px-4 rounded-lg hover:bg-blue-800 transition duration-300"
             >
               Editar Perfil
             </button>
           )}
           <button
             onClick={handleLogout}
-            className="bg-red-800 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-900 transition duration-300"
+            className="bg-red-800 text-white text-[14px] font-bold py-2 px-4 rounded-lg hover:bg-red-900 transition duration-300"
           >
             Deslogar
           </button>

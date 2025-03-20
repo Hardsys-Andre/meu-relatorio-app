@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';  // Importando o contexto de autenticação
+import { useAuth } from '../../context/AuthContext';
+import RecoveryPasswordModal from "../../modals/recoveryPassword";
 
 export default function LoginPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({ username: "", password: "" });
   const navigate = useNavigate();
   const { login } = useAuth();  // Importa a função de login do contexto
@@ -91,16 +93,29 @@ export default function LoginPage() {
           </button>
         </form>
         <div className="text-center mt-4">
-          <a href="#" className="text-sm text-[#3ea8c8] hover:underline">
-            Esqueci minha senha
-          </a>
-          <p className="text-sm text-gray-600 mt-2">
-            Não tem conta?{" "}
-            <Link to="/registerPage" className="text-[#3ea8c8] hover:underline">
-              Cadastre-se
-            </Link>
-          </p>
-        </div>
+      <a 
+        href="#" 
+        onClick={(e) => {
+          e.preventDefault(); // Evita o comportamento padrão de redirecionamento
+          setIsModalOpen(true); // Abre o modal
+        }}
+        className="text-sm text-[#3ea8c8] hover:underline"
+      >
+        Esqueci minha senha
+      </a>
+
+      <p className="text-sm text-gray-600 mt-2">
+        Não tem conta?{" "}
+        <Link to="/registerPage" className="text-[#3ea8c8] hover:underline">
+          Cadastre-se
+        </Link>
+      </p>
+
+      <RecoveryPasswordModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
+    </div>
       </div>
     </div>
   );
