@@ -23,15 +23,14 @@ const TermsOfUse = ({ onClose }) => {
     };
     return (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-            <div className="flex flex-col items-center bg-white p-8 rounded-lg max-w-lg w-full max-h-[80vh] overflow-y-auto">
+            <div className="flex flex-col items-center justify-start bg-white p-8 rounded-lg max-w-2xl w-[95vw] max-h-[80vh] overflow-y-auto">
             <img src={LogoFlexi} alt="Imagem Grande" className="w-[150px] h-[150px] lg:w-[150px] lg:h-[150px]" />
                 <header className="bg-[#3ea8c8] text-white text-center py-4 rounded-md mb-6 mt-6 w-full">
-                    <h1 className="text-2xl font-bold">Termos de Uso do FlexiReport</h1>
+                    <h1 className="text-xl font-bold">Termo de Consentimento e Aceite de Uso do FlexiReport</h1>
                 </header>
-                <div className="space-y-6">
-                    <h2 className="text-xl font-bold">Termo de Consentimento e Aceite de Uso do Aplicativo</h2>
+                <div className="space-y-6 text-justify text-sm">
                     <p>
-                        Pelo presente Termo de Consentimento e Aceite de Uso, o usuário abaixo identificado concorda em utilizar o aplicativo 
+                        Pelo presente Termo de Consentimento e Aceite de Uso, o usuário identificado concorda em utilizar o aplicativo 
                         <strong> FlexiReport</strong>, doravante denominado "App", nos termos e condições aqui estabelecidos. Ao clicar em "Aceitar", 
                         o usuário declara que leu, compreendeu e concorda com todos os pontos deste documento.
                     </p>
@@ -68,9 +67,7 @@ const TermsOfUse = ({ onClose }) => {
                             permanentemente nos servidores do App. Após o processamento, os dados ficam disponíveis para o usuário enquanto o App estiver em uso, sendo removidos 
                             automaticamente ao finalizar a sessão ou ao realizar a operação solicitada.
                             Em conformidade com a Lei Geral de Proteção de Dados (LGPD) e outras legislações aplicáveis, o FlexiReport coleta e armazena apenas os dados necessários 
-                            para identificar os usuários que utilizam a plataforma, como nome, e-mail e informações essenciais para o funcionamento do App. Os arquivos CSV e 
-                            relatórios gerados pelo usuário não são armazenados em nossos servidores, e por isso, não nos responsabilizamos por quaisquer danos ou perdas resultantes 
-                            do uso ou armazenamento dessas informações pelo próprio usuário.
+                            para identificar os usuários que utilizam a plataforma, como nome, e-mail e informações essenciais para o funcionamento do App.
                         </p>
                     </div>
 
