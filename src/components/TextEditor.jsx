@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import ConfirmModal from "../modals/confirmModal";
 
 const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   const editorRef = useRef(null);
@@ -7,16 +8,15 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   const [reportContent, setReportContent] = useState(
     localStorage.getItem("reportContent") || ""
   );
+  const [showModal, setShowModal] = useState(false);
 
-  // Recuperar os nomes das colunas do localStorage
   useEffect(() => {
     const storedData = localStorage.getItem("csvData");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
 
-      // Verifica se há dados e pega os nomes das colunas do primeiro item
       if (Array.isArray(parsedData) && parsedData.length > 0) {
-        const columnNames = Object.keys(parsedData[0]); // Obtém apenas os nomes das colunas
+        const columnNames = Object.keys(parsedData[0]);
         setDynamicFieldsSelected(columnNames);
       }
     }
@@ -27,15 +27,19 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   };
 
   const handleLimparEditor = () => {
-    if (window.confirm("Tem certeza que deseja limpar o editor?")) {
-      setReportContent("");
-      localStorage.removeItem("reportContent");
-      onChange(""); // Atualiza o conteúdo do editor para vazio
-      if (editorRef.current) {
-        editorRef.current.setContent(""); // Limpa o conteúdo do editor visualmente
-      }
-    }
+    setShowModal(true); 
   };
+
+  const handleConfirm = () => {
+    setShowModal(false);
+
+     setReportContent("");
+     localStorage.removeItem("reportContent");
+     onChange("");
+     if (editorRef.current) {
+       editorRef.current.setContent("");
+     }
+   };
 
   return (
     <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-2 rounded-lg border-[#3ea8c8]">
@@ -101,9 +105,9 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
                 key={index}
                 onClick={() => {
                   if (editorRef.current) {
-                    const fieldContent = `{{${field}}}`; // Insere o nome do campo no editor
+                    const fieldContent = `{{${field}}}`;
                     editorRef.current.insertContent(fieldContent);
-                    handleInsertField(field); // Chama a função para armazenar os campos inseridos
+                    handleInsertField(field);
                   }
                 }}
                 className="md:mr-4 md:px-4 py-2 w-[138px]"
@@ -116,6 +120,12 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
           )}
         </div>
       </div>
+      {showModal && (
+        <ConfirmModal
+          onConfirm={handleConfirm}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };

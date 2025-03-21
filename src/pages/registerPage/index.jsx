@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import TermsOfUse from '../../modals/TermsOfUse';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -12,11 +14,26 @@ export default function RegisterPage() {
     termsAccepted: false,
   });
 
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+
+  const [isAccepted, setIsAccepted] = useState(false);
+
   useEffect(() => {
-    const termsAccepted = localStorage.getItem("termsAccepted") === "true";
-    if (termsAccepted) {
-      setForm(prevForm => ({ ...prevForm, termsAccepted: true }));
-    }
+      // Verificar o estado inicial do localStorage
+      const accepted = localStorage.getItem("termsAccepted") === "true";
+      setIsAccepted(accepted);
+
+      // Listener para quando o evento customizado é disparado
+      const handleTermsAccepted = () => {
+          setIsAccepted(true); // Atualiza o estado sem precisar recarregar a página
+      };
+
+      window.addEventListener("termsAccepted", handleTermsAccepted);
+
+      // Remover o listener ao desmontar o componente
+      return () => {
+          window.removeEventListener("termsAccepted", handleTermsAccepted);
+      };
   }, []);
 
   const handleChange = (e) => {
@@ -27,7 +44,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.termsAccepted) {
-      alert("Você deve aceitar os termos para continuar!");
+      toast.warning("Você deve aceitar os termos para continuar!");
       return;
     }
   
@@ -50,15 +67,22 @@ export default function RegisterPage() {
       const data = await response.json();
   
       if (!response.ok) {
-        alert(`Erro: ${data.message}`);
+        toast.error(`Erro: ${data.message}`);
         return;
       }
   
-      alert("Cadastro realizado com sucesso!");
+      toast.success("Cadastro realizado com sucesso!");
     } catch (error) {
-      console.error("Erro ao cadastrar:", error);
-      alert("Erro ao cadastrar. Tente novamente.");
+      toast.error("Erro ao cadastrar. Tente novamente.");
     }
+  };
+
+  const handleTermsModalClose = () => {
+    setIsTermsModalOpen(false);
+  };
+
+  const handleTermsModalOpen = () => {
+    setIsTermsModalOpen(true);
   };
 
   return (
@@ -140,16 +164,14 @@ export default function RegisterPage() {
             <input
               type="checkbox"
               name="termsAccepted"
-              checked={form.termsAccepted}
-              onChange={handleChange}
+              checked={isAccepted}
+              onChange={() => {}}
               className="h-5 w-5 text-[#3ea8c8] focus:ring-[#3ea8c8] rounded"
-              disabled={!form.termsAccepted}
+              disabled={!isAccepted}
             />
             <label className="text-sm text-gray-700">
               Eu aceito os{" "}
-              <Link to="/termsOfUse" className="text-[#3ea8c8] hover:underline">
-                Termos de Uso
-              </Link>
+                <Link className="text-[#3ea8c8] font-semibold" onClick={handleTermsModalOpen}>Termos de Uso</Link>
             </label>
           </div>
           <button
@@ -163,6 +185,10 @@ export default function RegisterPage() {
           </button>
         </form>
       </div>
+      {/* Modal de Termos de Uso */}
+      {isTermsModalOpen && (
+        <TermsOfUse onClose={handleTermsModalClose} />
+      )}
     </div>
   );
 }

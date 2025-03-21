@@ -1,7 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-
-// Criando o contexto de autenticação
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -24,12 +22,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token) => {
     localStorage.setItem("token", token);
-    setIsLoggedIn(true); // Atualiza o estado imediatamente
+    setIsLoggedIn(true);
   };
 
   const logout = () => {
     localStorage.removeItem("token");
-    setIsLoggedIn(false); // Atualiza o estado imediatamente
+    setIsLoggedIn(false);
   };
 
   return (
