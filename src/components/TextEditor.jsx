@@ -9,6 +9,7 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
     localStorage.getItem("reportContent") || ""
   );
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false); // Para controlar o estado de carregamento
 
   useEffect(() => {
     const storedData = localStorage.getItem("csvData");
@@ -27,7 +28,7 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   };
 
   const handleLimparEditor = () => {
-    setShowModal(true); 
+    setShowModal(true);
   };
 
   const handleConfirm = () => {
@@ -40,34 +41,30 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
     }
   };
 
-  const generateReport = async () => {
+  const handleGenerateContent = async () => {
+    setLoading(true);
     try {
-      const prompt = "Informe o conteúdo ou a descrição desejada para gerar o relatório.";
-  
-      // Envia a requisição para o servidor (rota /generate-report)
-      const response = await fetch("http://localhost:5000/generate-report", {
+      const response = await fetch("/generate-report", {  // Ajuste a URL para a sua rota no backend
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          prompt: "Gerar um conteúdo sobre relatórios dinâmicos", // Substitua pelo seu prompt dinâmico
+        }),
       });
   
       const data = await response.json();
-  
-      // Verifique se a IA retornou o conteúdo
-      if (data.report) {
-        // Insira o conteúdo gerado no editor
+      if (data.report) {  // Verifique se o campo 'report' foi retornado
         if (editorRef.current) {
-          editorRef.current.setContent(data.report);
-          onChange(data.report); // Atualize o valor do editor
+          editorRef.current.setContent(data.report);  // Insere o conteúdo gerado no editor
         }
-      } else {
-        alert("Não foi possível gerar o relatório.");
+        onChange(data.report);  // Atualiza o valor do editor
       }
     } catch (error) {
-      console.error("Erro ao gerar o relatório:", error);
-      alert("Erro ao gerar o relatório. Tente novamente.");
+      console.error("Erro ao gerar conteúdo:", error);
+    } finally {
+      setLoading(false);
     }
   };  
 
@@ -116,20 +113,13 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
           />
         </div>
       </div>
-      <div className="w- full md:w-[20vw] xl:w-[30vw] border-2 rounded-lg border-[#3ea8c8]">
+      <div className="w-full md:w-[20vw] xl:w-[30vw] border-2 rounded-lg border-[#3ea8c8]">
         <div className="my-4 w-full">
           <button
             onClick={handleLimparEditor}
             className="text-md w-[95%] bg-red-800 hover:bg-red-900"
           >
             Limpar Editor
-          </button>
-          {/* Botão para gerar o relatório com a IA */}
-          <button
-            onClick={generateReport}
-            className="text-md w-[95%] bg-blue-800 hover:bg-blue-900 mt-4"
-          >
-            Gerar Relatório com IA
           </button>
         </div>
         <h3 className="my-4 font-semibold text-lg">
@@ -155,6 +145,16 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
           ) : (
             <p className="text-gray-500">Nenhum campo disponível.</p>
           )}
+        </div>
+        {/* Botão para gerar conteúdo com IA */}
+        <div className="mt-4">
+          <button
+            onClick={handleGenerateContent}
+            className="text-md w-[95%] bg-green-600 hover:bg-green-700"
+            disabled={loading}
+          >
+            {loading ? "Gerando..." : "Gerar Conteúdo com IA"}
+          </button>
         </div>
       </div>
       {showModal && (
