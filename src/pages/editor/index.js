@@ -6,12 +6,10 @@ import TextEditor from "../../components/TextEditor";
 import { useCSV } from "../../context/CsvContext";
 
 const ReportEditor = () => {
-  const userType = localStorage.getItem("userType");
-
+  const [userType, setUserType] = useState(null);
   const [reportContent, setReportContent] = useState(
     localStorage.getItem("reportContent") || ""
   );
-
   const [selectedRelatorio, setSelectedRelatorio] = useState();
   const [filtro, setFiltro] = useState({});
   const editorRef = useRef(null);
@@ -25,16 +23,11 @@ const ReportEditor = () => {
   const [dynamicFieldsSelected, setDynamicFieldsSelected] = useState([]);
 
   useEffect(() => {
-    const storedColumns = localStorage.getItem("csvData");
-    if (storedColumns) {
-      setDynamicFieldsSelected(
-        JSON.parse(storedColumns).map((column) => ({
-          name: column,
-          placeholder: `{{${column}}}`,
-        }))
-      );
+    const userTypeFromStorage = localStorage.getItem("userType");
+    if (userTypeFromStorage) {
+      setUserType(userTypeFromStorage);
     }
-  }, [selectedColumns]);
+  }, []);
 
   const getDynamicFieldsFromRelatorios = () => {
     const storedData = localStorage.getItem("csvData");
