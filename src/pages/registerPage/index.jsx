@@ -19,23 +19,22 @@ export default function RegisterPage() {
   const [isAccepted, setIsAccepted] = useState(false);
 
   useEffect(() => {
-      // Verificar o estado inicial do localStorage
-      const accepted = localStorage.getItem("termsAccepted") === "true";
-      setIsAccepted(accepted);
-
-      // Listener para quando o evento customizado é disparado
-      const handleTermsAccepted = () => {
-          setIsAccepted(true); // Atualiza o estado sem precisar recarregar a página
-      };
-
-      window.addEventListener("termsAccepted", handleTermsAccepted);
-
-      // Remover o listener ao desmontar o componente
-      return () => {
-          window.removeEventListener("termsAccepted", handleTermsAccepted);
-      };
+    const accepted = localStorage.getItem("termsAccepted") === "true";
+    setIsAccepted(accepted);
+    setForm(prevForm => ({ ...prevForm, termsAccepted: accepted })); // Atualiza o estado do formulário também
+  
+    const handleTermsAccepted = () => {
+      setIsAccepted(true);
+      setForm(prevForm => ({ ...prevForm, termsAccepted: true })); // Atualiza o formulário quando o evento é disparado
+    };
+  
+    window.addEventListener("termsAccepted", handleTermsAccepted);
+  
+    return () => {
+      window.removeEventListener("termsAccepted", handleTermsAccepted);
+    };
   }, []);
-
+  
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
@@ -94,7 +93,9 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex gap-2">
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-medium mb-1">Nome</label>
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                Nome
+              </label>
               <input
                 type="text"
                 name="firstName"
@@ -105,7 +106,9 @@ export default function RegisterPage() {
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-medium mb-1">Sobrenome</label>
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                Sobrenome
+              </label>
               <input
                 type="text"
                 name="lastName"
@@ -117,7 +120,9 @@ export default function RegisterPage() {
             </div>
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">Telefone</label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">
+              Telefone
+            </label>
             <input
               type="tel"
               name="phone"
@@ -128,7 +133,9 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">Cidade/Estado</label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">
+              Cidade/Estado
+            </label>
             <input
               type="text"
               name="cityState"
@@ -139,7 +146,9 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">E-mail</label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">
+              E-mail
+            </label>
             <input
               type="email"
               name="email"
@@ -150,7 +159,9 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">Senha</label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">
+              Senha
+            </label>
             <input
               type="password"
               name="password"
@@ -164,21 +175,33 @@ export default function RegisterPage() {
             <input
               type="checkbox"
               name="termsAccepted"
-              checked={isAccepted}
-              onChange={() => {}}
-              className="h-5 w-5 text-[#3ea8c8] focus:ring-[#3ea8c8] rounded"
+              checked={form.termsAccepted} // Agora o valor é controlado pelo form.termsAccepted
+              onChange={(e) => {
+                const accepted = e.target.checked;
+                setIsAccepted(accepted);
+                setForm({ ...form, termsAccepted: accepted }); // Atualiza o estado do formulário corretamente
+              }}
               disabled={!isAccepted}
+              className="h-5 w-5 text-[#3ea8c8] focus:ring-[#3ea8c8] rounded"
             />
+
             <label className="text-sm text-gray-700">
               Eu aceito os{" "}
-                <Link className="text-[#3ea8c8] font-semibold" onClick={handleTermsModalOpen}>Termos de Uso</Link>
+              <Link
+                className="text-[#3ea8c8] font-semibold"
+                onClick={handleTermsModalOpen}
+              >
+                Termos de Uso
+              </Link>
             </label>
           </div>
           <button
             type="submit"
             disabled={!form.termsAccepted}
             className={`w-full text-white font-bold py-2 rounded-lg transition duration-300 ${
-              form.termsAccepted ? "bg-[#3ea8c8] hover:bg-[#3488a1]" : "bg-gray-400 cursor-not-allowed"
+              form.termsAccepted
+                ? "bg-[#3ea8c8] hover:bg-[#3488a1]"
+                : "bg-gray-400 cursor-not-allowed"
             }`}
           >
             Cadastrar
@@ -186,9 +209,7 @@ export default function RegisterPage() {
         </form>
       </div>
       {/* Modal de Termos de Uso */}
-      {isTermsModalOpen && (
-        <TermsOfUse onClose={handleTermsModalClose} />
-      )}
+      {isTermsModalOpen && <TermsOfUse onClose={handleTermsModalClose} />}
     </div>
   );
 }

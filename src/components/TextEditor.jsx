@@ -32,14 +32,44 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
 
   const handleConfirm = () => {
     setShowModal(false);
+    setReportContent("");
+    localStorage.removeItem("reportContent");
+    onChange("");
+    if (editorRef.current) {
+      editorRef.current.setContent("");
+    }
+  };
 
-     setReportContent("");
-     localStorage.removeItem("reportContent");
-     onChange("");
-     if (editorRef.current) {
-       editorRef.current.setContent("");
-     }
-   };
+  const generateReport = async () => {
+    try {
+      const prompt = "Informe o conteúdo ou a descrição desejada para gerar o relatório.";
+  
+      // Envia a requisição para o servidor (rota /generate-report)
+      const response = await fetch("http://localhost:5000/generate-report", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
+  
+      const data = await response.json();
+  
+      // Verifique se a IA retornou o conteúdo
+      if (data.report) {
+        // Insira o conteúdo gerado no editor
+        if (editorRef.current) {
+          editorRef.current.setContent(data.report);
+          onChange(data.report); // Atualize o valor do editor
+        }
+      } else {
+        alert("Não foi possível gerar o relatório.");
+      }
+    } catch (error) {
+      console.error("Erro ao gerar o relatório:", error);
+      alert("Erro ao gerar o relatório. Tente novamente.");
+    }
+  };  
 
   return (
     <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-2 rounded-lg border-[#3ea8c8]">
@@ -93,6 +123,13 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
             className="text-md w-[95%] bg-red-800 hover:bg-red-900"
           >
             Limpar Editor
+          </button>
+          {/* Botão para gerar o relatório com a IA */}
+          <button
+            onClick={generateReport}
+            className="text-md w-[95%] bg-blue-800 hover:bg-blue-900 mt-4"
+          >
+            Gerar Relatório com IA
           </button>
         </div>
         <h3 className="my-4 font-semibold text-lg">
