@@ -94,21 +94,21 @@ const ReportEditor = () => {
       toast.error("Apenas usuários Premium podem exportar para PDF.");
       return;
     }
-
+  
     const storedCsvData = localStorage.getItem("csvData");
-
+  
     if (!storedCsvData) {
       toast.warning("Nenhum dado disponível para exportar.");
       return;
     }
-
+  
     const relatorios = JSON.parse(storedCsvData);
     const relatoriosFiltrados = relatorios.filter((relatorio) =>
       Object.keys(filtro).every((key) =>
         relatorio[key]?.toLowerCase().includes(filtro[key]?.toLowerCase())
       )
     );
-
+  
     const content = relatoriosFiltrados
       .map((relatorio, index) => {
         const relatorioContent = replaceFieldsWithMockData(reportContent, relatorio);
@@ -116,10 +116,21 @@ const ReportEditor = () => {
         return relatorioContent;
       })
       .join("");
-
+  
     const element = document.createElement("div");
     element.innerHTML = content;
-
+  
+    // Adicionando CSS direto na exportação para garantir a formatação
+    const styles = `
+      <style>
+        h1 { font-size: 24px; font-weight: bold; }
+        h2 { font-size: 20px; font-weight: bold; }
+        p { font-size: 14px; line-height: 1.5; }
+        /* Adicione mais estilos conforme necessário */
+      </style>
+    `;
+    element.innerHTML = styles + element.innerHTML;  // Adicionando o CSS ao conteúdo HTML
+  
     html2pdf()
       .from(element)
       .set({
@@ -129,6 +140,7 @@ const ReportEditor = () => {
       })
       .save();
   };
+  
 
   const handleFiltroChange = (event) => {
     setFiltro((prevFiltro) => ({

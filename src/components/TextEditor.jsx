@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import ConfirmModal from "../modals/confirmModal";
+import AiTextGenerator from "./AiTextGenerator";
 
 const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   const editorRef = useRef(null);
@@ -41,32 +42,13 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
     }
   };
 
-  const handleGenerateContent = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("/generate-report", {  // Ajuste a URL para a sua rota no backend
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: "Gerar um conteúdo sobre relatórios dinâmicos", // Substitua pelo seu prompt dinâmico
-        }),
-      });
-  
-      const data = await response.json();
-      if (data.report) {  // Verifique se o campo 'report' foi retornado
-        if (editorRef.current) {
-          editorRef.current.setContent(data.report);  // Insere o conteúdo gerado no editor
-        }
-        onChange(data.report);  // Atualiza o valor do editor
-      }
-    } catch (error) {
-      console.error("Erro ao gerar conteúdo:", error);
-    } finally {
-      setLoading(false);
+  // Atualizado para lidar com a geração de conteúdo e passar ao editor
+  const handleGenerateContent = (generatedContent) => {
+    if (editorRef.current) {
+      editorRef.current.setContent(generatedContent);  // Insere o conteúdo gerado no editor
     }
-  };  
+    onChange(generatedContent);  // Atualiza o valor do editor
+  };
 
   return (
     <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-2 rounded-lg border-[#3ea8c8]">
@@ -148,13 +130,7 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
         </div>
         {/* Botão para gerar conteúdo com IA */}
         <div className="mt-4">
-          <button
-            onClick={handleGenerateContent}
-            className="text-md w-[95%] bg-green-600 hover:bg-green-700"
-            disabled={loading}
-          >
-            {loading ? "Gerando..." : "Gerar Conteúdo com IA"}
-          </button>
+          <AiTextGenerator handleGenerateContent={handleGenerateContent} />
         </div>
       </div>
       {showModal && (
