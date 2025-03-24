@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import ConfirmModal from "../modals/confirmModal";
+import AiTextGenerator from "./AiTextGenerator";
 
 const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   const editorRef = useRef(null);
@@ -9,6 +10,7 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
     localStorage.getItem("reportContent") || ""
   );
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false); // Para controlar o estado de carregamento
 
   useEffect(() => {
     const storedData = localStorage.getItem("csvData");
@@ -27,19 +29,26 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   };
 
   const handleLimparEditor = () => {
-    setShowModal(true); 
+    setShowModal(true);
   };
 
   const handleConfirm = () => {
     setShowModal(false);
+    setReportContent("");
+    localStorage.removeItem("reportContent");
+    onChange("");
+    if (editorRef.current) {
+      editorRef.current.setContent("");
+    }
+  };
 
-     setReportContent("");
-     localStorage.removeItem("reportContent");
-     onChange("");
-     if (editorRef.current) {
-       editorRef.current.setContent("");
-     }
-   };
+  // Atualizado para lidar com a geração de conteúdo e passar ao editor
+  const handleGenerateContent = (generatedContent) => {
+    if (editorRef.current) {
+      editorRef.current.setContent(generatedContent);  // Insere o conteúdo gerado no editor
+    }
+    onChange(generatedContent);  // Atualiza o valor do editor
+  };
 
   return (
     <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-2 rounded-lg border-[#3ea8c8]">
@@ -86,7 +95,7 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
           />
         </div>
       </div>
-      <div className="w- full md:w-[20vw] xl:w-[30vw] border-2 rounded-lg border-[#3ea8c8]">
+      <div className="w-full md:w-[20vw] xl:w-[30vw] border-2 rounded-lg border-[#3ea8c8]">
         <div className="my-4 w-full">
           <button
             onClick={handleLimparEditor}
@@ -118,6 +127,10 @@ const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
           ) : (
             <p className="text-gray-500">Nenhum campo disponível.</p>
           )}
+        </div>
+        {/* Botão para gerar conteúdo com IA */}
+        <div className="mt-4">
+          <AiTextGenerator handleGenerateContent={handleGenerateContent} />
         </div>
       </div>
       {showModal && (

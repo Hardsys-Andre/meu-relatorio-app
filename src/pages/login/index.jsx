@@ -36,18 +36,26 @@ export default function LoginPage() {
         return;
       }
   
-      localStorage.setItem("token", data.token);
-      
-      login(data.token);  
-      
-      const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
-      localStorage.removeItem("redirectAfterLogin");
-      
-      navigate(redirectPath);
+      console.log("Dados recebidos do backend:", data);
+  
+      // Verifica se o userType foi retornado
+      if (data.token && data.userType) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userType", data.userType);  // Salvando o userType no localStorage
+        
+        login(data.token, data.userType); // Passa o userType para o seu AuthContext
+  
+        const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
+        localStorage.removeItem("redirectAfterLogin");
+  
+        navigate(redirectPath);
+      } else {
+        toast.error("O login foi bem-sucedido, mas o userType não foi retornado.");
+      }
     } catch (error) {
       toast.error("Erro ao fazer login. Tente novamente.");
     }
-  };
+  };  
   
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">

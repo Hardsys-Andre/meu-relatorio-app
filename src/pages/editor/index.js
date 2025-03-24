@@ -6,6 +6,7 @@ import TextEditor from "../../components/TextEditor";
 import { useCSV } from "../../context/CsvContext";
 
 const ReportEditor = () => {
+  const [userType, setUserType] = useState(null);
   const [reportContent, setReportContent] = useState(
     localStorage.getItem("reportContent") || ""
   );
@@ -22,28 +23,23 @@ const ReportEditor = () => {
   const [dynamicFieldsSelected, setDynamicFieldsSelected] = useState([]);
 
   useEffect(() => {
-    const storedColumns = localStorage.getItem("csvData");
-    if (storedColumns) {
-      setDynamicFieldsSelected(
-        JSON.parse(storedColumns).map((column) => ({
-          name: column,
-          placeholder: `{{${column}}}`,
-        }))
-      );
+    const userTypeFromStorage = localStorage.getItem("userType");
+    if (userTypeFromStorage) {
+      setUserType(userTypeFromStorage);
     }
-  }, [selectedColumns]);
+  }, []);
 
   const getDynamicFieldsFromRelatorios = () => {
     const storedData = localStorage.getItem("csvData");
     if (!storedData) {
       toast.error("Nenhum dado encontrado no localStorage.");
       return [];
-  }
+    }
     try {
       const parsedData = JSON.parse(storedData);
       if (!Array.isArray(parsedData) || parsedData.length === 0){
         toast.warning("Nenhum relatório encontrado.");
-       return [];
+        return [];
       }
       const relatorio = parsedData[0];
       return Object.keys(relatorio)
@@ -94,50 +90,57 @@ const ReportEditor = () => {
   };
 
   const exportToPDF = () => {
+    if (userType !== "Premium") {
+      toast.error("Apenas usuários Premium podem exportar para PDF.");
+      return;
+    }
+  
     const storedCsvData = localStorage.getItem("csvData");
-
+  
     if (!storedCsvData) {
       toast.warning("Nenhum dado disponível para exportar.");
       return;
     }
-
+  
     const relatorios = JSON.parse(storedCsvData);
-
     const relatoriosFiltrados = relatorios.filter((relatorio) =>
       Object.keys(filtro).every((key) =>
         relatorio[key]?.toLowerCase().includes(filtro[key]?.toLowerCase())
       )
     );
-
+  
     const content = relatoriosFiltrados
       .map((relatorio, index) => {
-        const relatorioContent = replaceFieldsWithMockData(
-          reportContent,
-          relatorio
-        );
-
-        if (index > 0) {
-          return `<div style="page-break-before:always;">${relatorioContent}</div>`;
-        }
-
+        const relatorioContent = replaceFieldsWithMockData(reportContent, relatorio);
+        if (index > 0) return `<div style="page-break-before:always;">${relatorioContent}</div>`;
         return relatorioContent;
       })
       .join("");
-
+  
     const element = document.createElement("div");
     element.innerHTML = content;
-
-    const margin = [20, 25, 20, 25];
-
+  
+    // Adicionando CSS direto na exportação para garantir a formatação
+    const styles = `
+      <style>
+        h1 { font-size: 24px; font-weight: bold; }
+        h2 { font-size: 20px; font-weight: bold; }
+        p { font-size: 14px; line-height: 1.5; }
+        /* Adicione mais estilos conforme necessário */
+      </style>
+    `;
+    element.innerHTML = styles + element.innerHTML;  // Adicionando o CSS ao conteúdo HTML
+  
     html2pdf()
       .from(element)
       .set({
-        margin: margin,
+        margin: [20, 25, 20, 25],
         filename: "relatorios.pdf",
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       })
       .save();
   };
+  
 
   const handleFiltroChange = (event) => {
     setFiltro((prevFiltro) => ({
@@ -220,7 +223,8 @@ const ReportEditor = () => {
         )}
         <button
           onClick={exportToPDF}
-          className="mx-6 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          className={`mx-6 py-2 px-4 rounded ${userType !== "Premium" ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
+          disabled={userType !== "Premium"}
         >
           Exportar para PDF
         </button>
