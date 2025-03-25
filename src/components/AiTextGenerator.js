@@ -17,7 +17,8 @@ const AiTextGenerator = ({ handleGenerateContent }) => {
 
       const data = await response.json();
       if (data && data.report) {
-        handleGenerateContent(data.report); // Passa o conteúdo gerado para o editor
+        handleGenerateContent(data.report);
+        console.log(data.report) // Passa o conteúdo gerado para o editor
       } else {
         console.error("Conteúdo gerado não encontrado.");
       }

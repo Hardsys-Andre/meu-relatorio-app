@@ -120,17 +120,24 @@ const ReportEditor = () => {
     const element = document.createElement("div");
     element.innerHTML = content;
   
+    // Esconder as quebras de página antes da exportação
+    const pageBreaks = element.querySelectorAll(".auto-page-break");
+    pageBreaks.forEach((breakEl) => {
+      breakEl.style.display = "none"; // Esconde a div com a quebra de página
+    });
+  
     // Adicionando CSS direto na exportação para garantir a formatação
     const styles = `
       <style>
-        h1 { font-size: 24px; font-weight: bold; }
-        h2 { font-size: 20px; font-weight: bold; }
-        p { font-size: 14px; line-height: 1.5; }
+        h1 { font-size: 24px; font-weight: bold; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
+        h2 { font-size: 20px; font-weight: bold; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
+        p { font-size: 14px; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
         /* Adicione mais estilos conforme necessário */
       </style>
     `;
     element.innerHTML = styles + element.innerHTML;  // Adicionando o CSS ao conteúdo HTML
   
+    // Gerar o PDF usando html2pdf
     html2pdf()
       .from(element)
       .set({
@@ -139,7 +146,13 @@ const ReportEditor = () => {
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       })
       .save();
+  
+    // Restaurar a visibilidade das quebras de página após o PDF ser gerado
+    pageBreaks.forEach((breakEl) => {
+      breakEl.style.display = ""; // Restaura a visibilidade da div com a quebra de página
+    });
   };
+  
   
 
   const handleFiltroChange = (event) => {
