@@ -7,69 +7,96 @@ import Felipe from "../../assets/felipe.jpg";
 import Zenilda from "../../assets/zenilda.jpg";
 import Andre_a from "../../assets/andre-a.png";
 import Jose from "../../assets/jose.jpg";
-import { FaUser } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaFileAlt, FaUpload, FaLightbulb, FaDownload, FaSlidersH } from "react-icons/fa"
 
 function Home() {
   return (
-    <div className="flex flex-col w-full items-center">
-      <main className="flex flex-col w-full p-4 justify-center items-center">
-        <div className="flex flex-col gap-4 md:gap-10 md:flex-row w-full xl:w-[60%] mt-2 justify-center items-center">
-          <div className="flex flex-col lg:w-[300px] xl:w-[500px] items-center">
+    <div className="flex flex-col w-full items-center ">
+      <section className="flex flex-row w-full justify-between py-10 text-center bg-gradient-to-b from-white to-sky-100 dark:from-gray-950 dark:to-gray-900">
+        <div className="flex flex-col justify-center w-[30%] items-end">
             <img
               src={LogoFlexi}
               alt="Logotipo Flexireport"
-              className="w-[200px] h-[200px] xl:w-[250px] xl:h-[250px]"
+              className="w-[200px] xl:w-[250px] hover:scale-110"
             />
-          </div>
-            <h1 className="text-[24px] md:text-[34px] md:w-[300px] xl:w-[410px] text-[#3ea8c8] md:text-left font-bold leading-tight">
-              Relatórios Personalizados de Forma Eficiente e Flexível!{" "}
-            </h1>
         </div>
-        <div className="bg-white text-gray-800 p-6 max-w-6xl mx-auto mt-10 space-y-6">
-        <hr className="border-t-4 border-[#3ea8c8] w-full" />
-        <p className="text-lg text-justify leading-relaxed">
-            O <strong>FlexiReport</strong> é uma poderosa aplicação desenvolvida
-            para simplificar e aprimorar o processo de criação de relatórios
-            personalizados. Com uma interface intuitiva e amigável, o aplicativo
-            permite que você importe arquivos CSV e gere campos dinâmicos
-            automaticamente, proporcionando total flexibilidade na construção de
-            relatórios sob medida para suas necessidades.
+        <div className="container px-4 mx-auto w-[70%]">
+          <h1 className="max-w-3xl mx-auto mb-6 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+            Relatórios Personalizados de Forma Eficiente e Flexível!
+          </h1>
+          <p className="max-w-2xl mx-auto mb-8 text-lg text-gray-600 dark:text-gray-300">
+            Importe seus dados CSV, crie relatórios personalizados e exporte-os com facilidade. Uma solução completa
+            para suas necessidades de relatórios.
           </p>
-
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-[#3ea8c8]">
-              ✅ Principais Funcionalidades:
-            </h2>
-
-            <ul className="list-disc pl-6 space-y-2 text-justify">
-              <li>
-                <strong>Importação Inteligente de Dados:</strong> Carregue
-                arquivos CSV e transforme os dados em campos dinâmicos que podem
-                ser manipulados e personalizados conforme necessário.
-              </li>
-              <li>
-                <strong>Relatórios Personalizáveis:</strong> Crie relatórios
-                adaptados às suas exigências, organizando e exibindo as
-                informações da maneira mais relevante para o seu propósito.
-              </li>
-              <li>
-                <strong>Interface Intuitiva:</strong> Utilize um ambiente de
-                fácil navegação que permite gerar relatórios de forma rápida e
-                eficiente, sem complicações.
-              </li>
-              <li>
-                <strong>Exportação Simplificada:</strong> Exporte seus
-                relatórios em formato PDF com qualidade profissional, prontos
-                para apresentação e compartilhamento.
-              </li>
-              <li>
-                <strong>Flexibilidade e Controle:</strong> Escolha e organize os
-                campos que deseja incluir, aplicando filtros e ajustes conforme
-                necessário para obter o relatório desejado.
-              </li>
-            </ul>
+          <div className="flex flex-wrap justify-center gap-4">
+            <button className="bg-[#3ea8c8] font-semibold hover:bg-[#2d97b7]">
+              <Link to="/editor">Começar Agora</Link>
+            </button>
+            <button className="bg-white text-black font-semibold border-[1px] border-gray-400 hover:bg-gray-100 hover:text-black hover:border-gray-500">
+              <Link to="/csvUploader">Importar CSV</Link>
+            </button>
           </div>
+        </div>
+      </section>
 
+      <section className="py-16 w-full bg-white dark:bg-gray-950">
+        <div className="container px-4 mx-auto">
+          <h2 className="mb-12 text-3xl font-bold text-center">Recursos Principais</h2>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center  w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaUpload className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Importação Inteligente de Dados</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Importe facilmente seus arquivos CSV com nossa interface de arrastar e soltar. Visualize e selecione
+                  as colunas que deseja incluir em seus relatórios.
+                </p>
+            </div>
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaFileAlt className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Relatórios Personalizáveis</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Crie relatórios totalmente personalizados com nosso editor intuitivo. Adicione campos dinâmicos,
+                  formate o texto e organize as informações como desejar.
+                </p>
+            </div>
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaLightbulb className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Interface Intuitiva</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Nossa interface foi projetada para ser fácil de usar, mesmo para usuários sem experiência técnica.
+                  Navegue facilmente entre as diferentes funcionalidades.
+                </p>
+            </div>
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaDownload className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Exportação Simplificada</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Exporte seus relatórios em PDF com apenas um clique. Compartilhe facilmente com sua equipe ou
+                  clientes.
+                </p>
+            </div>
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaSlidersH className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Flexibilidade e Controle</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Tenha controle total sobre seus dados e relatórios. Filtre, ordene e agrupe as informações de acordo
+                  com suas necessidades.
+                </p>
+            </div>
+          </div>
+          <div className="bg-white w-full text-gray-800 mt-6 space-y-6">
+            <hr className="border-t-1 border-gray-200 w-full" />
           <p className="text-lg leading-relaxed text-justify">
             O <strong>FlexiReport</strong> é a ferramenta ideal para
             profissionais e empresas que buscam automatizar e otimizar a geração
@@ -77,12 +104,13 @@ function Home() {
             dados complexos em informações claras e bem estruturadas em apenas
             alguns cliques!
           </p>
-          <hr className="border-t-4 border-[#3ea8c8] w-full" />
+          <hr className="border-t-1 border-gray-200 w-full" />
         </div>  
-      </main>
-      <section id="criadores" className="mt-10">
-        <h2 className="text-4xl font-bold text-center text-[#3ea8c8]">
-          Criadores
+        </div>
+      </section>
+      <section id="criadores" className="py-16 bg-sky-50 dark:bg-gray-900 w-full">
+        <h2 className="text-4xl font-bold text-center">
+          Nossa Equipe
         </h2>
         <div className="flex flex-col gap-8 md:flex-row justify-center mt-6">
           <div className="flex flex-col items-center mx-4">
@@ -172,6 +200,17 @@ function Home() {
               Aluna UNIVESP em Tecnologia da Informação
             </span>
           </div>
+        </div>
+      </section>
+      <section className="py-16 w-full text-center bg-[#3ea8c8] text-white">
+        <div className="container px-4 mx-auto">
+          <h2 className="mb-6 text-3xl font-bold">Pronto para começar?</h2>
+          <p className="max-w-2xl mx-auto mb-8 text-lg">
+            Crie relatórios personalizados de forma eficiente e flexível com o FlexiReport. Experimente agora mesmo!
+          </p>
+          <button className="">
+            <Link href="/editor">Começar Agora</Link>
+          </button>
         </div>
       </section>
     </div>
