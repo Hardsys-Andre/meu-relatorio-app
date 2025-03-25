@@ -49,7 +49,7 @@ const Navbar = () => {
         <button
           className="md:flex w-[auto] mt-0.5 p-0 items-center justify-center md:h-8 rounded-[20px]"
         >
-          <img src={LogoFlexi} alt="Logo" className="h-6 md:h-7" />
+          <img src={LogoFlexi} alt="Logo" className="h-6 lg:h-7" />
         </button>
         </Link>
         <div className='flex flex-col'>
@@ -70,45 +70,51 @@ const Navbar = () => {
           className={`flex-col md:flex md:flex-row gap-2 md:gap-4 xl:gap-8 ${menuOpen ? 'flex mt-2' : 'hidden'}`}
         >
           <Link to="/" onClick={handleButtonClick}>
-            <button className="flex items-center w-full md:w-auto h-10 px-4 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[12px] lg:text-[16px]">
-            <FaHome className="mr-2" /> Home
+            <button className="flex items-center w-full md:w-auto h-10 lg:px-4 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+            <FaHome className="lg:mr-2 mr-1" /> 
+            Home
             </button>
           </Link>
           <Link to="/editor" onClick={handleButtonClick}>
-            <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[12px] lg:text-[16px]">
-            <FaFileAlt className="mr-2" />Editor de Relatórios
+            <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+            <FaFileAlt className="lg:mr-2 mr-1" />
+            Editor de Relatórios
             </button>
           </Link>
           <Link to="/csvUploader" onClick={handleButtonClick}>
-            <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[12px] lg:text-[16px]">
-            <FaUpload className="mr-2" />CSV Uploader
+            <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+            <FaUpload className="lg:mr-2 mr-1" />
+            CSV Uploader
             </button>
           </Link>
           <button
-            className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[12px] lg:text-[16px]"
+            className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]"
             onClick={() => window.open('https://superclient.com.br/', '_blank')}
           >
-            <FaExternalLinkAlt className="mr-2" />SuperClient
+            <FaExternalLinkAlt className="lg:mr-2 mr-1" />
+            SuperClient
           </button>
 
           {isLoggedIn ? (
             <>
               <Link to="/profile" onClick={handleButtonClick}>
-                <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[12px] lg:text-[16px]">
-                <FaUser className="mr-2" />Perfil
+                <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+                <FaUser className="lg:mr-2 mr-1" />
+                Perfil
                 </button>
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[12px] lg:text-[16px]"
+                className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]"
               >
                 <FaSignOutAlt size={20} />
               </button>
             </>
           ) : (
             <Link to="/pageLogin" onClick={handleButtonClick}>
-              <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[12px] lg:text-[16px]">
-              <FaUser className="mr-2" />Login
+              <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+              <FaUser className="lg:mr-2 mr-1" />
+              Login
               </button>
             </Link>
           )}

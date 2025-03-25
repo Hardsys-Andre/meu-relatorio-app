@@ -13,16 +13,16 @@ import { FaFileAlt, FaUpload, FaLightbulb, FaDownload, FaSlidersH } from "react-
 function Home() {
   return (
     <div className="flex flex-col w-full items-center ">
-      <section className="flex flex-row w-full justify-between py-10 text-center bg-gradient-to-b from-white to-sky-100 dark:from-gray-950 dark:to-gray-900">
-        <div className="flex flex-col justify-center w-[30%] items-end">
+      <section className="flex flex-col md:flex-row w-full justify-between py-10 text-center bg-gradient-to-b from-white to-sky-100 dark:from-gray-950 dark:to-gray-900">
+        <div className="flex flex-col justify-center md:w-[30%] mb-2 items-center md:items-end">
             <img
               src={LogoFlexi}
               alt="Logotipo Flexireport"
-              className="w-[200px] xl:w-[250px] hover:scale-110"
+              className="w-[150px] lg:w-[250px] hover:scale-110"
             />
         </div>
-        <div className="container px-4 mx-auto w-[70%]">
-          <h1 className="max-w-3xl mx-auto mb-6 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+        <div className="container px-4 mx-auto md:w-[70%]">
+          <h1 className="md:max-w-3xl w-full mx-auto mb-6 text-2xl  lg:text-6xl font-extrabold tracking-tight">
             Relatórios Personalizados de Forma Eficiente e Flexível!
           </h1>
           <p className="max-w-2xl mx-auto mb-8 text-lg text-gray-600 dark:text-gray-300">
@@ -42,7 +42,7 @@ function Home() {
 
       <section className="py-16 w-full bg-white dark:bg-gray-950">
         <div className="container px-4 mx-auto">
-          <h2 className="mb-12 text-3xl font-bold text-center">Recursos Principais</h2>
+          <h2 className="mb-12 md:text-3xl text-2xl font-bold text-center">Recursos Principais</h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
                 <div className="flex items-center justify-center  w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
