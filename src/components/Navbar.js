@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBars, FaTimes, FaSignOutAlt } from 'react-icons/fa';
+import { FaBars, FaTimes, FaSignOutAlt, FaUser, FaFileAlt, FaUpload, FaExternalLinkAlt, FaHome } from 'react-icons/fa';
 import LogoFlexi from '../assets/logoNome.png';
 import { useAuth } from '../context/AuthContext';
 
@@ -39,17 +39,17 @@ const Navbar = () => {
   };
 
   return (
-    <header className="flex justify-center w-full fixed top-2 z-50">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 dark:bg-gray-950 dark:border-gray-800">
       <nav
-        className={`flex flex-row-reverse md:flex-row w-[97%] h-10 md:h-10 bg-[#3ea8c8] py-1 px-2 gap-2 border-[1px] border-[#e2e2e2] rounded-xl justify-between md:items-center 
-                ${menuOpen ? 'gap-2' : 'w-[97%] md:w-[97%]'}`}
+        className={`flex flex-row-reverse w-full md:flex-row h-10 md:h-16 bg-white py-1 px-2 gap-2 justify-between md:items-center 
+                ${menuOpen ? 'gap-2' : 'w-full'}`}
         ref={menuRef}
       >
         <Link to="/" onClick={handleButtonClick}>
         <button
           className="md:flex w-[auto] mt-0.5 p-0 items-center justify-center md:h-8 rounded-[20px]"
         >
-          <img src={LogoFlexi} alt="Logo" className="h-6 md:h-7" />
+          <img src={LogoFlexi} alt="Logo" className="h-6 lg:h-7" />
         </button>
         </Link>
         <div className='flex flex-col'>
@@ -70,43 +70,51 @@ const Navbar = () => {
           className={`flex-col md:flex md:flex-row gap-2 md:gap-4 xl:gap-8 ${menuOpen ? 'flex mt-2' : 'hidden'}`}
         >
           <Link to="/" onClick={handleButtonClick}>
-            <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">Home</button>
+            <button className="flex items-center w-full md:w-auto h-10 lg:px-4 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+            <FaHome className="lg:mr-2 mr-1" /> 
+            Home
+            </button>
           </Link>
           <Link to="/editor" onClick={handleButtonClick}>
-            <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">
-              Editor de Relatórios
+            <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+            <FaFileAlt className="lg:mr-2 mr-1" />
+            Editor de Relatórios
             </button>
           </Link>
           <Link to="/csvUploader" onClick={handleButtonClick}>
-            <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">
-              CSV Uploader
+            <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+            <FaUpload className="lg:mr-2 mr-1" />
+            CSV Uploader
             </button>
           </Link>
           <button
-            className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]"
+            className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]"
             onClick={() => window.open('https://superclient.com.br/', '_blank')}
           >
+            <FaExternalLinkAlt className="lg:mr-2 mr-1" />
             SuperClient
           </button>
 
           {isLoggedIn ? (
             <>
               <Link to="/profile" onClick={handleButtonClick}>
-                <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">
-                  Perfil
+                <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+                <FaUser className="lg:mr-2 mr-1" />
+                Perfil
                 </button>
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center justify-center h-7 w-full md:w-auto"
+                className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]"
               >
                 <FaSignOutAlt size={20} />
               </button>
             </>
           ) : (
             <Link to="/pageLogin" onClick={handleButtonClick}>
-              <button className="flex items-center w-full md:w-auto h-7 text-[12px] lg:text-[16px]">
-                Login
+              <button className="flex items-center w-full md:w-auto h-10 bg-white text-black border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+              <FaUser className="lg:mr-2 mr-1" />
+              Login
               </button>
             </Link>
           )}

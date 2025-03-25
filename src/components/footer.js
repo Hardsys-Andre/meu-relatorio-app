@@ -5,7 +5,7 @@ import Univesp from "../assets/logo-univesp.png";
 
 const Footer = () => {
   return (
-    <footer className="w-full p-4 mt-12 bg-gray-900 text-white">
+    <footer className="w-full p-4 mt-1 bg-gray-900 text-white">
       <div className="flex flex-col md:flex-row justify-between gap-8 items-center">
         <div className="flex flex-col items-center text-center">
           <div className="flex flex-row gap-1 items-center ">
