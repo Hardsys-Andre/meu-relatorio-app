@@ -110,6 +110,7 @@ editor.on("keyup change", () => addPageBreaks());
     height: A4Height,
     width: A4Width,
     language: "pt_BR",
+    encoding: "UTF-8",
     menubar: true,
     plugins: [
       "advlist autolink lists link image charmap print preview anchor",

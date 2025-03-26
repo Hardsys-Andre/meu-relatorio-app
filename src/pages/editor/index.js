@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 import html2pdf from "html2pdf.js";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 import FilterBar from "../../components/FilterBar";
 import TextEditor from "../../components/TextEditor";
 import { useCSV } from "../../context/CsvContext";
@@ -37,7 +39,7 @@ const ReportEditor = () => {
     }
     try {
       const parsedData = JSON.parse(storedData);
-      if (!Array.isArray(parsedData) || parsedData.length === 0){
+      if (!Array.isArray(parsedData) || parsedData.length === 0) {
         toast.warning("Nenhum relatório encontrado.");
         return [];
       }
@@ -78,6 +80,8 @@ const ReportEditor = () => {
           const fieldValue =
             relatorio[field.name] !== undefined ? relatorio[field.name] : "";
           replacedContent = replacedContent.replace(regex, fieldValue);
+          console.log(relatorio)
+          console.log(dynamicFields)
         }
       });
     } else {
@@ -94,38 +98,42 @@ const ReportEditor = () => {
       toast.error("Apenas usuários Premium podem exportar para PDF.");
       return;
     }
-  
+
     const storedCsvData = localStorage.getItem("csvData");
-  
+
     if (!storedCsvData) {
       toast.warning("Nenhum dado disponível para exportar.");
       return;
     }
-  
+
     const relatorios = JSON.parse(storedCsvData);
     const relatoriosFiltrados = relatorios.filter((relatorio) =>
       Object.keys(filtro).every((key) =>
         relatorio[key]?.toLowerCase().includes(filtro[key]?.toLowerCase())
       )
     );
-  
+
     const content = relatoriosFiltrados
       .map((relatorio, index) => {
-        const relatorioContent = replaceFieldsWithMockData(reportContent, relatorio);
-        if (index > 0) return `<div style="page-break-before:always;">${relatorioContent}</div>`;
+        const relatorioContent = replaceFieldsWithMockData(
+          reportContent,
+          relatorio
+        );
+        if (index > 0)
+          return `<div style="page-break-before:always;">${relatorioContent}</div>`;
         return relatorioContent;
       })
       .join("");
-  
+
     const element = document.createElement("div");
     element.innerHTML = content;
-  
+
     // Esconder as quebras de página antes da exportação
     const pageBreaks = element.querySelectorAll(".auto-page-break");
     pageBreaks.forEach((breakEl) => {
       breakEl.style.display = "none"; // Esconde a div com a quebra de página
     });
-  
+
     // Adicionando CSS direto na exportação para garantir a formatação
     const styles = `
       <style>
@@ -135,8 +143,8 @@ const ReportEditor = () => {
         /* Adicione mais estilos conforme necessário */
       </style>
     `;
-    element.innerHTML = styles + element.innerHTML;  // Adicionando o CSS ao conteúdo HTML
-  
+    element.innerHTML = styles + element.innerHTML; // Adicionando o CSS ao conteúdo HTML
+
     // Gerar o PDF usando html2pdf
     html2pdf()
       .from(element)
@@ -146,14 +154,76 @@ const ReportEditor = () => {
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       })
       .save();
-  
+
     // Restaurar a visibilidade das quebras de página após o PDF ser gerado
     pageBreaks.forEach((breakEl) => {
       breakEl.style.display = ""; // Restaura a visibilidade da div com a quebra de página
     });
   };
-  
-  
+
+  const exportToZip = async () => {
+    if (userType !== "Premium") {
+      toast.error("Apenas usuários Premium podem exportar para ZIP.");
+      return;
+    }
+
+    const storedCsvData = localStorage.getItem("csvData");
+    if (!storedCsvData) {
+      toast.warning("Nenhum dado disponível para exportar.");
+      return;
+    }
+
+    const relatorios = JSON.parse(storedCsvData);
+    const relatoriosFiltrados = relatorios.filter((relatorio) =>
+      Object.keys(filtro).every((key) =>
+        relatorio[key]?.toLowerCase().includes(filtro[key]?.toLowerCase())
+      )
+    );
+
+    if (relatoriosFiltrados.length === 0) {
+      toast.warning("Nenhum relatório encontrado para exportação.");
+      return;
+    }
+
+    const zip = new JSZip();
+
+    const generatePdfBlob = async (content) => {
+      return new Promise((resolve) => {
+        const element = document.createElement("div");
+        element.innerHTML = `
+          <style>
+            h1 { font-size: 24px; font-weight: bold; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
+            h2 { font-size: 20px; font-weight: bold; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
+            p { font-size: 14px; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
+          </style>
+          ${content}
+        `;
+
+        html2pdf()
+          .from(element)
+          .set({
+            margin: [20, 25, 20, 25], // Margens do PDF
+            filename: "relatorios.pdf",
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          })
+          .outputPdf("blob")
+          .then(resolve);
+      });
+    };
+
+    const pdfPromises = relatoriosFiltrados.map(async (relatorio, index) => {
+      const content = replaceFieldsWithMockData(reportContent, relatorio);
+      const pdfBlob = await generatePdfBlob(content);
+      zip.file(`relatorio_${index + 1}.pdf`, pdfBlob);
+    });
+
+    await Promise.all(pdfPromises);
+
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      saveAs(content, "relatorios.zip");
+      toast.success("ZIP com os relatórios exportado com sucesso!");
+    });
+  };
 
   const handleFiltroChange = (event) => {
     setFiltro((prevFiltro) => ({
@@ -236,10 +306,25 @@ const ReportEditor = () => {
         )}
         <button
           onClick={exportToPDF}
-          className={`mx-6 py-2 px-4 rounded ${userType !== "Premium" ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
+          className={`mx-6 py-2 px-4 rounded ${
+            userType !== "Premium"
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
           disabled={userType !== "Premium"}
         >
           Exportar para PDF
+        </button>
+        <button
+          onClick={exportToZip}
+          className={`mx-6 py-2 px-4 rounded ${
+            userType !== "Premium"
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-500 text-white hover:bg-green-600"
+          }`}
+          disabled={userType !== "Premium"}
+        >
+          Exportar cada relatório separadamente
         </button>
       </div>
 
