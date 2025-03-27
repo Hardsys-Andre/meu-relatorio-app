@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import ConfirmModal from "../modals/confirmModal";
 import AiTextGenerator from "./AiTextGenerator";
+import { FaTrash } from "react-icons/fa"
 
 const TextEditor = ({ value, onChange, apiKey, handleInsertField }) => {
   const editorRef = useRef(null);
@@ -61,7 +62,7 @@ const cmToPixels = (cm) => {
   const marginAll =  cmToPixels(2.4);
 
   return (
-    <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-2 rounded-lg border-[#3ea8c8]">
+    <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-[1px] rounded-lg border-[#3ea8c8]">
       <div className="flex justify-center w-full md:w-[70vw]">
         <div className="flex w-full justify-center">
         <Editor
@@ -143,19 +144,20 @@ editor.on("keyup change", () => addPageBreaks());
 />
         </div>
       </div>
-      <div className="w-full md:w-[20vw] xl:w-[30vw] border-2 rounded-lg border-[#3ea8c8]">
-        <div className="my-4 w-full">
+      <div className="w-full md:w-[20vw] xl:w-[30vw] border-[1px] rounded-lg border-[#3ea8c8]">
+        <div className="flex flex-row justify-center my-4 w-full">
           <button
             onClick={handleLimparEditor}
-            className="text-md w-[95%] bg-red-800 hover:bg-red-900"
+            className="flex flex-row items-center gap-2 justify-center text-md w-[95%] bg-red-800 hover:bg-red-900"
           >
+            <FaTrash className="w-4 h-4" />
             Limpar Editor
           </button>
         </div>
         <h3 className="my-4 font-semibold text-lg">
           Inserir Campos Dinâmicos:
         </h3>
-        <div className="flex md:flex-row flex-wrap px-2 py-2 gap-2 justify-center items-center">
+        <div className="flex border border-[#3ea8c8] rounded-md mx-4 text-sm md:flex-row flex-wrap px-1 py-2 gap-2 justify-center items-center">
           {dynamicFieldsSelected.length > 0 ? (
             dynamicFieldsSelected.map((field, index) => (
               <button
@@ -167,7 +169,7 @@ editor.on("keyup change", () => addPageBreaks());
                     handleInsertField(field);
                   }
                 }}
-                className="md:mr-4 md:px-4 py-2 w-[138px]"
+                className="md:px-4 py-1 bg-white border-[1px] border-[#3ea8c8] text-[#3ea8c8]"
               >
                 {field}
               </button>
@@ -180,6 +182,25 @@ editor.on("keyup change", () => addPageBreaks());
         <div className="mt-4">
           <AiTextGenerator handleGenerateContent={handleGenerateContent} />
         </div>
+        <div className="mt-6 mx-6">
+              <h3 className="mb-4 text-lg font-semibold">Ajuda Rápida</h3>
+              <div className="p-3 text-sm bg-gray-100 rounded-md dark:bg-gray-800">
+                <p className="mb-2 p-4">
+                  <strong>Dicas:</strong> 
+                  <ul className="list-disc text-justify">
+                  <li className="mt-4">Posicione o cursor e clique nos botões dinâmicos para inseri-los no local desejado dentro do relatório.</li>
+                  <li className="mt-4">Digite que tipo de Relatório deseja no prompt acima e será gerado um modelo criado por uma IA ou cole um modelo já pronto no editor.</li>
+                  </ul>
+                </p>
+                <p>
+                  Para mais informações, consulte nossa{" "}
+                  <a href="#" className="text-[#3ea8c8] hover:underline">
+                    documentação
+                  </a>
+                  .
+                </p>
+              </div>
+            </div>
       </div>
       {showModal && (
         <ConfirmModal
