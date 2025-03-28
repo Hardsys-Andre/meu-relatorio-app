@@ -209,7 +209,7 @@ function Home() {
             Crie relatórios personalizados de forma eficiente e flexível com o FlexiReport. Experimente agora mesmo!
           </p>
           <button className="">
-            <Link href="/editor">Começar Agora</Link>
+            <Link to="/editor">Começar Agora</Link>
           </button>
         </div>
       </section>

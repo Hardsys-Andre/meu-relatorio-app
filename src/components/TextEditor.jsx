@@ -128,7 +128,10 @@ editor.on("keyup change", () => addPageBreaks());
       "alignleft aligncenter alignright alignjustify | " +
       "bullist numlist outdent indent | removeformat | image | help",
     content_style: `
-      body { font-family:Helvetica,Arial,sans-serif; font-size:14px; padding: 0; margin: ${marginAll}px; }
+      body { font-family:Helvetica,Arial,sans-serif; font-size:14px; padding: 0; margin: 10px; }
+      @media (min-width: 768px) {
+        body { font-family:Helvetica,Arial,sans-serif; font-size:14px; padding: 0; margin: ${marginAll}px; }
+      }
       .auto-page-break {
         width: 100%;
         text-align: center;

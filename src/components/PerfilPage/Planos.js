@@ -4,7 +4,7 @@ import {
   FaCheck,
 } from "react-icons/fa";
 
-const Planos = () => {
+const Planos = ({ userType }) => {
   return (
     <div>
       <div className="flex flex-col items-start w-full mb-6">
@@ -20,9 +20,11 @@ const Planos = () => {
               <FaCrown className="w-5 h-5 text-amber-500" />
               <h3 className="text-lg font-bold">Plano Premium</h3>
             </div>
-            <span variant="outline" className="border-green-500 text-green-600">
-              Ativo
-            </span>
+            {userType === "Premium" ? (
+              <span className="border-green-500 text-green-600">Ativo</span>
+            ) : (
+              <button className="bg-white hover:text-white hover:bg-green-500 border-green-500 text-green-600">Contratar</button>
+            )}
           </div>
           <p className="mb-4 text-sm">
             Seu plano Premium está ativo até <strong>15/12/2023</strong>.
@@ -56,9 +58,11 @@ const Planos = () => {
           </div>
           <div className="flex gap-2">
             <button>Gerenciar Assinatura</button>
-            <button className="text-red-200 bg-red-900 border-red-200 hover:bg-red-800 dark:border-red-800 dark:hover:bg-red-950/20">
-              Cancelar Plano
-            </button>
+            {userType === "Premium" && (
+              <button className="text-red-200 bg-red-900 border-red-200 hover:bg-red-800 dark:border-red-800 dark:hover:bg-red-950/20">
+                Cancelar Plano
+              </button>
+            )}
           </div>
         </div>
       </section>

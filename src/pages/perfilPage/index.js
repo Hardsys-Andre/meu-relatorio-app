@@ -119,7 +119,7 @@ export default function ProfilePage() {
       case "Security":
         return <Security />;
       case "Planos":
-        return <Planos />;
+        return <Planos userType={userData.userType}/>;
         case "Historico":
         return <Historico />;
       // Add more cases for other components if needed
@@ -134,7 +134,7 @@ export default function ProfilePage() {
         Perfil do Usuário
       </h2>
 
-      <div className="flex flex-row w-full  bg-white shadow-lg rounded-2xl p-6">
+      <div className="flex flex-col md:flex-row w-full  bg-white shadow-lg rounded-2xl p-6">
         <div className="flex flex-col items-center md:w-[25vw]">
           <div className="flex flex-col mb-4 mr-4 p-2 items-center md:w-full border rounded-lg">
             <FaUser className="text-8xl mb-2" />
@@ -153,12 +153,9 @@ export default function ProfilePage() {
               {userData.userType}
             </span>
           </div>
-          <div className="flex flex-col mb-4 mr-4 p-2 items-center md:w-full border rounded-lg">
-            <span>Menu</span>
-          </div>
         </div>
-        <div className="space-y-4 w-full ml-4">
-          <div className="flex w-full border-b bg-gray-100 justify-center">
+        <div className="flex flex-col space-y-4 w-full ml-4">
+          <div className="flex flex-col md:flex-row text-[11px] lg:text-[14px] w-full border-b bg-gray-100 justify-center">
             <button
               onClick={() => setActiveComponent("Info")}
               className="flex gap-2 justify-center items-center bg-white text-black m-2 border border-black hover:bg-gray-50 hover:text-black hover:border-gray-400 rounded-md"

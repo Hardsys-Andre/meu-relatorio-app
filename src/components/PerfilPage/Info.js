@@ -10,7 +10,7 @@ const Info = ({ isEditing, formData, userData, handleInputChange, handleSave, se
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         {["firstName", "lastName", "phone", "cityState"].map((field) => (
           <div key={field}>
             <label className="block text-gray-700 text-left text-sm font-semibold mb-2 mt-4">
