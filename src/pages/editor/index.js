@@ -6,6 +6,12 @@ import { saveAs } from "file-saver";
 import FilterBar from "../../components/FilterBar";
 import TextEditor from "../../components/TextEditor";
 import { useCSV } from "../../context/CsvContext";
+import { FaFileZipper } from "react-icons/fa6"
+import {
+  FaEye,
+  FaFilePdf,
+  FaTrash,
+} from "react-icons/fa"
 
 const ReportEditor = () => {
   const [userType, setUserType] = useState(null);
@@ -275,9 +281,9 @@ const ReportEditor = () => {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <header className="mb-2">
+      <header className="mb-2 mt-2">
         <h1 className="text-[22px] md:text-[24px] font-semibold">
-          Crie seu relatório e adicione os campos dinâmicos do seu arquivo CSV.
+          Editor de Relatórios
         </h1>
       </header>
       <FilterBar
@@ -293,38 +299,42 @@ const ReportEditor = () => {
         handleInsertField={handleInsertField}
       />
 
-      <div className="flex justify-center w-[95vw] md:w-[720px] my-8 py-2 border-2 border-[#3ea8c8] rounded-lg">
+      <div className="flex flex-col md:flex-row justify-start w-[95vw] md:w-[auto] my-8 py-2 border-[1px] border-[#3ea8c8] rounded-lg">
         {showVisualizarButton && (
-          <button onClick={handleVisualizar} className="mx-6">
+          <button onClick={handleVisualizar} className="mx-6 px-4 flex flex-row justify-center items-center">
+            <FaEye  className="w-4 h-4 mr-2" />
             Visualizar Modelo
           </button>
         )}
         {showCloseButton && (
-          <button onClick={handleFecharVisualizacao} className="mx-6">
+          <button onClick={handleFecharVisualizacao} className="mx-6 px-4 flex flex-row justify-center items-center">
+            <FaEye  className="w-4 h-4 mr-2" />
             Fechar Visualização
           </button>
         )}
         <button
           onClick={exportToPDF}
-          className={`mx-6 py-2 px-4 rounded ${
+          className={`flex flex-row justify-center items-center gap-2 mx-6 py-2 px-4 ${
             userType !== "Premium"
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
           disabled={userType !== "Premium"}
         >
+          <FaFilePdf className="w-4 h-4" />
           Exportar para PDF
         </button>
         <button
           onClick={exportToZip}
-          className={`mx-6 py-2 px-4 rounded ${
+          className={`flex flex-row justify-center items-center gap-2 mx-6 py-2 px-4 ${
             userType !== "Premium"
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-green-500 text-white hover:bg-green-600"
           }`}
           disabled={userType !== "Premium"}
         >
-          Exportar cada relatório separadamente
+          <FaFileZipper  className="w-4 h-4" />
+          Exportar relatórios zip
         </button>
       </div>
 

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaFilter  } from "react-icons/fa";
 
 const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
   const scrollContainerRef = useRef(null);
@@ -37,11 +37,13 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
   }, [dynamicFields]);
 
   return (
-    <div className="flex flex-col mb-4 gap-1 justify-center items-center">
-      <div>
-        <label className="text-[16px] font-bold">Filtrar Dados: </label>
+    <div className="flex flex-col border border-[#3ea8c8] rounded-lg px-4 mb-2 gap-1 justify-center items-center">
+      <div className="flex w-full ">
+        <label className="flex w-full gap-2 items-center text-left text-[16px] font-bold">
+        <FaFilter className=""/>
+          Filtrar Dados: </label>
       </div>
-      <div className="flex md:flex-row flex-col md:w-[auto] md:max-w-[95vw] w-[95vw] md:gap-1 justify-center items-center mb-2 border-2 border-[#3ea8c8] rounded-lg">
+      <div className="flex md:flex-row flex-col md:w-[auto] md:max-w-[95vw] w-[95vw] md:gap-1 justify-center items-center mb-2 border-[1px] border-[#3ea8c8] rounded-lg">
         {showButtons && (
           <button
             onClick={scrollLeft}
@@ -52,7 +54,7 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
         )}
         <div
           ref={scrollContainerRef}
-          className={`flex py-2 px-2 items-center ${isOverflowing ? "justify-start" : "justify-center"} w-full overflow-x-auto scrollbar-hide`}
+          className={` bg-[#3ea8c8] flex py-2 px-2 items-center ${isOverflowing ? "justify-start" : "justify-center"} w-full overflow-x-auto scrollbar-hide`}
           style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
         >
           {dynamicFields.map((field) => (
@@ -63,7 +65,7 @@ const FilterBar = ({ filtro, onFiltroChange, dynamicFields }) => {
                 value={filtro[field.name] || ""}
                 onChange={onFiltroChange}
                 placeholder={field.name}
-                className="bg-[#3ea8c8] text-base rounded-md text-white px-2 placeholder-black"
+                className="border-[#3ea8c8] border-[1px] text-base rounded-md text-white px-2 placeholder-black"
               />
             </div>
           ))}

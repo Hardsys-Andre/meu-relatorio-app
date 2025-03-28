@@ -32,14 +32,14 @@ const AiTextGenerator = ({ handleGenerateContent }) => {
   return (
     <div className="p-4">
       <textarea
-        className="border rounded p-2 w-full mb-2"
+        className="border border-[#3ea8c8] rounded p-2 w-full mb-2"
         rows="4"
         placeholder="Digite o prompt aqui..."
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
       />
       <button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-[#3ea8c8] text-white px-4 py-2 rounded-lg"
         onClick={handleGenerateText}
         disabled={loading}
       >
