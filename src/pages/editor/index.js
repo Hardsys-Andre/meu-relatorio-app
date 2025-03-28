@@ -299,7 +299,7 @@ const ReportEditor = () => {
         handleInsertField={handleInsertField}
       />
 
-      <div className="flex justify-start w-[95vw] md:w-[auto] my-8 py-2 border-[1px] border-[#3ea8c8] rounded-lg">
+      <div className="flex flex-col md:flex-row justify-start w-[95vw] md:w-[auto] my-8 py-2 border-[1px] border-[#3ea8c8] rounded-lg">
         {showVisualizarButton && (
           <button onClick={handleVisualizar} className="mx-6 px-4 flex flex-row justify-center items-center">
             <FaEye  className="w-4 h-4 mr-2" />

@@ -58,12 +58,12 @@ const cmToPixels = (cm) => {
 };
 
   const A4Width = cmToPixels(21);      // Largura da folha A4
-  const A4Height = cmToPixels(36);
+  const A4Height = cmToPixels(25);
   const marginAll =  cmToPixels(2.4);
 
   return (
-    <div className="flex flex-col gap-2 md:flex-row p-1 md:p-4 w-[95vw] border-[1px] rounded-lg border-[#3ea8c8]">
-      <div className="flex justify-center w-full md:w-[70vw]">
+    <div className="flex flex-col gap-2 lg:flex-row p-1 lg:p-4 w-[95vw] border-[1px] rounded-lg border-[#3ea8c8]">
+      <div className="flex justify-center w-full lg:w-[70vw]">
         <div className="flex w-full justify-center">
         <Editor
   apiKey={apiKey}
@@ -144,7 +144,7 @@ editor.on("keyup change", () => addPageBreaks());
 />
         </div>
       </div>
-      <div className="w-full md:w-[20vw] xl:w-[30vw] border-[1px] rounded-lg border-[#3ea8c8]">
+      <div className="w-full lg:w-[20vw] xl:w-[30vw] border-[1px] rounded-lg border-[#3ea8c8]">
         <div className="flex flex-row justify-center my-4 w-full">
           <button
             onClick={handleLimparEditor}
@@ -155,7 +155,7 @@ editor.on("keyup change", () => addPageBreaks());
           </button>
         </div>
         <h3 className="my-4 font-semibold text-lg">
-          Inserir Campos Dinâmicos:
+          Campos Dinâmicos:
         </h3>
         <div className="flex border border-[#3ea8c8] rounded-md mx-4 text-sm md:flex-row flex-wrap px-1 py-2 gap-2 justify-center items-center">
           {dynamicFieldsSelected.length > 0 ? (

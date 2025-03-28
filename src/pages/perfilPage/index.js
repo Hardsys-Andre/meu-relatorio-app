@@ -1,11 +1,32 @@
 import { useState, useEffect } from "react";
-import { toast } from 'sonner';
+import { toast } from "sonner";
+import Info from "../../components/PerfilPage/Info";
+import Security from "../../components/PerfilPage/Security";
+import Planos from "../../components/PerfilPage/Planos";
+import {
+  FaBars,
+  FaTimes,
+  FaSignOutAlt,
+  FaUser,
+  FaFileAlt,
+  FaUpload,
+  FaExternalLinkAlt,
+  FaEdit,
+  FaKey,
+  FaCrown,
+  FaCog,
+  FaHistory,
+  FaCheck,
+  FaCrow,
+} from "react-icons/fa";
 import LogoFlexi from "../../assets/logoFlexiReport.png";
+import Historico from "../../components/PerfilPage/Historico";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [activeComponent, setActiveComponent] = useState("Info");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -20,7 +41,7 @@ export default function ProfilePage() {
         const response = await fetch("http://localhost:5000/profile", {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -28,7 +49,7 @@ export default function ProfilePage() {
 
         if (response.ok) {
           setUserData(data);
-          setFormData(data); 
+          setFormData(data);
         } else {
           alert(data.message);
         }
@@ -58,7 +79,7 @@ export default function ProfilePage() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -67,7 +88,7 @@ export default function ProfilePage() {
 
       if (response.ok) {
         alert("Perfil atualizado com sucesso!");
-        setUserData(formData); 
+        setUserData(formData);
         setIsEditing(false);
       } else {
         alert(data.message);
@@ -81,63 +102,91 @@ export default function ProfilePage() {
     return <div>Carregando...</div>;
   }
 
+  const renderActiveComponent = () => {
+    switch (activeComponent) {
+      case "Info":
+        return (
+          <Info
+            isEditing={isEditing}
+            formData={formData}
+            userData={userData}
+            handleInputChange={handleInputChange}
+            handleSave={handleSave}
+            setIsEditing={setIsEditing}
+            handleLogout={handleLogout}
+          />
+        );
+      case "Security":
+        return <Security />;
+      case "Planos":
+        return <Planos />;
+        case "Historico":
+        return <Historico />;
+      // Add more cases for other components if needed
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-3 items-center min-h-screen bg-gray-100 p-4">
-      <img src={LogoFlexi} alt="Logo" className="h-28" />
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
-        <h2 className="text-2xl font-bold text-center text-[#3ea8c8] mb-6">Perfil do Usuário</h2>
+    <div className="flex flex-col gap-3 items-center bg-gray-100 p-4 mb-8">
+      <h2 className="text-2xl font-bold text-center text-[#3ea8c8] mb-6">
+        Perfil do Usuário
+      </h2>
 
-        <div className="space-y-4">
-          {["firstName", "lastName", "phone", "cityState"].map((field) => (
-            <div key={field}>
-              <label className="block text-gray-700 text-sm font-medium mb-2">
-                {field === "firstName" ? "Nome Completo" : field === "lastName" ? "Sobrenome" : field === "phone" ? "Telefone" : "Cidade/Estado"}
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name={field}
-                  value={formData[field] || ""}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg text-gray-700"
-                />
-              ) : (
-                <p className="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-700">{userData[field]}</p>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center mt-6 flex gap-1 md:gap-4 justify-center">
-          {isEditing ? (
-            <>
-              <button
-                onClick={handleSave}
-                className="bg-green-700 text-white text-[14px] font-bold py-2 px-4 rounded-lg hover:bg-green-800 transition duration-300"
-              >
-                Salvar
-              </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="bg-gray-500 text-white text-[14px] font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
-              >
-                Cancelar
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-700 text-white text-[14px] font-bold py-2 px-4 rounded-lg hover:bg-blue-800 transition duration-300"
+      <div className="flex flex-row w-full  bg-white shadow-lg rounded-2xl p-6">
+        <div className="flex flex-col items-center md:w-[25vw]">
+          <div className="flex flex-col mb-4 mr-4 p-2 items-center md:w-full border rounded-lg">
+            <FaUser className="text-8xl mb-2" />
+            <span>
+              {userData.firstName} {userData.lastName}
+            </span>
+            <span>{userData.email}</span>
+            <span
+              className={`flex flex-row border rounded-lg gap-1 justify-center items-center px-1 mt-2 ${
+                userData.userType !== "Premium"
+                  ? "text-red-500 px-6 border-red-500"
+                  : "text-[#f59e0b] border-[#f59e0b]"
+              }`}
             >
-              Editar Perfil
+              {userData.userType === "Premium" && <FaCrown />}
+              {userData.userType}
+            </span>
+          </div>
+          <div className="flex flex-col mb-4 mr-4 p-2 items-center md:w-full border rounded-lg">
+            <span>Menu</span>
+          </div>
+        </div>
+        <div className="space-y-4 w-full ml-4">
+          <div className="flex w-full border-b bg-gray-100 justify-center">
+            <button
+              onClick={() => setActiveComponent("Info")}
+              className="flex gap-2 justify-center items-center bg-white text-black m-2 border border-black hover:bg-gray-50 hover:text-black hover:border-gray-400 rounded-md"
+            >
+              <FaUser />
+              Informações Pessoais
             </button>
-          )}
-          <button
-            onClick={handleLogout}
-            className="bg-red-800 text-white text-[14px] font-bold py-2 px-4 rounded-lg hover:bg-red-900 transition duration-300"
-          >
-            Deslogar
-          </button>
+            <button
+              onClick={() => setActiveComponent("Security")}
+              className="flex gap-2 justify-center items-center bg-white text-black m-2 border border-black hover:bg-gray-50 hover:text-black hover:border-gray-400 rounded-md"
+            >
+              <FaKey />
+              Segurança
+            </button>
+            <button
+             onClick={() => setActiveComponent("Planos")}
+             className="flex gap-2 justify-center items-center bg-white text-black m-2 border border-black hover:bg-gray-50 hover:text-black hover:border-gray-400 rounded-md">
+              <FaCrown />
+              Plano e Assinatura
+            </button>
+            <button
+            onClick={() => setActiveComponent("Historico")} 
+            className="flex gap-2 justify-center items-center bg-white text-black m-2 border border-black hover:bg-gray-50 hover:text-black hover:border-gray-400 rounded-md">
+              <FaHistory />
+              Histórico
+            </button>
+          </div>
+          {renderActiveComponent()}
         </div>
       </div>
     </div>
