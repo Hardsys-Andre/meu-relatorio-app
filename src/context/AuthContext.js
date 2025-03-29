@@ -1,4 +1,6 @@
+// frontend/context/AuthContext.js
 import { createContext, useContext, useState, useEffect } from "react";
+import Cookies from "js-cookie"; // Biblioteca para manipulação de cookies
 
 const AuthContext = createContext();
 
@@ -7,42 +9,33 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("token"));
-  const [userType, setUserType] = useState(() => localStorage.getItem("userType") || null);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!Cookies.get("token"));
 
   useEffect(() => {
     const handleStorageChange = () => {
-      setIsLoggedIn(!!localStorage.getItem("token"));
-      setUserType(localStorage.getItem("userType")); // Atualiza o userType quando muda no localStorage
+      setIsLoggedIn(!!Cookies.get("token"));
     };
 
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  const login = (token, userTypeFromBackend) => {
-    console.log("Token recebido:", token);
-    console.log("userType recebido:", userTypeFromBackend);
-  
-    localStorage.setItem("token", token);
-    if (userTypeFromBackend) {
-      localStorage.setItem("userType", userTypeFromBackend);
-    } else {
-      console.error("O userType é undefined! Verifique se está sendo retornado corretamente do backend.");
-    }
+  // Função de login
+  const login = (token) => {
+    console.log("Token recebido e salvo:", token);
+    // Armazena o token no cookie (pode ser httpOnly no backend)
+    Cookies.set("token", token, { expires: 7, secure: process.env.NODE_ENV === 'production' });
     setIsLoggedIn(true);
   };
-  
 
+  // Função de logout
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userType");
+    Cookies.remove("token");
     setIsLoggedIn(false);
-    setUserType(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userType, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

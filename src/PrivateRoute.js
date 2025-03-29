@@ -1,5 +1,5 @@
-import { Navigate, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { Navigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const PrivateRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -7,21 +7,10 @@ const PrivateRoute = ({ children }) => {
 
   useEffect(() => {
     const checkToken = async () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        localStorage.setItem("redirectAfterLogin", location.pathname);
-        setIsAuthenticated(false);
-        return;
-      }
-
       try {
         const response = await fetch("http://localhost:5000/verify-token", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
+          credentials: "include", // Envia os cookies automaticamente
         });
 
         if (response.ok) {
@@ -45,6 +34,7 @@ const PrivateRoute = ({ children }) => {
   }
 
   if (!isAuthenticated) {
+    localStorage.setItem("redirectAfterLogin", location.pathname); // Salvar a URL para redirecionar após o login
     return <Navigate to="/pageLogin" replace />;
   }
 
