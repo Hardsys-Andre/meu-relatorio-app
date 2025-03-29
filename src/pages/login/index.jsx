@@ -17,27 +17,34 @@ export default function LoginPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
   
-    const response = await fetch("http://localhost:5000/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: form.username, password: form.password }),
-    });
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.username, password: form.password }),
+      });
   
-    const data = await response.json();
-    console.log("Resposta da API:", data);
+      const data = await response.json();
+      console.log("Resposta da API:", data);
   
-    if (data.token) {
-      console.log("Token recebido:", data.token);
-      
-      Cookies.set("token", data.token, { expires: 7, secure: process.env.NODE_ENV === 'production' });
-      
-      login(data.token); // Passa o token para o contexto de autenticação
-    } else {
-      console.error("Erro ao receber token do backend.");
+      if (response.ok && data.token) {
+        console.log("Token recebido:", data.token);
+        
+        Cookies.set("token", data.token, { expires: 7, secure: process.env.NODE_ENV === 'production' });
+        
+        login(data.token);
+      } else {
+        console.error("Erro ao receber token do backend.");
+        toast.error("Erro ao fazer login. Verifique suas credenciais.");
+      }
+    } catch (error) {
+      console.error("Erro ao conectar com o backend:", error);
+      toast.error("Erro ao conectar com o servidor. Tente novamente mais tarde.");
     }
   };
-  
   
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">

@@ -1,6 +1,6 @@
-// frontend/context/AuthContext.js
 import { createContext, useContext, useState, useEffect } from "react";
-import Cookies from "js-cookie"; // Biblioteca para manipulação de cookies
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -8,30 +8,49 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!Cookies.get("token"));
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setIsLoggedIn(!!Cookies.get("token"));
+    const validateToken = async () => {
+      try {
+        const response = await fetch(`${API_URL}/verify-token`, {
+          method: "POST",
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          setIsLoggedIn(true);
+        } else {
+          Cookies.remove("token");
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("Erro ao validar o token:", error);
+        Cookies.remove("token");
+        setIsLoggedIn(false);
+      }
     };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    validateToken();
   }, []);
 
-  // Função de login
   const login = (token) => {
-    console.log("Token recebido e salvo:", token);
-    // Armazena o token no cookie (pode ser httpOnly no backend)
-    Cookies.set("token", token, { expires: 7, secure: process.env.NODE_ENV === 'production' });
+    Cookies.set("token", token, {
+      expires: 7,
+      secure: process.env.NODE_ENV === "production",
+    });
     setIsLoggedIn(true);
+    navigate("/");
   };
 
-  // Função de logout
   const logout = () => {
     Cookies.remove("token");
     setIsLoggedIn(false);
+    navigate("/login");
   };
 
   return (
