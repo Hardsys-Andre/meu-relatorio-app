@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     Cookies.remove("token");
     setIsLoggedIn(false);
+    localStorage.removeItem("termsAccepted");
     navigate("/login");
   };
 

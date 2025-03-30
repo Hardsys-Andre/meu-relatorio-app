@@ -20,29 +20,23 @@ export default function LoginPage() {
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
   
-    try {
-      const response = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.username, password: form.password }),
-      });
+    const response = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: form.username, password: form.password }),
+    });
   
-      const data = await response.json();
-      console.log("Resposta da API:", data);
+    const data = await response.json();
+    console.log("Resposta da API:", data);
   
-      if (response.ok && data.token) {
-        console.log("Token recebido:", data.token);
-        
-        Cookies.set("token", data.token, { expires: 7, secure: process.env.NODE_ENV === 'production' });
-        
-        login(data.token);
-      } else {
-        console.error("Erro ao receber token do backend.");
-        toast.error("Erro ao fazer login. Verifique suas credenciais.");
-      }
-    } catch (error) {
-      console.error("Erro ao conectar com o backend:", error);
-      toast.error("Erro ao conectar com o servidor. Tente novamente mais tarde.");
+    if (data.token) {
+      console.log("Token recebido:", data.token);
+      
+      Cookies.set("token", data.token, { expires: 7, secure: process.env.NODE_ENV === 'production' });
+  
+      login(data.token, data.user); // Passa o token e os dados do usuário
+    } else {
+      console.error("Erro ao receber token do backend.");
     }
   };
   
@@ -99,7 +93,10 @@ export default function LoginPage() {
           </a>
           <p className="text-sm text-gray-600 mt-2">
             Não tem conta? {" "}
-            <Link to="/registerPage" className="text-[#3ea8c8] hover:underline">
+            <Link 
+            to="/registerPage" 
+            className="text-[#3ea8c8] hover:underline"
+            onClick={() => localStorage.removeItem("termsAccepted")}>
               Cadastre-se
             </Link>
           </p>

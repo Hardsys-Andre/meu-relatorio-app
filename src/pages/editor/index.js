@@ -13,7 +13,18 @@ import {
   FaTrash,
 } from "react-icons/fa"
 
+// Função para ler cookies
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return null;
+};
+
 const ReportEditor = () => {
+  const [userData, setUserData] = useState(null);
+  const [formData, setFormData] = useState({});
+
   const [userType, setUserType] = useState(null);
   const [reportContent, setReportContent] = useState(
     localStorage.getItem("reportContent") || ""
@@ -31,11 +42,48 @@ const ReportEditor = () => {
   const [dynamicFieldsSelected, setDynamicFieldsSelected] = useState([]);
 
   useEffect(() => {
-    const userTypeFromStorage = localStorage.getItem("userType");
-    if (userTypeFromStorage) {
-      setUserType(userTypeFromStorage);
-    }
+    const fetchUserData = async () => {
+      const token = getCookie("token");
+  
+      if (!token) {
+        window.location.href = "/editor";
+        return;
+      }
+  
+      try {
+        const response = await fetch("http://localhost:5000/editor", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          setUserData(data);
+          setFormData(data);
+          // Atualize userType aqui
+          setUserType(data.userType);  // Adicionando esta linha para garantir que o userType seja atualizado
+        } else {
+          alert(data.message || "Erro ao carregar dados do perfil.");
+          if (data.message === "Token inválido") {
+            handleLogout();
+          }
+        }
+      } catch (error) {
+        toast.error("Erro ao buscar dados do usuário.");
+      }
+    };
+  
+    fetchUserData();
   }, []);
+  
+
+  const handleLogout = () => {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"; // Remove o token do cookie
+    window.location.href = "/";  // Redireciona para a página inicial após logout
+  };
 
   const getDynamicFieldsFromRelatorios = () => {
     const storedData = localStorage.getItem("csvData");
@@ -319,7 +367,6 @@ const ReportEditor = () => {
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
-          disabled={userType !== "Premium"}
         >
           <FaFilePdf className="w-4 h-4" />
           Exportar para PDF
@@ -331,7 +378,7 @@ const ReportEditor = () => {
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-green-500 text-white hover:bg-green-600"
           }`}
-          disabled={userType !== "Premium"}
+         
         >
           <FaFileZipper  className="w-4 h-4" />
           Exportar relatórios zip

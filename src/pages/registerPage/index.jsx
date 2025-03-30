@@ -64,6 +64,7 @@ export default function RegisterPage() {
       });
   
       const data = await response.json();
+      localStorage.removeItem("termsAccepted");
   
       if (!response.ok) {
         toast.error(`Erro: ${data.message}`);
