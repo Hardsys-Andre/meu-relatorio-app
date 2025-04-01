@@ -1,10 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "sonner";
+
 
 const AiTextGenerator = ({ handleGenerateContent }) => {
+  const { user, isLoggedIn, loading: authLoading } = useAuth(); // Renomeando 'loading' do AuthContext
+  const [userType, setUserType] = useState(null);
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!authLoading && user) {
+      setUserType(user.userType || "Desconhecido");
+    }
+  }, [authLoading, user]); // Agora ele só roda quando 'loading' for falso e 'user' mudar.
+
+
   const handleGenerateText = async () => {
+    if (userType !== "Premium") {
+      toast.error("Apenas usuários Premium podem usar este recurso.");
+      return;
+    }
     setLoading(true);
     try {
       const response = await fetch("http://localhost:5000/generate-report", {
@@ -39,7 +55,11 @@ const AiTextGenerator = ({ handleGenerateContent }) => {
         onChange={(e) => setPrompt(e.target.value)}
       />
       <button
-        className="bg-[#3ea8c8] text-white px-4 py-2 rounded-lg"
+        className={`bg-[#3ea8c8] text-white px-4 py-2 rounded-lg ${
+            userType !== "Premium"
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
         onClick={handleGenerateText}
         disabled={loading}
       >

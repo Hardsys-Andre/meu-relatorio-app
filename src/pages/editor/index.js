@@ -6,29 +6,16 @@ import { saveAs } from "file-saver";
 import FilterBar from "../../components/FilterBar";
 import TextEditor from "../../components/TextEditor";
 import { useCSV } from "../../context/CsvContext";
-import { FaFileZipper } from "react-icons/fa6"
-import {
-  FaEye,
-  FaFilePdf,
-  FaTrash,
-} from "react-icons/fa"
+import { FaFileZipper } from "react-icons/fa6";
+import { useAuth } from "../../context/AuthContext";
+import { FaEye, FaFilePdf, FaTrash } from "react-icons/fa";
 
-// Função para ler cookies
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-  return null;
-};
 
 const ReportEditor = () => {
-  const [userData, setUserData] = useState(null);
-  const [formData, setFormData] = useState({});
-
+  const { user, isLoggedIn, loading: authLoading } = useAuth(); // Renomeando 'loading' do AuthContext
   const [userType, setUserType] = useState(null);
-  const [reportContent, setReportContent] = useState(
-    localStorage.getItem("reportContent") || ""
-  );
+  
+  const [reportContent, setReportContent] = useState(localStorage.getItem("reportContent") || "");
   const [selectedRelatorio, setSelectedRelatorio] = useState();
   const [filtro, setFiltro] = useState({});
   const editorRef = useRef(null);
@@ -38,52 +25,13 @@ const ReportEditor = () => {
   const { selectedColumns } = useCSV();
 
   const tinyMCEApiKey = "b0tl99mycwhh1o7hptou60a3w11110ox6av062w6limk184s";
-
   const [dynamicFieldsSelected, setDynamicFieldsSelected] = useState([]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const token = getCookie("token");
-  
-      if (!token) {
-        window.location.href = "/editor";
-        return;
-      }
-  
-      try {
-        const response = await fetch("http://localhost:5000/editor", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
-        const data = await response.json();
-  
-        if (response.ok) {
-          setUserData(data);
-          setFormData(data);
-          // Atualize userType aqui
-          setUserType(data.userType);  // Adicionando esta linha para garantir que o userType seja atualizado
-        } else {
-          alert(data.message || "Erro ao carregar dados do perfil.");
-          if (data.message === "Token inválido") {
-            handleLogout();
-          }
-        }
-      } catch (error) {
-        toast.error("Erro ao buscar dados do usuário.");
-      }
-    };
-  
-    fetchUserData();
-  }, []);
-  
-
-  const handleLogout = () => {
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"; // Remove o token do cookie
-    window.location.href = "/";  // Redireciona para a página inicial após logout
-  };
+    if (!authLoading && user) {
+      setUserType(user.userType || "Desconhecido");
+    }
+  }, [authLoading, user]); // Agora ele só roda quando 'loading' for falso e 'user' mudar.
 
   const getDynamicFieldsFromRelatorios = () => {
     const storedData = localStorage.getItem("csvData");
@@ -134,24 +82,16 @@ const ReportEditor = () => {
           const fieldValue =
             relatorio[field.name] !== undefined ? relatorio[field.name] : "";
           replacedContent = replacedContent.replace(regex, fieldValue);
-          console.log(relatorio)
-          console.log(dynamicFields)
         }
       });
     } else {
-      toast.warning(
-        "dynamicFields não está definido corretamente ou está vazio."
-      );
+      toast.warning("dynamicFields não está definido corretamente ou está vazio.");
     }
 
     return replacedContent;
   };
 
   const exportToPDF = () => {
-    if (userType !== "Premium") {
-      toast.error("Apenas usuários Premium podem exportar para PDF.");
-      return;
-    }
 
     const storedCsvData = localStorage.getItem("csvData");
 
@@ -169,10 +109,7 @@ const ReportEditor = () => {
 
     const content = relatoriosFiltrados
       .map((relatorio, index) => {
-        const relatorioContent = replaceFieldsWithMockData(
-          reportContent,
-          relatorio
-        );
+        const relatorioContent = replaceFieldsWithMockData(reportContent, relatorio);
         if (index > 0)
           return `<div style="page-break-before:always;">${relatorioContent}</div>`;
         return relatorioContent;
@@ -327,12 +264,19 @@ const ReportEditor = () => {
     setShowCloseButton(false);
   };
 
+  
+  
+  if (authLoading) {
+    return <div>Carregando...</div>; // Isso evita que o componente tente acessar 'userType' antes da hora.
+  }
+
+  
+  
+
   return (
     <div className="flex flex-col justify-center items-center">
       <header className="mb-2 mt-2">
-        <h1 className="text-[22px] md:text-[24px] font-semibold">
-          Editor de Relatórios
-        </h1>
+        <h1 className="text-[22px] md:text-[24px] font-semibold">Editor de Relatórios</h1>
       </header>
       <FilterBar
         filtro={filtro}
@@ -345,28 +289,25 @@ const ReportEditor = () => {
         onChange={handleEditorChange}
         apiKey={tinyMCEApiKey}
         handleInsertField={handleInsertField}
+        userData={user}
       />
 
       <div className="flex flex-col md:flex-row justify-start w-[95vw] md:w-[auto] my-8 py-2 border-[1px] border-[#3ea8c8] rounded-lg">
         {showVisualizarButton && (
           <button onClick={handleVisualizar} className="mx-6 px-4 flex flex-row justify-center items-center">
-            <FaEye  className="w-4 h-4 mr-2" />
+            <FaEye className="w-4 h-4 mr-2" />
             Visualizar Modelo
           </button>
         )}
         {showCloseButton && (
           <button onClick={handleFecharVisualizacao} className="mx-6 px-4 flex flex-row justify-center items-center">
-            <FaEye  className="w-4 h-4 mr-2" />
+            <FaEye className="w-4 h-4 mr-2" />
             Fechar Visualização
           </button>
         )}
         <button
           onClick={exportToPDF}
-          className={`flex flex-row justify-center items-center gap-2 mx-6 py-2 px-4 ${
-            userType !== "Premium"
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 text-white hover:bg-blue-600"
-          }`}
+          className="flex flex-row justify-center items-center gap-2 mx-6 py-2 px-4"
         >
           <FaFilePdf className="w-4 h-4" />
           Exportar para PDF
