@@ -128,11 +128,10 @@ const ReportEditor = () => {
     // Adicionando CSS direto na exportação para garantir a formatação
     const styles = `
       <style>
-        h1 { font-size: 24px; font-weight: bold; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
-        h2 { font-size: 20px; font-weight: bold; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
-        p { font-size: 14px; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
-        /* Adicione mais estilos conforme necessário */
-      </style>
+            h1 { font-size: 24px; font-weight: bold; line-height: 1; margin-top: 6px; }
+            h2 { font-size: 20px; font-weight: bold; line-height: 1; margin-top: 6px; }
+            p { font-size: 14px; line-height: 1.5; margin-top: 8px; }
+          </style>
     `;
     element.innerHTML = styles + element.innerHTML; // Adicionando o CSS ao conteúdo HTML
 
@@ -140,7 +139,7 @@ const ReportEditor = () => {
     html2pdf()
       .from(element)
       .set({
-        margin: [20, 25, 20, 25],
+        margin: [24, 24, 24, 24],
         filename: "relatorios.pdf",
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       })
@@ -183,9 +182,9 @@ const ReportEditor = () => {
         const element = document.createElement("div");
         element.innerHTML = `
           <style>
-            h1 { font-size: 24px; font-weight: bold; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
-            h2 { font-size: 20px; font-weight: bold; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
-            p { font-size: 14px; line-height: 2; margin-top: 8px; margin-bottom: 8px; }
+            h1 { font-size: 24px; font-weight: bold; line-height: 1; margin-top: 6px; }
+            h2 { font-size: 20px; font-weight: bold; line-height: 1; margin-top: 6px; }
+            p { font-size: 14px; line-height: 1.5; margin-top: 8px; }
           </style>
           ${content}
         `;
@@ -193,7 +192,7 @@ const ReportEditor = () => {
         html2pdf()
           .from(element)
           .set({
-            margin: [20, 25, 20, 25], // Margens do PDF
+            margin: [24, 24, 24, 24], // Margens do PDF
             filename: "relatorios.pdf",
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
           })

@@ -142,6 +142,26 @@ editor.on("keyup change", () => addPageBreaks());
     `,
     automatic_uploads: true,
     paste_data_images: true,
+    file_picker_types: "image",
+    file_picker_callback: (cb, value, meta) => {
+      const input = document.createElement("input");
+      input.setAttribute("type", "file");
+      input.setAttribute("accept", "image/*");
+  
+      input.onchange = function () {
+        const file = this.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function () {
+          const base64 = reader.result;
+          cb(base64, { title: file.name });
+        };
+        
+        reader.readAsDataURL(file);
+      };
+      
+      input.click();
+    },
   }}
   onEditorChange={handleEditorChange}
 />
