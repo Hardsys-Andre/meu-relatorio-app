@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import api from "../../server/api"; // Importando o arquivo api.js
 import TermsOfUse from '../../modals/TermsOfUse';
 
 export default function RegisterPage() {
@@ -15,26 +16,25 @@ export default function RegisterPage() {
   });
 
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
-
   const [isAccepted, setIsAccepted] = useState(false);
 
   useEffect(() => {
     const accepted = localStorage.getItem("termsAccepted") === "true";
     setIsAccepted(accepted);
-    setForm(prevForm => ({ ...prevForm, termsAccepted: accepted })); // Atualiza o estado do formulário também
-  
+    setForm(prevForm => ({ ...prevForm, termsAccepted: accepted }));
+
     const handleTermsAccepted = () => {
       setIsAccepted(true);
-      setForm(prevForm => ({ ...prevForm, termsAccepted: true })); // Atualiza o formulário quando o evento é disparado
+      setForm(prevForm => ({ ...prevForm, termsAccepted: true }));
     };
-  
+
     window.addEventListener("termsAccepted", handleTermsAccepted);
-  
+
     return () => {
       window.removeEventListener("termsAccepted", handleTermsAccepted);
     };
   }, []);
-  
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
@@ -42,47 +42,25 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!form.termsAccepted) {
       toast.warning("Você deve aceitar os termos para continuar!");
       return;
     }
-  
+
     try {
-      const response = await fetch("http://localhost:5000/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: form.firstName,
-          lastName: form.lastName,
-          phone: form.phone,
-          cityState: form.cityState,
-          email: form.email,
-          password: form.password,
-        }),
-      });
-  
-      const data = await response.json();
-      localStorage.removeItem("termsAccepted");
-  
-      if (!response.ok) {
-        toast.error(`Erro: ${data.message}`);
+      const response = await api.post("register", form); // Utilizando api.js
+
+      if (response.error) {
+        toast.error(`Erro: ${response.message || "Falha ao cadastrar"}`);
         return;
       }
-  
+
       toast.success("Cadastro realizado com sucesso!");
+      localStorage.removeItem("termsAccepted");
     } catch (error) {
       toast.error("Erro ao cadastrar. Tente novamente.");
     }
-  };
-
-  const handleTermsModalClose = () => {
-    setIsTermsModalOpen(false);
-  };
-
-  const handleTermsModalOpen = () => {
-    setIsTermsModalOpen(true);
   };
 
   return (
@@ -94,9 +72,7 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex gap-2">
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-medium mb-1">
-                Nome
-              </label>
+              <label className="block text-gray-700 text-sm font-medium mb-1">Nome</label>
               <input
                 type="text"
                 name="firstName"
@@ -107,9 +83,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-medium mb-1">
-                Sobrenome
-              </label>
+              <label className="block text-gray-700 text-sm font-medium mb-1">Sobrenome</label>
               <input
                 type="text"
                 name="lastName"
@@ -121,9 +95,7 @@ export default function RegisterPage() {
             </div>
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
-              Telefone
-            </label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">Telefone</label>
             <input
               type="tel"
               name="phone"
@@ -134,9 +106,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
-              Cidade/Estado
-            </label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">Cidade/Estado</label>
             <input
               type="text"
               name="cityState"
@@ -147,9 +117,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
-              E-mail
-            </label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">E-mail</label>
             <input
               type="email"
               name="email"
@@ -160,9 +128,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
-              Senha
-            </label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">Senha</label>
             <input
               type="password"
               name="password"
@@ -176,22 +142,17 @@ export default function RegisterPage() {
             <input
               type="checkbox"
               name="termsAccepted"
-              checked={form.termsAccepted} // Agora o valor é controlado pelo form.termsAccepted
+              checked={form.termsAccepted}
               onChange={(e) => {
                 const accepted = e.target.checked;
                 setIsAccepted(accepted);
-                setForm({ ...form, termsAccepted: accepted }); // Atualiza o estado do formulário corretamente
+                setForm({ ...form, termsAccepted: accepted });
               }}
-              disabled={!isAccepted}
               className="h-5 w-5 text-[#3ea8c8] focus:ring-[#3ea8c8] rounded"
             />
-
             <label className="text-sm text-gray-700">
               Eu aceito os{" "}
-              <Link
-                className="text-[#3ea8c8] font-semibold"
-                onClick={handleTermsModalOpen}
-              >
+              <Link className="text-[#3ea8c8] font-semibold" onClick={() => setIsTermsModalOpen(true)}>
                 Termos de Uso
               </Link>
             </label>
@@ -209,8 +170,7 @@ export default function RegisterPage() {
           </button>
         </form>
       </div>
-      {/* Modal de Termos de Uso */}
-      {isTermsModalOpen && <TermsOfUse onClose={handleTermsModalClose} />}
+      {isTermsModalOpen && <TermsOfUse onClose={() => setIsTermsModalOpen(false)} />}
     </div>
   );
 }

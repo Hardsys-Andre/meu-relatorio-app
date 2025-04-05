@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-
+import api from "../server/api"; // Importando a API
 
 const AuthContext = createContext();
 
@@ -12,7 +12,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
-  const location = useLocation();  // Obtém a localização atual da navegação
+  const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,16 +20,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const validateToken = async () => {
       try {
-        const response = await fetch("http://localhost:5000/verify-token", {
-          method: "POST",
-          credentials: "include",
-        });
+        const data = await api.post("verify-token"); // Agora usando a API
+        console.log("Dados recebidos no Frontend:", data); // Debug
 
-        const data = await response.json();
-        console.log("Dados recebidos no Frontend:", data); // <-- Debug
-
-        if (response.ok && data.userProfile) {
+        if (data.userProfile) {
           setIsLoggedIn(true);
+          console.log(data.userProfile)
           setUser(data.userProfile);
         } else {
           Cookies.remove("token");
@@ -47,31 +43,36 @@ export const AuthProvider = ({ children }) => {
     };
 
     validateToken();
-  }, [location]); // O efeito agora será chamado sempre que a localização mudar
+  }, [location]);
 
   const login = (token, userData) => {
     Cookies.set("token", token, {
       expires: 7,
       secure: process.env.NODE_ENV === "production",
     });
-  
+
     setIsLoggedIn(true);
     setUser(userData);
-  
-    // Obtém a URL salva no localStorage ou usa '/' como fallback
+
     const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
-    localStorage.removeItem("redirectAfterLogin"); // Remove após o redirecionamento
+    localStorage.removeItem("redirectAfterLogin");
     navigate(redirectPath);
   };
-  
 
-  const logout = () => {
-    Cookies.remove("token");
+  const logout = async () => {
+    try {
+      await api.logout(); // Chama a API para remover o cookie no backend
+    } catch (error) {
+      console.error("Erro ao deslogar:", error);
+    }
+  
+    Cookies.remove("token"); // Apenas por garantia, remove do frontend
     setIsLoggedIn(false);
     setUser(null);
     localStorage.removeItem("termsAccepted");
-    navigate("/login");
+    navigate("/");
   };
+  
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, user, login, logout, loading }}>

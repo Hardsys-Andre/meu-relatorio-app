@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 
-
 const AiTextGenerator = ({ handleGenerateContent }) => {
   const { user, isLoggedIn, loading: authLoading } = useAuth(); // Renomeando 'loading' do AuthContext
   const [userType, setUserType] = useState(null);
@@ -23,7 +22,7 @@ const AiTextGenerator = ({ handleGenerateContent }) => {
     }
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/generate-report", {
+      const response = await fetch("https://meu-relatorio-backend.vercel.app/generate-report", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

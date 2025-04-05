@@ -31,7 +31,7 @@ export default function ProfilePage() {
       }
 
       try {
-        const response = await fetch("http://localhost:5000/profile", {
+        const response = await fetch("https://meu-relatorio-backend.vercel.app/profile", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`, // Envia o token no cabeçalho da requisição
@@ -78,7 +78,7 @@ export default function ProfilePage() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/profile/edit", {
+      const response = await fetch("https://meu-relatorio-backend.vercel.app/profile/edit", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

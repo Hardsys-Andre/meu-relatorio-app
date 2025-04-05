@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { toast } from 'sonner';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { toast } from "sonner";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import RecoveryPasswordModal from "../../modals/recoveryPassword";
 import Cookies from "js-cookie";
+import api from "../../server/api";
 
 export default function LoginPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,28 +19,34 @@ export default function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-  
-    const response = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: form.username, password: form.password }),
-    });
-  
-    const data = await response.json();
-    console.log("Resposta da API:", data);
-  
-    if (data.token) {
-      console.log("Token recebido:", data.token);
-      
-      Cookies.set("token", data.token, { expires: 7, secure: process.env.NODE_ENV === 'production' });
-  
-      login(data.token, data.user); // Passa o token e os dados do usuário
-    } else {
-      console.error("Erro ao receber token do backend.");
+    try {
+      const data = await api.post("login", { 
+        email: form.username, 
+        password: form.password 
+      });
+
+      console.log("Resposta da API:", data);
+
+      if (data.token) {
+        console.log("Token recebido:", data.token);
+
+        Cookies.set("token", data.token, { 
+          expires: 7, 
+          secure: process.env.NODE_ENV === "production" 
+        });
+
+        login(data.token, data.user);
+        toast.success("Login realizado com sucesso!");
+        navigate("/"); // Ajuste para a página correta após login
+      } else {
+        toast.error(data.message || "Erro ao fazer login");
+      }
+    } catch (error) {
+      console.error("Erro na autenticação:", error);
+      toast.error("Erro ao conectar com o servidor");
     }
   };
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
@@ -92,11 +99,12 @@ export default function LoginPage() {
             Esqueci minha senha
           </a>
           <p className="text-sm text-gray-600 mt-2">
-            Não tem conta? {" "}
+            Não tem conta?{" "}
             <Link 
-            to="/registerPage" 
-            className="text-[#3ea8c8] hover:underline"
-            onClick={() => localStorage.removeItem("termsAccepted")}>
+              to="/registerPage" 
+              className="text-[#3ea8c8] hover:underline"
+              onClick={() => localStorage.removeItem("termsAccepted")}
+            >
               Cadastre-se
             </Link>
           </p>
