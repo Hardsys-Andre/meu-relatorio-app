@@ -4,8 +4,11 @@ import { useCSV } from "../context/CsvContext";
 import Papa from "papaparse";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUpload, FaFileAlt, FaInfoCircle } from "react-icons/fa"
+import {useAuth} from "../context/AuthContext"
 
 const CsvUploader = () => {
+  const { user } = useAuth();
+  console.log("Usuário no TestComponent:", user);
   const { headers, setHeaders, selectedColumns, setSelectedColumns, setCsvData } = useCSV();
   const [rows, setRows] = useState([]);
   const [showPreview, setShowPreview] = useState(false);

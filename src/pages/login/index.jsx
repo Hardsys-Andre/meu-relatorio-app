@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { toast } from 'sonner';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { toast } from "sonner";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import RecoveryPasswordModal from "../../modals/recoveryPassword";
+import Cookies from "js-cookie";
+import api from "../../server/api";
 
 export default function LoginPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,49 +16,37 @@ export default function LoginPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
     try {
-      const response = await fetch("http://localhost:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: form.username,
-          password: form.password,
-        }),
+      const data = await api.post("login", { 
+        email: form.username, 
+        password: form.password 
       });
-  
-      const data = await response.json();
-  
-      if (!response.ok) {
-        toast.error(`Erro: ${data.message}`);
-        return;
-      }
-  
-      console.log("Dados recebidos do backend:", data);
-  
-      // Verifica se o userType foi retornado
-      if (data.token && data.userType) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userType", data.userType);  // Salvando o userType no localStorage
-        
-        login(data.token, data.userType); // Passa o userType para o seu AuthContext
-  
-        const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
-        localStorage.removeItem("redirectAfterLogin");
-  
-        navigate(redirectPath);
+
+      console.log("Resposta da API:", data);
+
+      if (data.token) {
+        console.log("Token recebido:", data.token);
+
+        Cookies.set("token", data.token, { 
+          expires: 7, 
+          secure: process.env.NODE_ENV === "production" 
+        });
+
+        login(data.token, data.user);
+        toast.success("Login realizado com sucesso!");
+        navigate("/"); // Ajuste para a página correta após login
       } else {
-        toast.error("O login foi bem-sucedido, mas o userType não foi retornado.");
+        toast.error(data.message || "Erro ao fazer login");
       }
     } catch (error) {
-      toast.error("Erro ao fazer login. Tente novamente.");
+      console.error("Erro na autenticação:", error);
+      toast.error("Erro ao conectar com o servidor");
     }
-  };  
-  
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
@@ -73,7 +63,7 @@ export default function LoginPage() {
               name="username"
               value={form.username}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:#3488a1 outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#3488a1] outline-none"
               required
             />
           </div>
@@ -86,7 +76,7 @@ export default function LoginPage() {
               name="password"
               value={form.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-#3488a1 outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#3488a1] outline-none"
               required
             />
           </div>
@@ -98,29 +88,31 @@ export default function LoginPage() {
           </button>
         </form>
         <div className="text-center mt-4">
-      <a 
-        href="#" 
-        onClick={(e) => {
-          e.preventDefault();
-          setIsModalOpen(true);
-        }}
-        className="text-sm text-[#3ea8c8] hover:underline"
-      >
-        Esqueci minha senha
-      </a>
-
-      <p className="text-sm text-gray-600 mt-2">
-        Não tem conta?{" "}
-        <Link to="/registerPage" className="text-[#3ea8c8] hover:underline">
-          Cadastre-se
-        </Link>
-      </p>
-
-      <RecoveryPasswordModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
-    </div>
+          <a 
+            href="#" 
+            onClick={(e) => {
+              e.preventDefault();
+              setIsModalOpen(true);
+            }}
+            className="text-sm text-[#3ea8c8] hover:underline"
+          >
+            Esqueci minha senha
+          </a>
+          <p className="text-sm text-gray-600 mt-2">
+            Não tem conta?{" "}
+            <Link 
+              to="/registerPage" 
+              className="text-[#3ea8c8] hover:underline"
+              onClick={() => localStorage.removeItem("termsAccepted")}
+            >
+              Cadastre-se
+            </Link>
+          </p>
+          <RecoveryPasswordModal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)} 
+          />
+        </div>
       </div>
     </div>
   );
