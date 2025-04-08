@@ -1,70 +1,83 @@
-# Getting Started with Create React App
+🚀 FlexiReport
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+FlexiReport é uma aplicação web para a geração dinâmica de relatórios personalizados, oferecendo uma interface intuitiva e funcionalidades avançadas para manipulação de dados.
 
-## Available Scripts
+🛠️ Tecnologias Utilizadas
 
-In the project directory, you can run:
+⚛️ React: Framework JavaScript para a construção da interface do usuário.
 
-### `npm start`
+🎨 Tailwind CSS: Estilização eficiente e responsiva.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+🟨 JavaScript: Linguagem principal do desenvolvimento frontend.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+☁️ MongoDB Atlas: Banco de dados utilizado na aplicação.
 
-### `npm test`
+🌐 Servidor em Node.js: Comunicação com o backend via API.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+🔐 Autenticação Segura: Implementada no backend utilizando email e senha consultados diretamente no banco de dados.
 
-### `npm run build`
+## 📂 Estrutura do Projeto
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+FlexiReport/
+│-- backend/        # Servidor em Node.js
+│-- frontend/       # Aplicação React.js
+│-- public/         # Arquivos estáticos
+│-- src/
+│   │-- components/ # Componentes reutilizáveis
+│   │-- pages/      # Páginas principais
+│   │-- utils/      # Funções auxiliares
+│-- package.json    # Dependências do projeto
+│-- README.md       # Documentação do projeto
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠 Funcionalidades Principais
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Editor de Texto Avançado:** Uso do TinyMCE para formatação rica
+- **Inserção de Imagens:** Suporte a imagens locais e remotas
+- **Geração de Relatórios:** Exportação de documentos em diferentes formatos (PDF, DOCX, CSV)
+- **Autenticação Segura:** Login com email e senha, validado no backend
+- **Banco de Dados:** Armazenamento de relatórios no MongoDB Atlas
 
-### `npm run eject`
+## 📸 Capturas de Tela
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+*(Inclua aqui imagens do sistema funcionando, se desejar)*
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+📥 Instalação e Execução
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1️⃣ Clonar o Repositório
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+git clone https://github.com/seu-usuario/flexireport-frontend.git
 
-## Learn More
+2️⃣ Instalar Dependências
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+cd flexireport-frontend
+npm install
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+3️⃣ Configurar Variáveis de Ambiente
 
-### Code Splitting
+Crie um arquivo .env.local na raiz do projeto e adicione as configurações necessárias, como a URL da API backend.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+4️⃣ Iniciar o Projeto
 
-### Analyzing the Bundle Size
+npm run dev
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+⚠️ Observação Importante
 
-### Making a Progressive Web App
+O backend do FlexiReport é um projeto separado e precisa ser baixado e executado separadamente. Certifique-se de configurar e rodar o backend antes de utilizar o frontend.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+🔗 Repositório do Backend: Acesse aqui
 
-### Advanced Configuration
+🤝 Contribuição
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Sinta-se à vontade para contribuir com o projeto! Para isso, siga as etapas:
 
-### Deployment
+🍴 Faça um fork do repositório.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+🌿 Crie uma nova branch para suas alterações.
 
-### `npm run build` fails to minify
+📩 Envie um pull request para análise.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+📜 Licença
+
+Este projeto está sob a licença MIT.

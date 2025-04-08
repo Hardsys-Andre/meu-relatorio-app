@@ -1,105 +1,220 @@
-import React from 'react';
-import { useState } from 'react';
-import Logo from '../../assets/logo_scl.png';
-import Robo from '../../assets/robo.png';
-import Andre_e from '../../assets/andre-e.jpg';
-import Andre_a from '../../assets/andre-a.png';
-import Jose from '../../assets/jose.png';
+import React from "react";
+import LogoFlexi from "../../assets/logoFlexiReport.png";
+import Andre_e from "../../assets/andre-e.jpg";
+import Luciana from "../../assets/luciana.jpg";
+import Mariana from "../../assets/mariana.jpg";
+import Felipe from "../../assets/felipe.jpg";
+import Zenilda from "../../assets/zenilda.jpg";
+import Andre_a from "../../assets/andre-a.png";
+import Jose from "../../assets/jose.jpg";
 import { Link } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa';
-
-
+import { FaFileAlt, FaUpload, FaLightbulb, FaDownload, FaSlidersH } from "react-icons/fa"
 
 function Home() {
-    const [menuOpen, setMenuOpen] = useState(false);
-
-    return (
-        <div className="flex flex-col w-full items-center">
-            <header className="bg-[#42B091] w-full p-2 border-[1px] border-[#e2e2e2] rounded-xl">
-            <nav className="flex md:justify-between justify-center items-center mr-10">
-                <img src={Robo} alt="Robo" className="md:h-10 md:ml-10 hidden md:block" />
-                <button
-                    className="text-white md:hidden"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                >
-                    {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-                </button>
-                <div className={`flex-col md:flex md:flex-row gap-2 md:gap-10 ${menuOpen ? 'flex' : 'hidden'} md:flex`}>
-                    <button onClick={() => window.open("https://superclient.com.br/", "_blank")}>SuperClient</button>
-                    <Link to="/editor">
-                        <button>Editor de Relatórios</button>
-                    </Link>
-                    <button onClick={() => window.location.href = "#criadores"}>Criadores</button>
-                    <button onClick={() => window.location.href = "#contatos"}>Contatos</button>
-                </div>
-            </nav>
-        </header>
-            <main className="flex flex-col w-full p-4 justify-center">
-                <div className='flex flex-row mt-10 justify-center items-center'>
-                    <div className="flex flex-col lg:w-[300px] xl:w-[500px] items-center">
-                        <img src={Logo} alt="Imagem Grande" className="lg:w-[250px] lg:h-[250px] xl:w-[350px] xl:h-[350px]" />
-                        <span className="text-[20px] md:text-[46px] font-bold text-center text-[#42B091]">SuperClient</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <h1 className="text-[20px] md:text-[46px] xl:text-6xl md:w-[295px] xl:w-[355px] ml-10 text-[#42B091] text-left font-bold">
-                        Integração e Automação de sistemas através de robôs</h1>
-                                    
-                    </div>
-                </div>
-                <div className='flex flex-col mt-10 py-4 px-4 w-full border-2 border-[#42B091] rounded-xl justify-center items-center'>
-                    <p className='text-4xl font-bold text-[#42B091]'>Resumo</p>
-                   <p className="mt-4 lg:text-xl text-center">
-                        Este aplicativo permite a criação de relatórios dinâmicos, onde os campos são preenchidos 
-                        automaticamente com dados provenientes de um banco de dados. Com uma interface intuitiva, 
-                        você pode personalizar seus relatórios de acordo com suas necessidades, facilitando a análise 
-                        e apresentação de informações relevantes.
-                    </p> 
-                </div>
-            </main>
-            <section id='criadores' className="mt-10">
-                <h2 className="text-4xl font-bold text-center text-[#42B091]">Criadores</h2>
-                <div className="flex flex-col gap-8 md:flex-row justify-center mt-6">
-                    <div className="flex flex-col items-center mx-4">
-                        <img src={Andre_e} alt="Criador 1" className="w-32 h-32 rounded-[64px] border-2 border-[#42B091]" />
-                        <span className="mt-2 font-semibold text-center">André Eduardo</span>
-                        <span className="text-center text-sm">Aluno UNIVESP em Tecnologia da Informação</span>
-                    </div>
-                    <div className="flex flex-col items-center mx-4">
-                        <img src={Andre_a} alt="Criador 2" className="w-32 h-32 rounded-[64px] border-2 border-[#42B091]" />
-                        <span className="mt-2 font-semibold text-center">André Alexander</span>
-                        <span className="text-center text-sm">Aluno UNIVESP em Ciência da Computação</span>
-                    </div>
-                    <div className="flex flex-col items-center mx-4">
-                        <img src={Jose} alt="Criador 3" className="w-32 h-32 rounded-[64px] border-2 border-[#42B091]" />
-                        <span className="mt-2 font-semibold text-center">José Ricardo</span>
-                        <span className="text-center text-sm">Aluno UNIVESP em Engenharia da Computação</span>
-                    </div>
-                </div>
-            </section>
-            <footer id='contatos' className="w-[auto] p-4 mt-20">
-                <div className="flex flex-col md-flex-row justify-between gap-5 items-center">
-                    <div className="flex flex-col items-center">
-                        <div className='flex flex-row gap-3'>
-                            <img src={Logo} alt="Logo" className="h-20 px-1 border-r-2 border-[#42B091]" />
-                            <img src={Robo} alt="Robo" className="h-20" />
-                        </div>
-                        <span className="ml-2 text-2xl text-[#42B091] font-bold">SuperClient</span>
-                    </div>
-                    <div className="flex flex-col md:flex-row items-end gap-5">
-                        <div className='flex flex-col'>
-                            <span className="text-[#42B091]">+55 12 3209-8671</span>
-                            <span className="text-[#42B091]">superclient@superclient.com.br</span>
-                        </div>
-                        <div className='flex flex-col'>
-                            <span className="text-[#42B091]">Estrada Doutor Altino, Bondesan, 500</span>
-                            <span className="text-[#42B091]">Parque de Inovações Tecnológicas - Sala 208H</span>
-                            <span className="text-[#42B091]">São José dos Campos</span>    
-                        </div>
-                    </div>
-                </div>
-            </footer>
+  return (
+    <div className="flex flex-col w-full items-center ">
+      <section className="flex flex-col md:flex-row w-full justify-between py-10 text-center bg-gradient-to-b from-white to-sky-100 dark:from-gray-950 dark:to-gray-900">
+        <div className="flex flex-col justify-center md:w-[30%] mb-2 items-center md:items-end">
+            <img
+              src={LogoFlexi}
+              alt="Logotipo Flexireport"
+              className="w-[150px] lg:w-[250px] hover:scale-110"
+            />
         </div>
-    );
+        <div className="container px-4 mx-auto md:w-[70%]">
+          <h1 className="md:max-w-3xl w-full mx-auto mb-6 text-2xl  lg:text-6xl font-extrabold tracking-tight">
+            Relatórios Personalizados de Forma Eficiente e Flexível!
+          </h1>
+          <p className="max-w-2xl mx-auto mb-8 text-lg text-gray-600 dark:text-gray-300">
+            Importe seus dados CSV, crie relatórios personalizados e exporte-os com facilidade. Uma solução completa
+            para suas necessidades de relatórios.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <button className="bg-[#3ea8c8] font-semibold hover:bg-[#2d97b7]">
+              <Link to="/editor">Começar Agora</Link>
+            </button>
+            <button className="bg-white text-black font-semibold border-[1px] border-gray-400 hover:bg-gray-100 hover:text-black hover:border-gray-500">
+              <Link to="/csvUploader">Importar CSV</Link>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 w-full bg-white dark:bg-gray-950">
+        <div className="container px-4 mx-auto">
+          <h2 className="mb-12 md:text-3xl text-2xl font-bold text-center">Recursos Principais</h2>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center  w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaUpload className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Importação Inteligente de Dados</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Importe facilmente seus arquivos CSV com nossa interface de arrastar e soltar. Visualize e selecione
+                  as colunas que deseja incluir em seus relatórios.
+                </p>
+            </div>
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaFileAlt className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Relatórios Personalizáveis</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Crie relatórios totalmente personalizados com nosso editor intuitivo. Adicione campos dinâmicos,
+                  formate o texto e organize as informações como desejar.
+                </p>
+            </div>
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaLightbulb className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Interface Intuitiva</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Nossa interface foi projetada para ser fácil de usar, mesmo para usuários sem experiência técnica.
+                  Navegue facilmente entre as diferentes funcionalidades.
+                </p>
+            </div>
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaDownload className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Exportação Simplificada</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Exporte seus relatórios em PDF com apenas um clique. Compartilhe facilmente com sua equipe ou
+                  clientes.
+                </p>
+            </div>
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaSlidersH className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Flexibilidade e Controle</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Tenha controle total sobre seus dados e relatórios. Filtre, ordene e agrupe as informações de acordo
+                  com suas necessidades.
+                </p>
+            </div>
+          </div>
+          <div className="bg-white w-full text-gray-800 mt-6 space-y-6">
+            <hr className="border-t-1 border-gray-200 w-full" />
+          <p className="text-lg leading-relaxed text-justify">
+            O <strong>FlexiReport</strong> é a ferramenta ideal para
+            profissionais e empresas que buscam automatizar e otimizar a geração
+            de relatórios personalizados a partir de dados brutos. Transforme
+            dados complexos em informações claras e bem estruturadas em apenas
+            alguns cliques!
+          </p>
+          <hr className="border-t-1 border-gray-200 w-full" />
+        </div>  
+        </div>
+      </section>
+      <section id="criadores" className="py-16 bg-sky-50 dark:bg-gray-900 w-full">
+        <h2 className="text-4xl font-bold text-center">
+          Nossa Equipe
+        </h2>
+        <div className="flex flex-col gap-8 md:flex-row justify-center mt-6">
+          <div className="flex flex-col items-center mx-4">
+            <img
+              src={Andre_e}
+              alt="Aluno André Eduardo"
+              className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
+            />
+            <span className="mt-2 font-semibold text-center">
+              André Eduardo
+            </span>
+            <span className="text-center text-sm">
+              Aluno UNIVESP em Tecnologia da Informação
+            </span>
+          </div>
+          <div className="flex flex-col items-center mx-4">
+            <img
+              src={Andre_a}
+              alt="Aluno Andre Alexander"
+              className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
+            />
+            <span className="mt-2 font-semibold text-center">
+              André Alexander
+            </span>
+            <span className="text-center text-sm">
+              Aluno UNIVESP em Ciência de Dados
+            </span>
+          </div>
+          <div className="flex flex-col items-center mx-4">
+            <img
+              src={Felipe}
+              alt="Aluno Felipe"
+              className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
+            />
+            <span className="mt-2 font-semibold text-center">Felipe Augusto</span>
+            <span className="text-center text-sm">
+              Aluno UNIVESP em Ciência de Dados
+            </span>
+          </div>
+          <div className="flex flex-col items-center mx-4">
+            <img
+              src={Jose}
+              alt="Aluno José"
+              className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
+            />
+            <span className="mt-2 font-semibold text-center">José Ricardo</span>
+            <span className="text-center text-sm">
+              Aluno UNIVESP em Engenharia da Computação
+            </span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-8 md:flex-row justify-center mt-6">
+          <div className="flex flex-col items-center mx-4">
+            <img
+              src={Luciana}
+              alt="Aluna Luciana"
+              className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
+            />
+            <span className="mt-2 font-semibold text-center">
+              Luciana Maria Rosa
+            </span>
+            <span className="text-center text-sm">
+              Aluna UNIVESP em Tecnologia da Informação
+            </span>
+          </div>
+          <div className="flex flex-col items-center mx-4">
+            <img
+              src={Mariana}
+              alt="Aluna Mariana"
+              className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
+            />
+            <span className="mt-2 font-semibold text-center">
+              Mariana Monteiro
+            </span>
+            <span className="text-center text-sm">
+              Aluna UNIVESP em Ciência de Dados
+            </span>
+          </div>
+          <div className="flex flex-col items-center mx-4">
+            <img
+              src={Zenilda}
+              alt="Aluna Zenilda"
+              className="w-32 h-32 rounded-[64px] border-2 border-[#3ea8c8]"
+            />
+            <span className="mt-2 font-semibold text-center">Zenilda dos Santos</span>
+            <span className="text-center text-sm">
+              Aluna UNIVESP em Tecnologia da Informação
+            </span>
+          </div>
+        </div>
+      </section>
+      <section className="py-16 w-full text-center bg-[#3ea8c8] text-white">
+        <div className="container px-4 mx-auto">
+          <h2 className="mb-6 text-3xl font-bold">Pronto para começar?</h2>
+          <p className="max-w-2xl mx-auto mb-8 text-lg">
+            Crie relatórios personalizados de forma eficiente e flexível com o FlexiReport. Experimente agora mesmo!
+          </p>
+          <button className="">
+            <Link to="/editor">Começar Agora</Link>
+          </button>
+        </div>
+      </section>
+    </div>
+  );
 }
 
 export default Home;
