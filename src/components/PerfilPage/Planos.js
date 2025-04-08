@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "sonner";
 import {
   FaCrown,
   FaCheck,
@@ -23,11 +24,16 @@ const Planos = ({ userType }) => {
             {userType === "Premium" ? (
               <span className="border-green-500 text-green-600">Ativo</span>
             ) : (
-              <button className="bg-white hover:text-white hover:bg-green-500 border-green-500 text-green-600">Contratar</button>
+              <button 
+                className="bg-white hover:text-white hover:bg-green-500 border-green-500 text-green-600"
+                onClick={() => toast.warning("Este recurso ainda não está disponível, Aguarde!")}
+              >
+                Contratar
+              </button>
             )}
           </div>
           <p className="mb-4 text-sm">
-            Seu plano Premium está ativo até <strong>15/12/2023</strong>.
+            Seu plano Premium está ativo até <strong>15/12/2025</strong>.
             Aproveite todos os recursos exclusivos!
           </p>
           <div className="grid gap-2 mb-4 md:grid-cols-2">
@@ -57,9 +63,14 @@ const Planos = ({ userType }) => {
             </div>
           </div>
           <div className="flex gap-2">
-            <button>Gerenciar Assinatura</button>
+            <button onClick={() => toast.warning("Este recurso ainda não está disponível, Aguarde!")}>
+              Gerenciar Assinatura
+            </button>
             {userType === "Premium" && (
-              <button className="text-red-200 bg-red-900 border-red-200 hover:bg-red-800 dark:border-red-800 dark:hover:bg-red-950/20">
+              <button 
+                className="text-red-200 bg-red-900 border-red-200 hover:bg-red-800 dark:border-red-800 dark:hover:bg-red-950/20"
+                onClick={() => toast.warning("Este recurso ainda não está disponível, Aguarde!")}
+              >
                 Cancelar Plano
               </button>
             )}
