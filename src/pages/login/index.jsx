@@ -63,6 +63,7 @@ export default function LoginPage() {
               name="username"
               value={form.username}
               onChange={handleChange}
+              placeholder={"Digite seu Email"}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#3488a1] outline-none"
               required
             />
@@ -76,6 +77,7 @@ export default function LoginPage() {
               name="password"
               value={form.password}
               onChange={handleChange}
+              placeholder={"Digite sua senha"}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#3488a1] outline-none"
               required
             />
