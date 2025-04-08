@@ -148,6 +148,7 @@ export default function RegisterPage() {
                 setIsAccepted(accepted);
                 setForm({ ...form, termsAccepted: accepted });
               }}
+              disabled={!form.termsAccepted}
               className="h-5 w-5 text-[#3ea8c8] focus:ring-[#3ea8c8] rounded"
             />
             <label className="text-sm text-gray-700">
