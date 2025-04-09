@@ -5,6 +5,8 @@ import { useAuth } from "../../context/AuthContext";
 import RecoveryPasswordModal from "../../modals/recoveryPassword";
 import Cookies from "js-cookie";
 import api from "../../server/api";
+import { FaTimes } from "react-icons/fa";
+import BackLink from "../../components/BackLink";
 
 export default function LoginPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,7 +51,10 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 relative">
+        <div className="flex">
+          <BackLink to="/" label="Voltar para a Home" />
+        </div>
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Acesse sua conta
         </h2>
@@ -103,7 +108,7 @@ export default function LoginPage() {
           <p className="text-sm text-gray-600 mt-2">
             Não tem conta?{" "}
             <Link 
-              to="/registerPage" 
+              to="/register" 
               className="text-[#3ea8c8] hover:underline"
               onClick={() => localStorage.removeItem("termsAccepted")}
             >

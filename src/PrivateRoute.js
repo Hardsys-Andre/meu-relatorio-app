@@ -6,12 +6,16 @@ const PrivateRoute = ({ children }) => {
   const location = useLocation();
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-gray-600 text-lg">Verificando autenticação...</div>
+      </div>
+    );
   }
 
   if (!isLoggedIn) {
-    localStorage.setItem("redirectAfterLogin", location.pathname); // Salva a URL para redirecionamento pós-login
-    return <Navigate to="/pageLogin" replace />;
+    localStorage.setItem("redirectAfterLogin", location.pathname);
+    return <Navigate to="/login" replace />;
   }
 
   return children;

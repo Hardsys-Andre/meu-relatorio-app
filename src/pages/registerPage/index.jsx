@@ -3,6 +3,8 @@ import { toast } from 'sonner';
 import { Link, useNavigate } from 'react-router-dom';
 import api from "../../server/api"; // Importando o arquivo api.js
 import TermsOfUse from '../../modals/TermsOfUse';
+import { FaTimes } from "react-icons/fa";
+import BackLink from "../../components/BackLink";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -61,16 +63,30 @@ export default function RegisterPage() {
       localStorage.removeItem("termsAccepted");
       
       // Redirecionar para a página de login após cadastro bem-sucedido
-      navigate('/pageLogin');
+      navigate('/login');
       
     } catch (error) {
       toast.error("Erro ao cadastrar. Tente novamente.");
     }
   };
 
+  const handleCancel = () => {
+    navigate('/');
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 relative">
+        <div className="flex">
+          <BackLink to="/login" label="Já tem conta? Fazer login" />
+        </div>
+        <button 
+          onClick={handleCancel}
+          className="absolute top-4 right-4 bg-white hover:bg-white text-red-600 hover:text-red-800 border-0"
+          aria-label="Cancelar cadastro"
+        >
+          <FaTimes size={24} />
+        </button>
         <h2 className="text-2xl font-bold text-center text-[#3ea8c8] mb-6">
           Crie sua conta
         </h2>

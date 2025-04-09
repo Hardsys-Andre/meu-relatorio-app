@@ -26,7 +26,7 @@ export default function ProfilePage() {
 
       // Verifica se o token está presente
       if (!token) {
-        window.location.href = "/pageLogin";
+        window.location.href = "/login";
         return;
       }
 

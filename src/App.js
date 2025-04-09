@@ -15,16 +15,14 @@ function App() {
   return (
     <AuthProvider>
       <div className="App">
-        <Layout>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/editor" element={<PrivateRoute><Editor /></PrivateRoute>} />
-            <Route path='/csvUploader' element={<PrivateRoute><CsvPage/></PrivateRoute>}/>
-            <Route path='/profile' element={<PerfilPage/>}/>
-            <Route path='/pageLogin' element={<LoginPage/>}/>
-            <Route path='/registerPage' element={<RegisterPage/>}/>
+            <Route path="/" element={<Layout><Home /></Layout>} />
+            <Route path="/editor" element={<PrivateRoute><Layout><Editor /></Layout></PrivateRoute>} />
+            <Route path='/csvUploader' element={<PrivateRoute><Layout><CsvPage/></Layout></PrivateRoute>}/>
+            <Route path='/profile' element={<Layout><PerfilPage/></Layout>}/>
+            <Route path='/login' element={<LoginPage/>}/>
+            <Route path='/register' element={<RegisterPage/>}/>
           </Routes>
-        </Layout>
       </div>
     </AuthProvider>
   );

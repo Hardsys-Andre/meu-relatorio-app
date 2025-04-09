@@ -111,7 +111,7 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <Link to="/pageLogin" onClick={handleButtonClick}>
+            <Link to="/login" onClick={handleButtonClick}>
               <button className="flex items-center w-full border border-black md:w-auto h-10 bg-white text-black md:border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
               <FaUser className="lg:mr-2 mr-1" />
               Login
