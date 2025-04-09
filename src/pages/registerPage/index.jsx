@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from "../../server/api"; // Importando o arquivo api.js
 import TermsOfUse from '../../modals/TermsOfUse';
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -58,6 +59,10 @@ export default function RegisterPage() {
 
       toast.success("Cadastro realizado com sucesso!");
       localStorage.removeItem("termsAccepted");
+      
+      // Redirecionar para a página de login após cadastro bem-sucedido
+      navigate('/pageLogin');
+      
     } catch (error) {
       toast.error("Erro ao cadastrar. Tente novamente.");
     }

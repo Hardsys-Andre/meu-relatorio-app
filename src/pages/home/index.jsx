@@ -8,7 +8,7 @@ import Zenilda from "../../assets/zenilda.jpg";
 import Andre_a from "../../assets/andre-a.png";
 import Jose from "../../assets/jose.jpg";
 import { Link } from 'react-router-dom';
-import { FaFileAlt, FaUpload, FaLightbulb, FaDownload, FaSlidersH } from "react-icons/fa"
+import { FaFileAlt, FaUpload, FaLightbulb, FaDownload, FaSlidersH, FaRobot } from "react-icons/fa"
 
 function Home() {
   return (
@@ -92,6 +92,16 @@ function Home() {
                 <p className="text-gray-600 dark:text-gray-300">
                   Tenha controle total sobre seus dados e relatórios. Filtre, ordene e agrupe as informações de acordo
                   com suas necessidades.
+                </p>
+            </div>
+            <div className="transition-all duration-300 hover:shadow-lg border-[1px] border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-sky-100 text-[#3ea8c8] dark:bg-sky-900">
+                  <FaRobot className="w-5 h-5" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold">Geração Inteligente com IA</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                Crie modelos de relatórios com o poder da inteligência artificial. Basta descrever o que você precisa 
+                em um prompt simples e nossa IA gera um relatório personalizado em segundos.
                 </p>
             </div>
           </div>
