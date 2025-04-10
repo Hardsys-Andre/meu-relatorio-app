@@ -75,6 +75,8 @@ const Navbar = () => {
             Home
             </button>
           </Link>
+          {isLoggedIn ? (
+              <>
           <Link to="/editor" onClick={handleButtonClick}>
             <button className="flex items-center border border-black w-full md:w-auto h-10 bg-white text-black md:border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
             <FaFileAlt className="lg:mr-2 mr-1" />
@@ -87,6 +89,22 @@ const Navbar = () => {
             CSV Uploader
             </button>
           </Link>
+          </>
+          ):(
+            <div className="relative group">
+                <button className="flex items-center border border-black w-full md:w-auto h-10 bg-white text-black md:border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]">
+                  <FaExternalLinkAlt className="mr-2" />
+                  Recursos
+                </button>
+                <div className="absolute hidden group-hover:block font-semibold text-[10px] bg-white text-black border rounded-xl mt-1 w-48 z-20 shadow-md">
+                  <a href="#sobre" className="block px-4 py-2 hover:bg-gray-100 text-xs">Sobre o Projeto</a>
+                  <a href="#faq" className="block px-4 py-2 hover:bg-gray-100 text-xs">Ajuda / FAQ</a>
+                  <a href="#contato" className="block px-4 py-2 hover:bg-gray-100 text-xs">Contato</a>
+                  <a href="#exemplos" className="block px-4 py-2 hover:bg-gray-100 text-xs">Exemplos de Relatórios</a>
+                  <a href="https://discord.gg/" target="_blank" rel="noopener noreferrer" className="block px-4 py-2 hover:bg-gray-100 text-xs">Comunidade</a>
+                </div>
+              </div>
+            )}
           <button
             className="flex items-center w-full border border-black md:w-auto h-10 bg-white text-black md:border-none font-semibold hover:bg-gray-100 hover:text-black text-[11px] lg:text-[16px]"
             onClick={() => window.open('https://superclient.com.br/', '_blank')}
