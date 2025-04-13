@@ -45,13 +45,12 @@ const Navbar = () => {
                 ${menuOpen ? 'gap-2' : 'w-full'}`}
         ref={menuRef}
       >
-        <Link to="/" onClick={handleButtonClick}>
         <button
           className="md:flex w-[auto] mt-0.5 p-0 items-center justify-center md:h-8 rounded-[20px]"
+          onClick={() => window.open('https://flexi-report-app.vercel.app/')}
         >
           <img src={LogoFlexi} alt="Logo" className="h-6 lg:h-7" />
         </button>
-        </Link>
         <div className='flex flex-col'>
         <button
           ref={buttonRef}
